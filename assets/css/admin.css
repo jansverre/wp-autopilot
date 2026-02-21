@@ -1,0 +1,159 @@
+/* WP Autopilot Admin Styles */
+
+.wpa-wrap {
+    max-width: 1200px;
+}
+
+.wpa-tabs {
+    margin-bottom: 20px;
+}
+
+.wpa-content {
+    margin-top: 20px;
+}
+
+/* Sections */
+.wpa-section {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.wpa-section h2 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Status Cards */
+.wpa-status-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.wpa-card {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 15px 20px;
+    text-align: center;
+}
+
+.wpa-card h3 {
+    margin: 0 0 8px;
+    font-size: 13px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.wpa-card-value {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0;
+    color: #1d2327;
+}
+
+/* Status Badges */
+.wpa-status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.wpa-active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.wpa-inactive {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Log Levels */
+.wpa-log-level {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.wpa-log-info {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.wpa-log-warning {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.wpa-log-error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Feed Form */
+.wpa-add-feed-form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.wpa-add-feed-form input {
+    flex: 0 1 auto;
+}
+
+/* Messages */
+.wpa-message {
+    margin-top: 10px;
+    font-style: italic;
+}
+
+.wpa-message.success {
+    color: #155724;
+}
+
+.wpa-message.error {
+    color: #721c24;
+}
+
+/* Spinner alignment */
+.spinner.is-active {
+    visibility: visible;
+    float: none;
+    margin: 0 0 0 5px;
+    vertical-align: middle;
+}
+
+/* Table tweaks */
+#wpa-feeds-table code {
+    font-size: 12px;
+    word-break: break-all;
+}
+
+#wpa-log-table td {
+    vertical-align: top;
+}
+
+/* Buttons in table */
+.wpa-delete-feed {
+    color: #a00 !important;
+    border-color: #a00 !important;
+}
+
+.wpa-delete-feed:hover {
+    color: #dc3232 !important;
+    border-color: #dc3232 !important;
+}
