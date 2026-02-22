@@ -80,6 +80,7 @@ class Settings {
             'work_hours_end',
             'keyword_include',
             'keyword_exclude',
+            'delete_data_on_uninstall',
             'feeds',
         );
 

@@ -115,6 +115,9 @@ class Activator {
             'keyword_include'     => '',
             'keyword_exclude'     => '',
 
+            // Data management
+            'delete_data_on_uninstall' => false,
+
             // Feeds stored as JSON array
             'feeds'               => '[]',
         );

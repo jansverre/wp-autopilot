@@ -1,10 +1,18 @@
 <?php
 /**
  * Fired when the plugin is uninstalled.
+ * Only deletes data if "Delete data on uninstall" is enabled in settings.
  */
 
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
     exit;
+}
+
+// Check if user wants data removed. Default: keep data.
+$delete_data = get_option( 'wpa_delete_data_on_uninstall', false );
+
+if ( ! $delete_data ) {
+    return;
 }
 
 global $wpdb;

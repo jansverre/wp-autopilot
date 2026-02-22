@@ -203,6 +203,7 @@ class Admin {
         Settings::set( 'generate_images', ! empty( $_POST['wpa_generate_images'] ) );
         Settings::set( 'include_source_link', ! empty( $_POST['wpa_include_source_link'] ) );
         Settings::set( 'work_hours_enabled', ! empty( $_POST['wpa_work_hours_enabled'] ) );
+        Settings::set( 'delete_data_on_uninstall', ! empty( $_POST['wpa_delete_data_on_uninstall'] ) );
 
         // Reschedule cron if interval or enabled changed.
         $new_interval = Settings::get( 'cron_interval' );

@@ -326,6 +326,24 @@ $settings = Settings::all();
         </table>
     </div>
 
+    <!-- Data Management -->
+    <div class="wpa-section">
+        <h2>Databehandling</h2>
+        <table class="form-table">
+            <tr>
+                <th><label for="wpa_delete_data_on_uninstall">Slett data ved avinstallering</label></th>
+                <td>
+                    <label>
+                        <input type="checkbox" id="wpa_delete_data_on_uninstall" name="wpa_delete_data_on_uninstall"
+                               value="1" <?php checked( $settings['delete_data_on_uninstall'] ?? false ); ?>>
+                        Slett alle innstillinger, feeds, logg og databasetabeller når pluginen avinstalleres
+                    </label>
+                    <p class="description">La denne stå av hvis du planlegger å reinstallere eller oppdatere manuelt. Data beholdes da mellom installasjoner.</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
     <?php submit_button( 'Lagre innstillinger' ); ?>
 </form>
 
