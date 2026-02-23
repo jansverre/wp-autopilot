@@ -11,7 +11,7 @@ WordPress plugin that automates content production: fetches news from RSS feeds,
 
 ## Repo
 - GitHub: `jansverre/wp-autopilot`
-- Tag `v1.0.0` pushed, release needs zip asset uploaded manually
+- v1.1.0 tagged and pushed, zip release asset uploaded manually to GitHub releases
 - SSH auth works, `gh` CLI token has limited permissions
 
 ## File Structure
@@ -38,7 +38,7 @@ admin/
   partials/header.php     — Tab navigation
   partials/footer.php     — Closing divs
 assets/css/admin.css      — Admin styles
-assets/js/admin.js        — AJAX for feeds, run now, reindex, log refresh
+assets/js/admin.js        — AJAX for feeds, run now, reindex, log refresh, author toggles, writing style AJAX
 vendor/plugin-update-checker/ — GitHub release update checker (v5p6)
 ```
 
@@ -69,19 +69,20 @@ vendor/plugin-update-checker/ — GitHub release update checker (v5p6)
 - `wpa_costs` — post_id, type, model, tokens_in, tokens_out, cost_usd, created_at
 
 ## Current Status (v1.1.0)
-- v1.0.0 core features + 5 new features for v1.1.0
-- New: site identity prompt, multiple authors, per-author writing style analysis, cost tracking, inline images
-- DB version upgraded to 2 (wpa_costs table added, seamless via maybe_upgrade())
-- GitHub repo: v1.0.0 tagged; v1.1.0 ready for testing
-- NOT yet submitted to WordPress.org plugin directory (testing first)
+- v1.1.0 released and tested on live WP site
+- Features: site identity prompt, multiple authors, per-author writing style analysis, cost tracking, inline images
+- DB version 2 (wpa_costs table, seamless upgrade via maybe_upgrade())
+- Menu icon: dashicons-airplane
+- Writing style analysis: plain text output (no markdown), long styles injected as separate block in prompt
+- NOT yet submitted to WordPress.org plugin directory
 
 ## Known Issues / TODO
-- Design/UI polish (user mentioned "vi kan fikse design senere")
-- Test v1.1.0 on WP: verify maybe_upgrade() creates wpa_costs, test multi-author rotation, inline images, cost tracking
+- Design/UI polish
 - WordPress.org submission when ready (readme.txt already prepared with external service disclosure)
 - Consider: admin UI in Norwegian vs English (currently mixed — admin views in Norwegian, readme in English)
 - Version bump workflow: update Version in wp-autopilot.php + WPA_VERSION constant + Stable tag in readme.txt
 - Inline images can cause long timeouts with many images per article (each takes 6-60s via fal.ai)
+- Remember to rebuild zip after fixes: `cd /home/jansverre/Projects/wp-plugins && rm -f wp-autopilot-1.1.0.zip && zip -r wp-autopilot-1.1.0.zip WP-ai-autopilot/ -x "WP-ai-autopilot/.git/*" "WP-ai-autopilot/.claude/*" "WP-ai-autopilot/.gitignore"`
 
 ## User Preferences
 - Language: Norwegian (both code comments and UI)
