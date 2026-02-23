@@ -249,7 +249,16 @@
 
     // --- Writing Style Analysis ---
 
-    var writingStyles = (typeof wpaAdmin !== 'undefined' && wpaAdmin.writingStyles) ? wpaAdmin.writingStyles : {};
+    // Use a plain object for the cache (PHP may send [] for empty, which is an array in JS).
+    var rawStyles = (typeof wpaAdmin !== 'undefined' && wpaAdmin.writingStyles) ? wpaAdmin.writingStyles : {};
+    var writingStyles = {};
+    if (rawStyles && typeof rawStyles === 'object') {
+        for (var k in rawStyles) {
+            if (rawStyles.hasOwnProperty(k)) {
+                writingStyles[k] = rawStyles[k];
+            }
+        }
+    }
 
     // Load style when author changes.
     $('#wpa_style_author').on('change', function () {
@@ -281,8 +290,11 @@
             $spinner.removeClass('is-active');
 
             if (response.success) {
-                $('#wpa_writing_style_text').val(response.data.style);
-                $msg.text('Analyse fullført.').removeClass('error').addClass('success');
+                var style = response.data.style;
+                $('#wpa_writing_style_text').val(style);
+                // Update local cache so switching authors and back preserves the text.
+                writingStyles[authorId] = style;
+                $msg.text('Analyse fullført. Klikk «Lagre skrivestil» for å beholde den.').removeClass('error').addClass('success');
             } else {
                 $msg.text(response.data || 'Feil under analyse.').removeClass('success').addClass('error');
             }
@@ -314,8 +326,14 @@
             $spinner.removeClass('is-active');
 
             if (response.success) {
-                // Update local cache.
-                writingStyles[authorId] = style;
+                // Update local cache with the server-confirmed styles.
+                if (response.data.writing_styles) {
+                    writingStyles = response.data.writing_styles;
+                } else {
+                    writingStyles[authorId] = style;
+                }
+                // Re-set textarea from cache to ensure it stays.
+                $('#wpa_writing_style_text').val(writingStyles[authorId] || '');
                 $msg.text('Skrivestil lagret.').removeClass('error').addClass('success');
             } else {
                 $msg.text(response.data || 'Feil ved lagring.').removeClass('success').addClass('error');

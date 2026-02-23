@@ -458,6 +458,9 @@ class Admin {
 
         Settings::set( 'writing_styles', wp_json_encode( $writing_styles ) );
 
-        wp_send_json_success( array( 'message' => 'Skrivestil lagret.' ) );
+        wp_send_json_success( array(
+            'message'        => 'Skrivestil lagret.',
+            'writing_styles' => $writing_styles,
+        ) );
     }
 }
