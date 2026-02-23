@@ -86,6 +86,8 @@ class Cron {
         // Calculate spread-out schedule times for the articles.
         $schedule_times = $this->calculate_schedule_times( $item_count );
 
+        $inline_images_enabled = (bool) Settings::get( 'inline_images_enabled' );
+
         $index = 0;
         foreach ( $items as $item ) {
             // Re-check daily limit for each item.
@@ -94,16 +96,22 @@ class Cron {
                 break;
             }
 
+            // Resolve author for this article.
+            $author_id = $publisher->resolve_author();
+
             // Find related articles for internal linking.
             $related = $linker->find_related( $item['title'], $item['description'] );
 
-            // Generate article with AI.
-            $article = $writer->write( $item, $related );
+            // Generate article with AI (passing author_id for per-author style).
+            $article = $writer->write( $item, $related, $author_id );
             if ( ! $article ) {
                 Logger::warning( sprintf( 'Kunne ikke generere artikkel for: "%s"', $item['title'] ) );
                 $index++;
                 continue;
             }
+
+            // Log text generation cost.
+            CostTracker::log_text( null, $article['_model'], $article['_response_data'] );
 
             // Generate featured image.
             $image_id = null;
@@ -116,19 +124,85 @@ class Cron {
                 );
             }
 
+            // Generate inline images if enabled.
+            $inline_images = array();
+            if ( $inline_images_enabled && ! empty( $article['inline_images'] ) ) {
+                $img_index = 1;
+                foreach ( $article['inline_images'] as $inline ) {
+                    $result = $imager->generate_inline(
+                        $inline['prompt'] ?? '',
+                        $inline['alt'] ?? '',
+                        $inline['caption'] ?? '',
+                        $article['title'],
+                        $img_index
+                    );
+
+                    $inline['attachment_id'] = $result['attachment_id'];
+                    $inline_images[] = $inline;
+
+                    // Log inline image cost.
+                    if ( $result['model'] ) {
+                        CostTracker::log_image( null, 'inline_image', $result['model'] );
+                    }
+
+                    $img_index++;
+                }
+            }
+
+            // Insert inline images into content before publishing.
+            if ( ! empty( $inline_images ) ) {
+                $article['content'] = $publisher->insert_inline_images( $article['content'], $inline_images );
+            }
+
             // Get scheduled time for this article (null for first article = publish now).
             $scheduled_date = isset( $schedule_times[ $index ] ) ? $schedule_times[ $index ] : null;
 
             // Publish (or schedule).
-            $post_id = $publisher->publish( $article, $image_id, $item, $scheduled_date );
+            $post_id = $publisher->publish( $article, $image_id, $item, $scheduled_date, $author_id );
             if ( $post_id ) {
                 $published++;
+
+                // Update cost records with the actual post_id.
+                $this->update_cost_post_id( $post_id, $article, $image_id, $inline_images );
             }
 
             $index++;
         }
 
         Logger::info( sprintf( 'Autopilot-kjøring fullført. %d artikler opprettet.', $published ) );
+    }
+
+    /**
+     * Update cost tracker entries with the real post ID after publishing.
+     */
+    private function update_cost_post_id( $post_id, $article, $image_id, $inline_images ) {
+        global $wpdb;
+        $table = $wpdb->prefix . 'wpa_costs';
+
+        // Update the most recent text cost entry (the one we just logged with null post_id).
+        $wpdb->query( $wpdb->prepare(
+            "UPDATE {$table} SET post_id = %d WHERE post_id IS NULL AND type = 'text' ORDER BY id DESC LIMIT 1",
+            $post_id
+        ) );
+
+        // Log featured image cost with post_id.
+        if ( $image_id ) {
+            $featured_model = Settings::get( 'image_custom_model' );
+            if ( empty( $featured_model ) ) {
+                $featured_model = Settings::get( 'image_model', 'fal-ai/flux-2-pro' );
+            }
+            CostTracker::log_image( $post_id, 'featured_image', $featured_model );
+        }
+
+        // Update inline image costs with post_id.
+        if ( ! empty( $inline_images ) ) {
+            $count = count( $inline_images );
+            $wpdb->query( $wpdb->prepare(
+                "UPDATE {$table} SET post_id = %d WHERE post_id IS NULL AND type = 'inline_image' ORDER BY id DESC LIMIT %d",
+                $post_id,
+                $count
+            ) );
+        }
     }
 
     /**

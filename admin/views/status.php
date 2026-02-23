@@ -5,6 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use WPAutopilot\Includes\Settings;
 use WPAutopilot\Includes\Logger;
+use WPAutopilot\Includes\CostTracker;
 
 $settings   = Settings::all();
 $next_run   = wp_next_scheduled( 'wpa_run_autopilot' );
@@ -23,6 +24,10 @@ $total_articles = (int) $wpdb->get_var(
 $indexed_links = (int) $wpdb->get_var(
     "SELECT COUNT(*) FROM {$wpdb->prefix}wpa_internal_links"
 );
+
+// Cost summary.
+$cost_summary = CostTracker::get_summary();
+$article_costs = CostTracker::get_article_costs( 20 );
 ?>
 
 <?php include WPA_PLUGIN_DIR . 'admin/partials/header.php'; ?>
@@ -63,6 +68,30 @@ $indexed_links = (int) $wpdb->get_var(
     </div>
 </div>
 
+<!-- Cost Cards -->
+<div class="wpa-status-cards">
+    <div class="wpa-card">
+        <h3>Kostnad i dag</h3>
+        <p class="wpa-card-value">$<?php echo esc_html( number_format( $cost_summary['cost_today'], 4 ) ); ?></p>
+    </div>
+    <div class="wpa-card">
+        <h3>Kostnad 7 dager</h3>
+        <p class="wpa-card-value">$<?php echo esc_html( number_format( $cost_summary['cost_7d'], 4 ) ); ?></p>
+    </div>
+    <div class="wpa-card">
+        <h3>Kostnad 30 dager</h3>
+        <p class="wpa-card-value">$<?php echo esc_html( number_format( $cost_summary['cost_30d'], 4 ) ); ?></p>
+    </div>
+    <div class="wpa-card">
+        <h3>Snitt per artikkel</h3>
+        <p class="wpa-card-value">$<?php echo esc_html( number_format( $cost_summary['avg_per_article'], 4 ) ); ?></p>
+    </div>
+    <div class="wpa-card">
+        <h3>Totale tokens</h3>
+        <p class="wpa-card-value"><?php echo esc_html( number_format( $cost_summary['tokens_in_total'] + $cost_summary['tokens_out_total'] ) ); ?></p>
+    </div>
+</div>
+
 <!-- Actions -->
 <div class="wpa-section">
     <h2>Handlinger</h2>
@@ -77,6 +106,46 @@ $indexed_links = (int) $wpdb->get_var(
     </p>
     <p id="wpa-action-message" class="wpa-message"></p>
 </div>
+
+<!-- Cost Table -->
+<?php if ( ! empty( $article_costs ) ) : ?>
+<div class="wpa-section">
+    <h2>Kostnader per artikkel (siste 20)</h2>
+    <table class="wp-list-table widefat fixed striped">
+        <thead>
+            <tr>
+                <th style="width: 15%;">Tidspunkt</th>
+                <th>Artikkel</th>
+                <th style="width: 10%;">Typer</th>
+                <th style="width: 10%;">Tokens inn</th>
+                <th style="width: 10%;">Tokens ut</th>
+                <th style="width: 10%;">Kostnad</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ( $article_costs as $cost ) :
+                $post_title = get_the_title( $cost['post_id'] );
+                if ( empty( $post_title ) ) {
+                    $post_title = '#' . $cost['post_id'];
+                }
+            ?>
+                <tr>
+                    <td><?php echo esc_html( $cost['created_at'] ); ?></td>
+                    <td>
+                        <a href="<?php echo esc_url( get_edit_post_link( $cost['post_id'] ) ); ?>">
+                            <?php echo esc_html( mb_strimwidth( $post_title, 0, 60, '...' ) ); ?>
+                        </a>
+                    </td>
+                    <td><small><?php echo esc_html( $cost['types'] ); ?></small></td>
+                    <td><?php echo esc_html( number_format( (int) $cost['tokens_in'] ) ); ?></td>
+                    <td><?php echo esc_html( number_format( (int) $cost['tokens_out'] ) ); ?></td>
+                    <td>$<?php echo esc_html( number_format( (float) $cost['cost_usd'], 4 ) ); ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+<?php endif; ?>
 
 <!-- Log -->
 <div class="wpa-section">

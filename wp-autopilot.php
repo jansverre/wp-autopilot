@@ -3,7 +3,7 @@
  * Plugin Name:       WP Autopilot
  * Plugin URI:        https://github.com/jansverre/wp-autopilot
  * Description:       AI-powered content automation — fetches news from RSS feeds, writes articles via OpenRouter, generates featured images with fal.ai, and publishes to WordPress on autopilot.
- * Version:           1.0.0
+ * Version:           1.1.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Jan Sverre
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'WPA_VERSION', '1.0.0' );
+define( 'WPA_VERSION', '1.1.0' );
 define( 'WPA_PLUGIN_FILE', __FILE__ );
 define( 'WPA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WPA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -86,6 +86,9 @@ register_deactivation_hook( __FILE__, function () {
 add_action( 'plugins_loaded', function () {
     // Load settings helper early.
     \WPAutopilot\Includes\Settings::init();
+
+    // Seamless DB upgrades (new tables, new defaults) without reactivation.
+    \WPAutopilot\Includes\Activator::maybe_upgrade();
 
     // Register cron.
     $cron = new \WPAutopilot\Includes\Cron();

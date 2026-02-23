@@ -6,6 +6,8 @@ use WPAutopilot\Includes\Settings;
 use WPAutopilot\Includes\Logger;
 use WPAutopilot\Includes\Cron;
 use WPAutopilot\Includes\InternalLinks;
+use WPAutopilot\Includes\ArticleWriter;
+use WPAutopilot\Includes\CostTracker;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -28,6 +30,8 @@ class Admin {
         add_action( 'wp_ajax_wpa_run_now', array( $this, 'ajax_run_now' ) );
         add_action( 'wp_ajax_wpa_reindex', array( $this, 'ajax_reindex' ) );
         add_action( 'wp_ajax_wpa_get_log', array( $this, 'ajax_get_log' ) );
+        add_action( 'wp_ajax_wpa_analyze_style', array( $this, 'ajax_analyze_style' ) );
+        add_action( 'wp_ajax_wpa_save_writing_style', array( $this, 'ajax_save_writing_style' ) );
     }
 
     /**
@@ -102,8 +106,9 @@ class Admin {
         );
 
         wp_localize_script( 'wpa-admin-js', 'wpaAdmin', array(
-            'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-            'nonce'   => wp_create_nonce( 'wpa_admin_nonce' ),
+            'ajaxUrl'       => admin_url( 'admin-ajax.php' ),
+            'nonce'         => wp_create_nonce( 'wpa_admin_nonce' ),
+            'writingStyles' => json_decode( Settings::get( 'writing_styles', '{}' ), true ),
         ) );
     }
 
@@ -161,10 +166,19 @@ class Admin {
             'openrouter_api_key', 'fal_api_key', 'ai_model', 'ai_custom_model',
             'ai_language', 'ai_niche', 'ai_style', 'image_model', 'image_custom_model', 'image_style',
             'keyword_include', 'keyword_exclude',
+            'inline_image_model', 'inline_image_custom_model',
         );
         foreach ( $text_fields as $field ) {
             if ( isset( $_POST[ 'wpa_' . $field ] ) ) {
                 Settings::set( $field, sanitize_text_field( wp_unslash( $_POST[ 'wpa_' . $field ] ) ) );
+            }
+        }
+
+        // Textarea fields (preserve line breaks).
+        $textarea_fields = array( 'site_identity' );
+        foreach ( $textarea_fields as $field ) {
+            if ( isset( $_POST[ 'wpa_' . $field ] ) ) {
+                Settings::set( $field, sanitize_textarea_field( wp_unslash( $_POST[ 'wpa_' . $field ] ) ) );
             }
         }
 
@@ -198,12 +212,46 @@ class Admin {
             Settings::set( 'cron_interval', sanitize_text_field( wp_unslash( $_POST['wpa_cron_interval'] ) ) );
         }
 
+        if ( isset( $_POST['wpa_inline_images_frequency'] ) ) {
+            $freq = sanitize_text_field( wp_unslash( $_POST['wpa_inline_images_frequency'] ) );
+            if ( in_array( $freq, array( 'every_h2', 'every_other_h2', 'every_third_h2' ), true ) ) {
+                Settings::set( 'inline_images_frequency', $freq );
+            }
+        }
+
+        // Author method.
+        if ( isset( $_POST['wpa_author_method'] ) ) {
+            $method = sanitize_text_field( wp_unslash( $_POST['wpa_author_method'] ) );
+            if ( in_array( $method, array( 'single', 'random', 'round_robin', 'percentage' ), true ) ) {
+                Settings::set( 'author_method', $method );
+            }
+        }
+
+        // Post authors JSON (validated array of {id, weight}).
+        if ( isset( $_POST['wpa_post_authors'] ) ) {
+            $raw = wp_unslash( $_POST['wpa_post_authors'] );
+            $authors = json_decode( $raw, true );
+            if ( is_array( $authors ) ) {
+                $clean = array();
+                foreach ( $authors as $a ) {
+                    if ( isset( $a['id'] ) && get_userdata( (int) $a['id'] ) ) {
+                        $clean[] = array(
+                            'id'     => (int) $a['id'],
+                            'weight' => max( 1, (int) ( $a['weight'] ?? 1 ) ),
+                        );
+                    }
+                }
+                Settings::set( 'post_authors', wp_json_encode( $clean ) );
+            }
+        }
+
         // Checkboxes.
         Settings::set( 'enabled', ! empty( $_POST['wpa_enabled'] ) );
         Settings::set( 'generate_images', ! empty( $_POST['wpa_generate_images'] ) );
         Settings::set( 'include_source_link', ! empty( $_POST['wpa_include_source_link'] ) );
         Settings::set( 'work_hours_enabled', ! empty( $_POST['wpa_work_hours_enabled'] ) );
         Settings::set( 'delete_data_on_uninstall', ! empty( $_POST['wpa_delete_data_on_uninstall'] ) );
+        Settings::set( 'inline_images_enabled', ! empty( $_POST['wpa_inline_images_enabled'] ) );
 
         // Reschedule cron if interval or enabled changed.
         $new_interval = Settings::get( 'cron_interval' );
@@ -346,5 +394,70 @@ class Admin {
         $logs = Logger::get_latest( 50 );
 
         wp_send_json_success( array( 'logs' => $logs ) );
+    }
+
+    /**
+     * AJAX: Analyze writing style for a specific author.
+     */
+    public function ajax_analyze_style() {
+        check_ajax_referer( 'wpa_admin_nonce', 'nonce' );
+
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( 'Ingen tilgang.' );
+        }
+
+        $author_id = absint( $_POST['author_id'] ?? 0 );
+        $num_posts = absint( $_POST['num_posts'] ?? 5 );
+
+        if ( ! $author_id || ! get_userdata( $author_id ) ) {
+            wp_send_json_error( 'Ugyldig forfatter.' );
+        }
+
+        $writer = new ArticleWriter();
+        $result = $writer->analyze_style( $author_id, $num_posts );
+
+        if ( isset( $result['error'] ) ) {
+            wp_send_json_error( $result['error'] );
+        }
+
+        // Log style analysis cost.
+        if ( ! empty( $result['response_data'] ) ) {
+            CostTracker::log_text( null, $result['model'], $result['response_data'] );
+        }
+
+        wp_send_json_success( array( 'style' => $result['style'] ) );
+    }
+
+    /**
+     * AJAX: Save writing style for a specific author.
+     */
+    public function ajax_save_writing_style() {
+        check_ajax_referer( 'wpa_admin_nonce', 'nonce' );
+
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( 'Ingen tilgang.' );
+        }
+
+        $author_id = absint( $_POST['author_id'] ?? 0 );
+        $style     = sanitize_textarea_field( wp_unslash( $_POST['style'] ?? '' ) );
+
+        if ( ! $author_id ) {
+            wp_send_json_error( 'Ugyldig forfatter.' );
+        }
+
+        $writing_styles = json_decode( Settings::get( 'writing_styles', '{}' ), true );
+        if ( ! is_array( $writing_styles ) ) {
+            $writing_styles = array();
+        }
+
+        if ( empty( $style ) ) {
+            unset( $writing_styles[ $author_id ] );
+        } else {
+            $writing_styles[ $author_id ] = $style;
+        }
+
+        Settings::set( 'writing_styles', wp_json_encode( $writing_styles ) );
+
+        wp_send_json_success( array( 'message' => 'Skrivestil lagret.' ) );
     }
 }

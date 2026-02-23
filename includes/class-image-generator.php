@@ -61,6 +61,51 @@ class ImageGenerator {
     }
 
     /**
+     * Generate an inline image using the inline image model.
+     *
+     * @param string $prompt        Image generation prompt.
+     * @param string $alt_text      Alt text for the image.
+     * @param string $caption       Caption text.
+     * @param string $post_title    Post title for filename.
+     * @param int    $index         Image index (for unique filenames).
+     * @return array {attachment_id, model} or {attachment_id: null, model}.
+     */
+    public function generate_inline( $prompt, $alt_text, $caption, $post_title, $index = 1 ) {
+        $api_key = Settings::get( 'fal_api_key' );
+        if ( empty( $api_key ) ) {
+            Logger::error( 'fal.ai API-nøkkel mangler (inline-bilde).' );
+            return array( 'attachment_id' => null, 'model' => '' );
+        }
+
+        $model = Settings::get( 'inline_image_custom_model' );
+        if ( empty( $model ) ) {
+            $model = Settings::get( 'inline_image_model', 'fal-ai/flux-2-pro' );
+        }
+
+        $image_style = Settings::get( 'image_style', 'photorealistic editorial style' );
+        $full_prompt = $image_style . ': ' . $prompt;
+
+        $request_id = $this->submit_to_queue( $api_key, $model, $full_prompt );
+        if ( ! $request_id ) {
+            return array( 'attachment_id' => null, 'model' => $model );
+        }
+
+        $image_url = $this->poll_for_result( $api_key, $model, $request_id );
+        if ( ! $image_url ) {
+            return array( 'attachment_id' => null, 'model' => $model );
+        }
+
+        $filename_title = $post_title . '-inline-' . $index;
+        $attachment_id = $this->upload_to_media( $image_url, $filename_title, $alt_text, $caption );
+
+        if ( $attachment_id ) {
+            Logger::info( sprintf( 'Inline-bilde %d generert (ID: %d) for "%s".', $index, $attachment_id, $post_title ) );
+        }
+
+        return array( 'attachment_id' => $attachment_id, 'model' => $model );
+    }
+
+    /**
      * Submit image generation request to fal.ai queue.
      *
      * @return string|null Request ID or null on failure.

@@ -21,6 +21,7 @@ global $wpdb;
 $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}wpa_seen_articles" );
 $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}wpa_internal_links" );
 $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}wpa_log" );
+$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}wpa_costs" );
 
 // Delete all plugin options.
 $options = $wpdb->get_col(

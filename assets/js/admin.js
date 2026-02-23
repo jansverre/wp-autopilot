@@ -205,6 +205,128 @@
         });
     }
 
+    // --- Author Method Toggle ---
+
+    $('#wpa_author_method').on('change', function () {
+        var method = $(this).val();
+        if (method === 'single') {
+            $('#wpa-authors-row').hide();
+        } else {
+            $('#wpa-authors-row').show();
+        }
+
+        if (method === 'percentage') {
+            $('.wpa-author-weight').show();
+        } else {
+            $('.wpa-author-weight').hide();
+        }
+    });
+
+    // Sync author checkboxes and weights to hidden JSON field.
+    function syncAuthorsJSON() {
+        var authors = [];
+        $('.wpa-author-check:checked').each(function () {
+            var id = parseInt($(this).val(), 10);
+            var weight = parseInt($(this).closest('.wpa-author-item').find('.wpa-weight-input').val(), 10) || 1;
+            authors.push({ id: id, weight: weight });
+        });
+        $('#wpa_post_authors').val(JSON.stringify(authors));
+    }
+
+    $(document).on('change', '.wpa-author-check, .wpa-weight-input', syncAuthorsJSON);
+
+    // Sync on page load.
+    if ($('#wpa_post_authors').length) {
+        syncAuthorsJSON();
+    }
+
+    // --- Inline Images Toggle ---
+
+    $('#wpa_inline_images_enabled').on('change', function () {
+        var show = $(this).is(':checked');
+        $('#wpa-inline-freq-row, #wpa-inline-model-row, #wpa-inline-custom-row').toggle(show);
+    });
+
+    // --- Writing Style Analysis ---
+
+    var writingStyles = (typeof wpaAdmin !== 'undefined' && wpaAdmin.writingStyles) ? wpaAdmin.writingStyles : {};
+
+    // Load style when author changes.
+    $('#wpa_style_author').on('change', function () {
+        var authorId = $(this).val();
+        var style = writingStyles[authorId] || '';
+        $('#wpa_writing_style_text').val(style);
+        $('#wpa-style-message').text('');
+    }).trigger('change');
+
+    // Analyze style button.
+    $('#wpa-analyze-style').on('click', function () {
+        var $btn = $(this);
+        var $spinner = $('#wpa-style-spinner');
+        var $msg = $('#wpa-style-message');
+        var authorId = $('#wpa_style_author').val();
+        var numPosts = $('#wpa_style_num_posts').val();
+
+        $btn.prop('disabled', true);
+        $spinner.addClass('is-active');
+        $msg.text('Analyserer skrivestil...').removeClass('error success');
+
+        $.post(wpaAdmin.ajaxUrl, {
+            action: 'wpa_analyze_style',
+            nonce: wpaAdmin.nonce,
+            author_id: authorId,
+            num_posts: numPosts
+        }, function (response) {
+            $btn.prop('disabled', false);
+            $spinner.removeClass('is-active');
+
+            if (response.success) {
+                $('#wpa_writing_style_text').val(response.data.style);
+                $msg.text('Analyse fullført.').removeClass('error').addClass('success');
+            } else {
+                $msg.text(response.data || 'Feil under analyse.').removeClass('success').addClass('error');
+            }
+        }).fail(function () {
+            $btn.prop('disabled', false);
+            $spinner.removeClass('is-active');
+            $msg.text('Nettverksfeil eller timeout.').removeClass('success').addClass('error');
+        });
+    });
+
+    // Save style button.
+    $('#wpa-save-style').on('click', function () {
+        var $btn = $(this);
+        var $spinner = $('#wpa-style-spinner');
+        var $msg = $('#wpa-style-message');
+        var authorId = $('#wpa_style_author').val();
+        var style = $('#wpa_writing_style_text').val();
+
+        $btn.prop('disabled', true);
+        $spinner.addClass('is-active');
+
+        $.post(wpaAdmin.ajaxUrl, {
+            action: 'wpa_save_writing_style',
+            nonce: wpaAdmin.nonce,
+            author_id: authorId,
+            style: style
+        }, function (response) {
+            $btn.prop('disabled', false);
+            $spinner.removeClass('is-active');
+
+            if (response.success) {
+                // Update local cache.
+                writingStyles[authorId] = style;
+                $msg.text('Skrivestil lagret.').removeClass('error').addClass('success');
+            } else {
+                $msg.text(response.data || 'Feil ved lagring.').removeClass('success').addClass('error');
+            }
+        }).fail(function () {
+            $btn.prop('disabled', false);
+            $spinner.removeClass('is-active');
+            $msg.text('Nettverksfeil.').removeClass('success').addClass('error');
+        });
+    });
+
     // --- Utility ---
 
     function escHtml(str) {

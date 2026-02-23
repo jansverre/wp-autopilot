@@ -3,7 +3,7 @@ Contributors: jansverre
 Tags: ai content, rss, autopilot, content generation, automation
 Requires at least: 5.8
 Tested up to: 6.9
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 Requires PHP: 7.4
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -91,6 +91,15 @@ Yes. WP Autopilot creates standard WordPress posts with proper HTML, featured im
 3. Status page — view statistics, run autopilot manually, and browse the activity log
 
 == Changelog ==
+
+= 1.1.0 =
+* New: Site identity prompt — describe your site's purpose, values, and audience for better article tone
+* New: Multiple authors with single, random, round-robin, and percentage distribution methods
+* New: Per-author writing style analysis — AI analyzes published posts and replicates each author's voice
+* New: Cost tracking — monitor token usage and estimated costs per article on the Status page
+* New: Inline images — AI-generated images within article content at H2 sections
+* New: Seamless DB upgrade mechanism (no deactivation/reactivation needed for schema changes)
+* Improved: AI prompt now supports inline image markers and per-author style injection
 
 = 1.0.0 =
 * Initial release

@@ -9,15 +9,35 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Activator {
 
     /**
+     * Current DB schema version.
+     */
+    const DB_VERSION = 2;
+
+    /**
      * Run on plugin activation.
      */
     public static function activate() {
         self::create_tables();
         self::set_default_options();
 
+        update_option( 'wpa_db_version', self::DB_VERSION );
+
         // Index existing posts for internal linking.
         $links = new InternalLinks();
         $links->sync_existing_posts();
+    }
+
+    /**
+     * Run on plugins_loaded to handle seamless DB upgrades.
+     */
+    public static function maybe_upgrade() {
+        $current = (int) get_option( 'wpa_db_version', 1 );
+
+        if ( $current < self::DB_VERSION ) {
+            self::create_tables();
+            self::set_default_options();
+            update_option( 'wpa_db_version', self::DB_VERSION );
+        }
     }
 
     /**
@@ -27,9 +47,10 @@ class Activator {
         global $wpdb;
         $charset = $wpdb->get_charset_collate();
 
-        $seen = $wpdb->prefix . 'wpa_seen_articles';
+        $seen  = $wpdb->prefix . 'wpa_seen_articles';
         $links = $wpdb->prefix . 'wpa_internal_links';
         $log   = $wpdb->prefix . 'wpa_log';
+        $costs = $wpdb->prefix . 'wpa_costs';
 
         $sql = "CREATE TABLE {$seen} (
             id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -61,6 +82,20 @@ class Activator {
             created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             KEY level (level)
+        ) {$charset};
+
+        CREATE TABLE {$costs} (
+            id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+            post_id BIGINT UNSIGNED DEFAULT NULL,
+            type VARCHAR(30) NOT NULL,
+            model VARCHAR(200) NOT NULL DEFAULT '',
+            tokens_in INT UNSIGNED DEFAULT 0,
+            tokens_out INT UNSIGNED DEFAULT 0,
+            cost_usd DECIMAL(10,6) DEFAULT NULL,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            KEY post_id (post_id),
+            KEY type (type)
         ) {$charset};";
 
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
@@ -83,6 +118,7 @@ class Activator {
             'ai_niche'            => '',
             'ai_style'            => 'informativ og engasjerende',
             'ai_temperature'      => 0.7,
+            'site_identity'       => '',
 
             // Content settings
             'min_words'           => 600,
@@ -93,6 +129,14 @@ class Activator {
             'post_status'         => 'draft',
             'post_author'         => 1,
             'default_category'    => 0,
+
+            // Author settings
+            'post_authors'        => '[]',
+            'author_method'       => 'single',
+            'author_index'        => 0,
+
+            // Writing styles (per-author JSON)
+            'writing_styles'      => '{}',
 
             // Cron settings
             'enabled'             => false,
@@ -105,6 +149,12 @@ class Activator {
             'image_model'         => 'fal-ai/flux-2-pro',
             'image_custom_model'  => '',
             'image_style'         => 'photorealistic editorial style',
+
+            // Inline image settings
+            'inline_images_enabled'    => false,
+            'inline_images_frequency'  => 'every_other_h2',
+            'inline_image_model'       => 'fal-ai/flux-2-pro',
+            'inline_image_custom_model' => '',
 
             // Work hours
             'work_hours_enabled'  => false,
