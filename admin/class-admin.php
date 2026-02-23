@@ -44,7 +44,7 @@ class Admin {
             'manage_options',
             'wpa-settings',
             array( $this, 'render_settings' ),
-            'dashicons-admin-generic',
+            'dashicons-airplane',
             80
         );
 
