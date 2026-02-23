@@ -158,7 +158,7 @@ class ArticleWriter {
             'messages'    => array(
                 array(
                     'role'    => 'system',
-                    'content' => "Du er en ekspert på skrivestil-analyse. Analyser tekstene og beskriv skrivestilen kort og presist på {$language}. Fokuser på: tone, setningslengde, ordvalg, bruk av virkemidler, perspektiv, og overordnet stemme. Svaret skal kunne brukes som instruksjon til en AI for å etterligne stilen.",
+                    'content' => "Du er en ekspert på skrivestil-analyse. Analyser tekstene og beskriv skrivestilen kort og presist på {$language}. Fokuser på: tone, setningslengde, ordvalg, bruk av virkemidler, perspektiv, og overordnet stemme. Svaret skal kunne brukes som instruksjon til en AI for å etterligne stilen. Svar med REN TEKST uten markdown-formatering — ingen **, #, eller andre formateringstegn.",
                 ),
                 array(
                     'role'    => 'user',
@@ -232,7 +232,11 @@ class ArticleWriter {
             $prompt .= "Du spesialiserer deg på {$niche}. ";
         }
 
-        $prompt .= "Skrivestilen din er {$style}. ";
+        if ( strlen( $style ) > 100 ) {
+            $prompt .= "\n\nSkrivestil du skal etterligne:\n{$style}\n\n";
+        } else {
+            $prompt .= "Skrivestilen din er {$style}. ";
+        }
         $prompt .= "Artikkelen skal være mellom {$min_words} og {$max_words} ord. ";
         $prompt .= "Bruk HTML-formatering (<h2>, <h3>, <p>, <strong>, <em>, <ul>, <li>) for innholdet. ";
         $prompt .= "Ikke bruk <h1> da det brukes som tittel av WordPress. ";
