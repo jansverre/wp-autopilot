@@ -3,7 +3,7 @@
  * Plugin Name:       WP Autopilot
  * Plugin URI:        https://github.com/jansverre/wp-autopilot
  * Description:       AI-powered content automation — fetches news from RSS feeds, writes articles via OpenRouter, generates featured images with fal.ai, and publishes to WordPress on autopilot.
- * Version:           1.2.0
+ * Version:           1.2.5
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Jan Sverre Bauge
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'WPA_VERSION', '1.2.0' );
+define( 'WPA_VERSION', '1.2.5' );
 define( 'WPA_PLUGIN_FILE', __FILE__ );
 define( 'WPA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WPA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -39,6 +39,13 @@ $wpa_update_checker = PucFactory::buildUpdateChecker(
 
 // Use GitHub releases as the source for updates.
 $wpa_update_checker->getVcsApi()->enableReleaseAssets();
+
+// GitHub API auth token avoids rate limiting (60/h → 5000/h).
+// A token with NO scopes/permissions is sufficient for public repos.
+$wpa_github_token = get_option( 'wpa_github_token', '' );
+if ( ! empty( $wpa_github_token ) ) {
+    $wpa_update_checker->setAuthentication( $wpa_github_token );
+}
 
 /**
  * Autoloader for WPAutopilot classes.
@@ -84,6 +91,9 @@ register_deactivation_hook( __FILE__, function () {
  * Bootstrap the plugin.
  */
 add_action( 'plugins_loaded', function () {
+    // Load translations.
+    load_plugin_textdomain( 'wp-autopilot', false, dirname( WPA_PLUGIN_BASENAME ) . '/languages' );
+
     // Load settings helper early.
     \WPAutopilot\Includes\Settings::init();
 
@@ -113,7 +123,7 @@ add_action( 'plugins_loaded', function () {
         }
     } );
 
-    // Facebook-deling for planlagte poster (future → publish).
+    // Facebook sharing for scheduled posts (future → publish).
     add_action( 'transition_post_status', function ( $new_status, $old_status, $post ) {
         if ( $new_status !== 'publish' || $old_status !== 'future' ) {
             return;
@@ -123,7 +133,7 @@ add_action( 'plugins_loaded', function () {
             return;
         }
 
-        // Sjekk at dette er en autopilot-artikkel (finnes i wpa_seen_articles).
+        // Check that this is an autopilot article (exists in wpa_seen_articles).
         global $wpdb;
         $seen_table = $wpdb->prefix . 'wpa_seen_articles';
         $is_autopilot = $wpdb->get_var( $wpdb->prepare(
@@ -135,7 +145,7 @@ add_action( 'plugins_loaded', function () {
             return;
         }
 
-        // Hindre dobbeltdeling.
+        // Prevent double sharing.
         if ( get_post_meta( $post->ID, '_wpa_fb_shared', true ) ) {
             return;
         }

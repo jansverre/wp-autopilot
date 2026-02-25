@@ -23,7 +23,7 @@ class ImageGenerator {
     public function generate( $prompt, $post_title, $image_alt = '', $image_caption = '' ) {
         $api_key = Settings::get( 'fal_api_key' );
         if ( empty( $api_key ) ) {
-            Logger::error( 'fal.ai API-nøkkel mangler.' );
+            Logger::error( __( 'fal.ai API key is missing.', 'wp-autopilot' ) );
             return null;
         }
 
@@ -54,7 +54,8 @@ class ImageGenerator {
         $attachment_id = $this->upload_to_media( $image_url, $post_title, $image_alt, $image_caption );
 
         if ( $attachment_id ) {
-            Logger::info( sprintf( 'Bilde generert og lastet opp (ID: %d) for "%s".', $attachment_id, $post_title ) );
+            /* translators: 1: attachment ID, 2: post title */
+            Logger::info( sprintf( __( 'Image generated and uploaded (ID: %1$d) for "%2$s".', 'wp-autopilot' ), $attachment_id, $post_title ) );
         }
 
         return $attachment_id;
@@ -73,7 +74,7 @@ class ImageGenerator {
     public function generate_inline( $prompt, $alt_text, $caption, $post_title, $index = 1 ) {
         $api_key = Settings::get( 'fal_api_key' );
         if ( empty( $api_key ) ) {
-            Logger::error( 'fal.ai API-nøkkel mangler (inline-bilde).' );
+            Logger::error( __( 'fal.ai API key is missing (inline image).', 'wp-autopilot' ) );
             return array( 'attachment_id' => null, 'model' => '' );
         }
 
@@ -99,7 +100,8 @@ class ImageGenerator {
         $attachment_id = $this->upload_to_media( $image_url, $filename_title, $alt_text, $caption );
 
         if ( $attachment_id ) {
-            Logger::info( sprintf( 'Inline-bilde %d generert (ID: %d) for "%s".', $index, $attachment_id, $post_title ) );
+            /* translators: 1: image index, 2: attachment ID, 3: post title */
+            Logger::info( sprintf( __( 'Inline image %1$d generated (ID: %2$d) for "%3$s".', 'wp-autopilot' ), $index, $attachment_id, $post_title ) );
         }
 
         return array( 'attachment_id' => $attachment_id, 'model' => $model );
@@ -128,7 +130,7 @@ class ImageGenerator {
         ) );
 
         if ( is_wp_error( $response ) ) {
-            Logger::error( 'fal.ai queue-feil: ' . $response->get_error_message() );
+            Logger::error( __( 'fal.ai queue error: ', 'wp-autopilot' ) . $response->get_error_message() );
             return null;
         }
 
@@ -136,7 +138,7 @@ class ImageGenerator {
         $request_id = $data['request_id'] ?? null;
 
         if ( ! $request_id ) {
-            Logger::error( 'Fikk ikke request_id fra fal.ai.', $data );
+            Logger::error( __( 'Did not receive request_id from fal.ai.', 'wp-autopilot' ), $data );
             return null;
         }
 
@@ -182,7 +184,7 @@ class ImageGenerator {
                 );
 
                 if ( is_wp_error( $result_response ) ) {
-                    Logger::error( 'Kunne ikke hente fal.ai-resultat: ' . $result_response->get_error_message() );
+                    Logger::error( __( 'Could not fetch fal.ai result: ', 'wp-autopilot' ) . $result_response->get_error_message() );
                     return null;
                 }
 
@@ -191,12 +193,13 @@ class ImageGenerator {
             }
 
             if ( $status === 'FAILED' ) {
-                Logger::error( 'fal.ai bildegenerering feilet.', $data );
+                Logger::error( __( 'fal.ai image generation failed.', 'wp-autopilot' ), $data );
                 return null;
             }
         }
 
-        Logger::error( 'fal.ai timeout etter ' . self::MAX_POLLS . ' polls.' );
+        /* translators: %d: number of poll attempts */
+        Logger::error( sprintf( __( 'fal.ai timeout after %d polls.', 'wp-autopilot' ), self::MAX_POLLS ) );
         return null;
     }
 
@@ -219,7 +222,7 @@ class ImageGenerator {
         // Download to temp file.
         $tmp = download_url( $url, 60 );
         if ( is_wp_error( $tmp ) ) {
-            Logger::error( 'Kunne ikke laste ned bilde: ' . $tmp->get_error_message() );
+            Logger::error( __( 'Could not download image: ', 'wp-autopilot' ) . $tmp->get_error_message() );
             return null;
         }
 
@@ -234,7 +237,7 @@ class ImageGenerator {
 
         if ( is_wp_error( $attachment_id ) ) {
             @unlink( $tmp );
-            Logger::error( 'Kunne ikke laste opp bilde til mediebiblioteket: ' . $attachment_id->get_error_message() );
+            Logger::error( __( 'Could not upload image to media library: ', 'wp-autopilot' ) . $attachment_id->get_error_message() );
             return null;
         }
 

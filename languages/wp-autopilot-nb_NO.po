@@ -1,0 +1,1078 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: WP Autopilot 1.2.5\n"
+"Report-Msgid-Bugs-To: https://github.com/jansverre/wp-autopilot/issues\n"
+"POT-Creation-Date: 2026-02-25 21:22\n"
+"PO-Revision-Date: 2026-02-25 21:22\n"
+"Last-Translator: Jan Sverre Bauge\n"
+"Language-Team: Norwegian Bokmål\n"
+"Language: nb_NO\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Domain: wp-autopilot\n"
+"X-Generator: WP Autopilot i18n script\n"
+
+#: includes/class-publisher.php:132
+msgid ", scheduled: %s"
+msgstr ", planlagt: %s"
+
+#: admin/views/settings.php:106
+msgid "0 = deterministic, 2 = very creative. Default: 0.7"
+msgstr "0 = deterministisk, 2 = veldig kreativ. Standard: 0.7"
+
+#: admin/views/settings.php:53
+msgid "AI Model"
+msgstr "AI-modell"
+
+#: admin/views/settings.php:50
+msgid "AI Settings"
+msgstr "AI-innstillinger"
+
+#: admin/views/settings.php:500
+msgid "AI-generated poster"
+msgstr "AI-generert poster"
+
+#: admin/views/settings.php:25
+msgid "API Keys"
+msgstr "API-nøkler"
+
+#: includes/class-article-writer.php:184
+msgid "API error: "
+msgstr "API-feil: "
+
+#: admin/class-admin.php:339 admin/class-admin.php:373
+#: admin/class-admin.php:395 admin/class-admin.php:420
+#: admin/class-admin.php:438 admin/class-admin.php:454
+#: admin/class-admin.php:469 admin/class-admin.php:501
+#: admin/class-admin.php:540
+msgid "Access denied."
+msgstr "Ingen tilgang."
+
+#: admin/views/settings.php:527
+msgid "Action"
+msgstr "Handling"
+
+#: admin/views/feeds.php:35 admin/views/status.php:97
+msgid "Actions"
+msgstr "Handlinger"
+
+#: admin/class-admin.php:128 admin/views/feeds.php:55
+msgid "Activate"
+msgstr "Aktiver"
+
+#: admin/class-admin.php:126 admin/views/feeds.php:50
+msgid "Active"
+msgstr "Aktiv"
+
+#: admin/views/feeds.php:28
+msgid "Active Feeds"
+msgstr "Aktive feeds"
+
+#: admin/views/feeds.php:21
+msgid "Add"
+msgstr "Legg til"
+
+#: admin/views/feeds.php:17
+msgid "Add Feed"
+msgstr "Legg til feed"
+
+#: admin/views/settings.php:187
+msgid "Add link to the original article"
+msgstr "Legg til lenke til originalartikkelen"
+
+#: admin/views/settings.php:349
+msgid "After every H2"
+msgstr "Etter hver H2"
+
+#: admin/views/settings.php:350
+msgid "After every other H2"
+msgstr "Etter annenhver H2"
+
+#: admin/views/settings.php:351
+msgid "After every third H2"
+msgstr "Etter hver tredje H2"
+
+#: admin/class-admin.php:138
+msgid "Analysis complete. Click \"Save writing style\" to keep it."
+msgstr "Analyse fullført. Klikk «Lagre skrivestil» for å beholde den."
+
+#: admin/views/settings.php:152
+msgid "Analyze Writing Style"
+msgstr "Analyser skrivestil"
+
+#: admin/class-admin.php:137
+msgid "Analyzing writing style..."
+msgstr "Analyserer skrivestil..."
+
+#: admin/class-admin.php:124
+msgid "Are you sure you want to delete this feed?"
+msgstr "Er du sikker på at du vil slette denne feeden?"
+
+#: admin/views/status.php:118
+msgid "Article"
+msgstr "Artikkel"
+
+#: includes/class-article-writer.php:109
+msgid "Article generated: \"%s\""
+msgstr "Artikkel generert: «%s»"
+
+#: admin/views/status.php:58
+msgid "Articles Today"
+msgstr "Artikler i dag"
+
+#: admin/views/settings.php:525
+msgid "Author"
+msgstr "Forfatter"
+
+#: admin/views/settings.php:223
+msgid "Author Method"
+msgstr "Forfattermetode"
+
+#: admin/views/settings.php:520
+msgid "Author Reference Photos"
+msgstr "Forfatter-referansebilder"
+
+#: admin/views/settings.php:509
+msgid "Author in Poster"
+msgstr "Forfatter i poster"
+
+#: admin/views/settings.php:234
+msgid "Authors"
+msgstr "Forfattere"
+
+#: admin/views/settings.php:380
+msgid "Automatic Scheduling"
+msgstr "Automatisk planlegging"
+
+#: admin/views/settings.php:462
+msgid "Automatically share autopilot articles to a Facebook Page"
+msgstr "Del autopilot-artikler automatisk til en Facebook-side"
+
+#: admin/views/status.php:38
+msgid "Autopilot"
+msgstr "Autopilot"
+
+#: includes/class-cron.php:181
+msgid "Autopilot run completed. %d articles created."
+msgstr "Autopilot-kjøring fullført. %d artikler opprettet."
+
+#: includes/class-cron.php:67
+msgid "Autopilot run started."
+msgstr "Autopilot-kjøring startet."
+
+#: admin/views/status.php:86
+msgid "Avg. per Article"
+msgstr "Snitt per artikkel"
+
+#: admin/views/settings.php:364
+msgid "Choose a cheaper model for inline images to save costs."
+msgstr "Velg en billigere modell for inline-bilder for å spare kostnader."
+
+#: admin/views/settings.php:589
+msgid "Comma-separated. Articles containing these words will be filtered out."
+msgstr "Kommaseparert. Artikler som inneholder disse ordene filtreres ut."
+
+#: admin/views/settings.php:580
+msgid ""
+"Comma-separated. At least one word must appear in title/description. Leave "
+"empty to include all."
+msgstr ""
+"Kommaseparert. Minst ett ord må forekomme i tittel/beskrivelse. La stå tomt "
+"for å inkludere alle."
+
+#: admin/class-admin.php:143
+msgid "Connected:"
+msgstr "Tilkoblet:"
+
+#: admin/class-admin.php:144
+msgid "Connection error."
+msgstr "Tilkoblingsfeil."
+
+#: admin/views/settings.php:163
+msgid "Content Settings"
+msgstr "Innholdsinnstillinger"
+
+#: admin/views/status.php:160
+msgid "Context"
+msgstr "Kontekst"
+
+#: admin/views/status.php:122
+msgid "Cost"
+msgstr "Kostnad"
+
+#: admin/views/status.php:82
+msgid "Cost 30 Days"
+msgstr "Kostnad 30 dager"
+
+#: admin/views/status.php:78
+msgid "Cost 7 Days"
+msgstr "Kostnad 7 dager"
+
+#: admin/views/status.php:74
+msgid "Cost Today"
+msgstr "Kostnad i dag"
+
+#: admin/views/status.php:113
+msgid "Cost per Article (last 20)"
+msgstr "Kostnad per artikkel (siste 20)"
+
+#: includes/class-publisher.php:113
+msgid "Could not create post: "
+msgstr "Kunne ikke opprette innlegg: "
+
+#: includes/class-image-generator.php:225
+msgid "Could not download image: "
+msgstr "Kunne ikke laste ned bilde: "
+
+#: includes/class-image-generator.php:187
+msgid "Could not fetch fal.ai result: "
+msgstr "Kunne ikke hente fal.ai-resultat: "
+
+#: includes/class-cron.php:109
+msgid "Could not generate article for: \"%s\""
+msgstr "Kunne ikke generere artikkel for: «%s»"
+
+#: includes/class-article-writer.php:84
+msgid "Could not parse AI response as JSON."
+msgstr "Kunne ikke parse AI-respons som JSON."
+
+#: includes/class-feed-fetcher.php:97
+msgid "Could not parse XML from feed \"%s\"."
+msgstr "Kunne ikke parse XML fra feed «%s»."
+
+#: includes/class-image-generator.php:240
+msgid "Could not upload image to media library: "
+msgstr "Kunne ikke laste opp bilde til mediebiblioteket: "
+
+#: admin/views/settings.php:310
+msgid "Custom Image Model"
+msgstr "Egendefinert bildemodell"
+
+#: admin/views/settings.php:368
+msgid "Custom Inline Model"
+msgstr "Egendefinert inline-modell"
+
+#: admin/views/settings.php:67
+msgid "Custom Model ID"
+msgstr "Egendefinert modell-ID"
+
+#: admin/views/settings.php:400
+msgid "Daily"
+msgstr "Daglig"
+
+#: includes/class-cron.php:95
+msgid "Daily limit reached during run."
+msgstr "Daglig grense nådd under kjøring."
+
+#: includes/class-cron.php:63
+msgid "Daily limit reached. Skipping run."
+msgstr "Daglig grense nådd. Hopper over kjøring."
+
+#: admin/views/settings.php:597
+msgid "Data Management"
+msgstr "Databehandling"
+
+#: admin/class-admin.php:129 admin/views/feeds.php:55
+msgid "Deactivate"
+msgstr "Deaktiver"
+
+#: admin/views/settings.php:209
+msgid "Default Author"
+msgstr "Standard forfatter"
+
+#: admin/views/settings.php:267
+msgid "Default Category"
+msgstr "Standard kategori"
+
+#: admin/class-admin.php:130 admin/views/feeds.php:57
+msgid "Delete"
+msgstr "Slett"
+
+#: admin/views/settings.php:600
+msgid "Delete Data on Uninstall"
+msgstr "Slett data ved avinstallering"
+
+#: admin/views/settings.php:605
+msgid ""
+"Delete all settings, feeds, logs, and database tables when the plugin is "
+"uninstalled"
+msgstr ""
+"Slett alle innstillinger, feeds, logger og databasetabeller når pluginet "
+"avinstalleres"
+
+#: includes/class-image-generator.php:141
+msgid "Did not receive request_id from fal.ai."
+msgstr "Fikk ikke request_id fra fal.ai."
+
+#: admin/views/status.php:41
+msgid "Disabled"
+msgstr "Deaktivert"
+
+#: admin/views/settings.php:202
+msgid "Draft"
+msgstr "Utkast"
+
+#: includes/class-article-writer.php:78
+msgid "Empty response from OpenRouter API."
+msgstr "Tomt svar fra OpenRouter API."
+
+#: includes/class-feed-fetcher.php:86
+msgid "Empty response from feed \"%s\"."
+msgstr "Tom respons fra feed «%s»."
+
+#: admin/views/settings.php:457
+msgid "Enable Facebook Sharing"
+msgstr "Aktiver Facebook-deling"
+
+#: admin/views/settings.php:335
+msgid "Enable Inline Images"
+msgstr "Aktiver inline-bilder"
+
+#: admin/views/settings.php:388
+msgid "Enable automatic publishing"
+msgstr "Aktiver automatisk publisering"
+
+#: admin/views/settings.php:383 admin/views/status.php:41
+msgid "Enabled"
+msgstr "Aktivert"
+
+#: admin/class-admin.php:122
+msgid "Error adding feed."
+msgstr "Feil ved tillegging."
+
+#: admin/class-admin.php:139
+msgid "Error during analysis."
+msgstr "Feil under analyse."
+
+#: admin/class-admin.php:135
+msgid "Error during re-indexing."
+msgstr "Feil under re-indeksering."
+
+#: admin/class-admin.php:132
+msgid "Error during run."
+msgstr "Feil under kjøring."
+
+#: includes/class-feed-fetcher.php:79
+msgid "Error fetching feed \"%1$s\": %2$s"
+msgstr "Feil ved henting av feed «%1$s»: %2$s"
+
+#: admin/class-admin.php:141
+msgid "Error saving."
+msgstr "Feil ved lagring."
+
+#: admin/views/settings.php:399
+msgid "Every 12 Hours"
+msgstr "Hver 12. time"
+
+#: includes/class-cron.php:41
+msgid "Every 12 hours"
+msgstr "Hver 12. time"
+
+#: admin/views/settings.php:397
+msgid "Every 2 Hours"
+msgstr "Hver 2. time"
+
+#: includes/class-cron.php:33
+msgid "Every 2 hours"
+msgstr "Hver 2. time"
+
+#: admin/views/settings.php:398
+msgid "Every 6 Hours"
+msgstr "Hver 6. time"
+
+#: includes/class-cron.php:37
+msgid "Every 6 hours"
+msgstr "Hver 6. time"
+
+#: admin/views/settings.php:396
+msgid "Every Hour"
+msgstr "Hver time"
+
+#: admin/views/settings.php:584
+msgid "Exclude Keywords"
+msgstr "Ekskluder nøkkelord"
+
+#: includes/class-facebook-sharer.php:509
+msgid "Facebook API error: "
+msgstr "Facebook API-feil: "
+
+#: includes/class-facebook-sharer.php:519
+msgid "Facebook API returned %1$d: %2$s"
+msgstr "Facebook API returnerte %1$d: %2$s"
+
+#: admin/views/settings.php:470
+msgid "Facebook Page ID"
+msgstr "Facebook side-ID"
+
+#: admin/views/settings.php:454
+msgid "Facebook Sharing"
+msgstr "Facebook-deling"
+
+#: includes/class-facebook-sharer.php:253
+msgid "Facebook poster generated (ID: %1$d) for article %2$d."
+msgstr "Facebook-poster generert (ID: %1$d) for artikkel %2$d."
+
+#: includes/class-facebook-sharer.php:412
+msgid "Facebook poster: Could not download image: "
+msgstr "Facebook-poster: Kunne ikke laste ned bilde: "
+
+#: includes/class-facebook-sharer.php:375
+msgid "Facebook poster: Could not fetch fal.ai result: "
+msgstr "Facebook-poster: Kunne ikke hente fal.ai-resultat: "
+
+#: includes/class-facebook-sharer.php:427
+msgid "Facebook poster: Could not upload to media library: "
+msgstr "Facebook-poster: Kunne ikke laste opp til mediebiblioteket: "
+
+#: includes/class-facebook-sharer.php:327
+msgid "Facebook poster: Did not receive request_id from fal.ai."
+msgstr "Facebook-poster: Fikk ikke request_id fra fal.ai."
+
+#: includes/class-facebook-sharer.php:176
+msgid "Facebook poster: fal.ai API key is missing."
+msgstr "Facebook-poster: fal.ai API-nøkkel mangler."
+
+#: includes/class-facebook-sharer.php:386
+msgid "Facebook poster: fal.ai image generation failed."
+msgstr "Facebook-poster: fal.ai bildegenerering feilet."
+
+#: includes/class-facebook-sharer.php:319
+msgid "Facebook poster: fal.ai queue error: "
+msgstr "Facebook-poster: fal.ai queue-feil: "
+
+#: includes/class-facebook-sharer.php:392
+msgid "Facebook poster: fal.ai timeout after %d polls."
+msgstr "Facebook-poster: fal.ai timeout etter %d polls."
+
+#: admin/class-admin.php:526
+msgid "Facebook returned error %d: %s"
+msgstr "Facebook returnerte feil %d: %s"
+
+#: includes/class-facebook-sharer.php:125
+msgid "Facebook sharing: AI error, using excerpt. "
+msgstr "Facebook-deling: AI-feil, bruker utdrag. "
+
+#: includes/class-facebook-sharer.php:134
+msgid "Facebook sharing: AI returned %d, using excerpt."
+msgstr "Facebook-deling: AI returnerte %d, bruker utdrag."
+
+#: includes/class-facebook-sharer.php:148
+msgid "Facebook sharing: AI text generated for article %d."
+msgstr "Facebook-deling: AI-tekst generert for artikkel %d."
+
+#: includes/class-facebook-sharer.php:70
+msgid "Facebook sharing: Article %1$d shared (FB post ID: %2$s)."
+msgstr "Facebook-deling: Artikkel %1$d delt (FB post ID: %2$s)."
+
+#: includes/class-facebook-sharer.php:40
+msgid "Facebook sharing: Article %d already shared."
+msgstr "Facebook-deling: Artikkel %d allerede delt."
+
+#: includes/class-facebook-sharer.php:451
+msgid "Facebook sharing: Could not get poster URL, falling back to link post."
+msgstr ""
+"Facebook-deling: Kunne ikke hente poster-URL, faller tilbake til link-post."
+
+#: includes/class-facebook-sharer.php:33
+msgid "Facebook sharing: Missing page ID or access token."
+msgstr "Facebook-deling: Mangler side-ID eller tilgangstoken."
+
+#: includes/class-facebook-sharer.php:84
+msgid "Facebook sharing: OpenRouter API key missing, using excerpt."
+msgstr "Facebook-deling: OpenRouter API-nøkkel mangler, bruker utdrag."
+
+#: includes/class-facebook-sharer.php:58
+msgid "Facebook sharing: Poster generation failed, falling back to link post."
+msgstr ""
+"Facebook-deling: Poster-generering feilet, faller tilbake til link-post."
+
+#: admin/views/settings.php:499
+msgid "Featured image (OG scraping)"
+msgstr "Fremhevet bilde (OG-skraping)"
+
+#: admin/views/settings.php:502
+msgid ""
+"Featured image: Facebook fetches the image automatically from the article. "
+"AI poster: Generates a unique poster with fal.ai."
+msgstr ""
+"Fremhevet bilde: Facebook henter bildet automatisk fra artikkelen. AI-"
+"poster: Genererer en unik poster med fal.ai."
+
+#: admin/class-admin.php:121
+msgid "Feed added."
+msgstr "Feed lagt til."
+
+#: includes/class-feed-fetcher.php:57
+msgid "Feed fetch completed: %d new articles found."
+msgstr "Feed-henting fullført: %d nye artikler funnet."
+
+#: admin/class-admin.php:64 admin/class-admin.php:65
+#: admin/partials/header.php:15
+msgid "Feeds"
+msgstr "Feeds"
+
+#: admin/views/settings.php:475
+msgid ""
+"Find your Page ID under Settings &rarr; About on your Facebook Page, or "
+"visit <a href=\"https://www.facebook.com/pages/?category=your_pages\" "
+"target=\"_blank\" rel=\"noopener\">facebook.com/pages</a>."
+msgstr ""
+"Finn din side-ID under Innstillinger &rarr; Om på Facebook-siden din, eller "
+"besøk <a href=\"https://www.facebook.com/pages/?category=your_pages\" "
+"target=\"_blank\" rel=\"noopener\">facebook.com/pages</a>."
+
+#: admin/views/settings.php:346
+msgid "Frequency"
+msgstr "Frekvens"
+
+#: admin/views/settings.php:429
+msgid "From"
+msgstr "Fra"
+
+#: admin/views/settings.php:289
+msgid "Generate Images"
+msgstr "Generer bilder"
+
+#: admin/views/settings.php:294
+msgid "Generate featured image with AI"
+msgstr "Generer fremhevet bilde med AI"
+
+#: admin/views/settings.php:340
+msgid "Generate images within the article text at H2 sections"
+msgstr "Generer bilder i artikkelteksten ved H2-seksjoner"
+
+#: admin/views/settings.php:42
+msgid ""
+"Get yours at <a href=\"https://fal.ai/dashboard/keys\" target=\"_blank\" "
+"rel=\"noopener\">fal.ai/dashboard/keys</a>"
+msgstr ""
+"Hent din på <a href=\"https://fal.ai/dashboard/keys\" target=\"_blank\" "
+"rel=\"noopener\">fal.ai/dashboard/keys</a>"
+
+#: admin/views/settings.php:33
+msgid ""
+"Get yours at <a href=\"https://openrouter.ai/keys\" target=\"_blank\" "
+"rel=\"noopener\">openrouter.ai/keys</a>"
+msgstr ""
+"Hent din på <a href=\"https://openrouter.ai/keys\" target=\"_blank\" "
+"rel=\"noopener\">openrouter.ai/keys</a>"
+
+#: admin/views/settings.php:299
+msgid "Image Model (fal.ai)"
+msgstr "Bildemodell (fal.ai)"
+
+#: admin/views/settings.php:286
+msgid "Image Settings"
+msgstr "Bildeinnstillinger"
+
+#: admin/views/settings.php:319
+msgid "Image Style Prefix"
+msgstr "Bildestil-prefiks"
+
+#: admin/views/settings.php:496
+msgid "Image Type"
+msgstr "Bildetype"
+
+#: includes/class-image-generator.php:58
+msgid "Image generated and uploaded (ID: %1$d) for \"%2$s\"."
+msgstr "Bilde generert og lastet opp (ID: %1$d) for «%2$s»."
+
+#: admin/class-admin.php:127 admin/views/feeds.php:50
+msgid "Inactive"
+msgstr "Inaktiv"
+
+#: admin/views/settings.php:575
+msgid "Include Keywords"
+msgstr "Inkluder nøkkelord"
+
+#: admin/views/settings.php:182
+msgid "Include Source Link"
+msgstr "Inkluder kildelenke"
+
+#: admin/views/status.php:66
+msgid "Indexed Articles"
+msgstr "Indekserte artikler"
+
+#: admin/views/settings.php:356
+msgid "Inline Image Model"
+msgstr "Inline-bildemodell"
+
+#: admin/views/settings.php:332
+msgid "Inline Images"
+msgstr "Inline-bilder"
+
+#: includes/class-image-generator.php:104
+msgid "Inline image %1$d generated (ID: %2$d) for \"%3$s\"."
+msgstr "Inline-bilde %1$d generert (ID: %2$d) for «%3$s»."
+
+#: admin/class-admin.php:476 admin/class-admin.php:547
+msgid "Invalid author."
+msgstr "Ugyldig forfatter."
+
+#: admin/views/settings.php:572
+msgid "Keyword Filtering"
+msgstr "Nøkkelordfiltrering"
+
+#: admin/views/settings.php:76
+msgid "Language"
+msgstr "Språk"
+
+#: admin/views/settings.php:607
+msgid ""
+"Leave this off if you plan to reinstall or update manually. Data is "
+"preserved between installations."
+msgstr ""
+"La dette stå av hvis du planlegger å reinstallere eller oppdatere manuelt. "
+"Data bevares mellom installasjoner."
+
+#: admin/views/status.php:158
+msgid "Level"
+msgstr "Nivå"
+
+#: admin/views/settings.php:426
+msgid "Limit publishing to work hours"
+msgstr "Begrens publisering til arbeidstid"
+
+#: admin/views/status.php:152
+msgid "Log (last 50 entries)"
+msgstr "Logg (siste 50 innslag)"
+
+#: admin/views/settings.php:413
+msgid "Max Articles per Day"
+msgstr "Maks artikler per dag"
+
+#: admin/views/settings.php:405
+msgid "Max Articles per Run"
+msgstr "Maks artikler per kjøring"
+
+#: admin/views/settings.php:174
+msgid "Maximum Word Count"
+msgstr "Maksimum antall ord"
+
+#: admin/views/status.php:159
+msgid "Message"
+msgstr "Melding"
+
+#: admin/views/settings.php:166
+msgid "Minimum Word Count"
+msgstr "Minimum antall ord"
+
+#: admin/views/feeds.php:32
+msgid "Name"
+msgstr "Navn"
+
+#: admin/views/feeds.php:19
+msgid "Name (optional)"
+msgstr "Navn (valgfritt)"
+
+#: admin/class-admin.php:133
+msgid "Network error or timeout."
+msgstr "Nettverksfeil eller timeout."
+
+#: admin/class-admin.php:123
+msgid "Network error."
+msgstr "Nettverksfeil."
+
+#: admin/class-admin.php:517
+msgid "Network error: "
+msgstr "Nettverksfeil: "
+
+#: admin/views/status.php:46
+msgid "Next Run"
+msgstr "Neste kjøring"
+
+#: admin/views/settings.php:84
+msgid "Niche / Topic"
+msgstr "Nisje / Emne"
+
+#: admin/class-admin.php:125 admin/views/feeds.php:41
+msgid "No feeds added yet."
+msgstr "Ingen feeds lagt til ennå."
+
+#: includes/class-feed-fetcher.php:21
+msgid "No feeds configured."
+msgstr "Ingen feeds konfigurert."
+
+#: admin/class-admin.php:136 admin/views/status.php:166
+msgid "No log entries yet."
+msgstr "Ingen logg-innslag ennå."
+
+#: includes/class-cron.php:78
+msgid "No new articles to process."
+msgstr "Ingen nye artikler å behandle."
+
+#: includes/class-article-writer.php:137
+msgid "No published posts found for this author."
+msgstr "Ingen publiserte innlegg funnet for denne forfatteren."
+
+#: admin/views/status.php:52
+msgid "Not scheduled"
+msgstr "Ikke planlagt"
+
+#: admin/views/settings.php:342
+msgid ""
+"Note: Each inline image takes 6&ndash;60 seconds. With many images per "
+"article, the run can take a long time."
+msgstr ""
+"Merk: Hvert inline-bilde tar 6&ndash;60 sekunder. Med mange bilder per "
+"artikkel kan kjøringen ta lang tid."
+
+#: admin/views/settings.php:144
+msgid "Number of Articles to Analyze"
+msgstr "Antall artikler å analysere"
+
+#: admin/views/settings.php:28
+msgid "OpenRouter API Key"
+msgstr "OpenRouter API-nøkkel"
+
+#: includes/class-article-writer.php:61
+msgid "OpenRouter API error: "
+msgstr "OpenRouter API-feil: "
+
+#: includes/class-article-writer.php:22 includes/class-article-writer.php:124
+msgid "OpenRouter API key is missing."
+msgstr "OpenRouter API-nøkkel mangler."
+
+#: includes/class-article-writer.php:72
+msgid "OpenRouter API returned %1$d: %2$s"
+msgstr "OpenRouter API returnerte %1$d: %2$s"
+
+#: includes/class-cron.php:57
+msgid "Outside work hours. Skipping run."
+msgstr "Utenfor arbeidstid. Hopper over kjøring."
+
+#: admin/views/settings.php:372
+msgid "Overrides the dropdown selection"
+msgstr "Overstyrer nedtrekksvalget"
+
+#: admin/views/settings.php:72 admin/views/settings.php:315
+msgid "Overrides the selection above. Leave empty to use the dropdown."
+msgstr "Overstyrer valget ovenfor. La stå tomt for å bruke nedtrekkslisten."
+
+#: admin/views/settings.php:479
+msgid "Page Access Token"
+msgstr "Side-tilgangstoken"
+
+#: admin/views/settings.php:484
+msgid ""
+"Page Access Token with <code>pages_manage_posts</code> and "
+"<code>pages_read_engagement</code> permissions. Generate via <a "
+"href=\"https://developers.facebook.com/tools/explorer/\" target=\"_blank\" "
+"rel=\"noopener\">Graph API Explorer</a>."
+msgstr ""
+"Side-tilgangstoken med <code>pages_manage_posts</code> og "
+"<code>pages_read_engagement</code> tillatelser. Generer via <a "
+"href=\"https://developers.facebook.com/tools/explorer/\" target=\"_blank\" "
+"rel=\"noopener\">Graph API Explorer</a>."
+
+#: admin/views/settings.php:204
+msgid "Pending Review"
+msgstr "Venter på gjennomgang"
+
+#: admin/views/settings.php:526
+msgid "Photo"
+msgstr "Bilde"
+
+#: admin/class-admin.php:142 admin/class-admin.php:508
+msgid "Please enter Page ID and access token."
+msgstr "Fyll inn side-ID og tilgangstoken."
+
+#: admin/views/settings.php:199
+msgid "Post Status"
+msgstr "Innleggsstatus"
+
+#: includes/class-publisher.php:137
+msgid "Post created: \"%1$s\" (ID: %2$d, status: %3$s%4$s)"
+msgstr "Innlegg opprettet: «%1$s» (ID: %2$d, status: %3$s%4$s)"
+
+#: admin/views/settings.php:324
+msgid "Prepended to the AI-generated image prompt."
+msgstr "Legges foran AI-generert bilde-prompt."
+
+#: admin/views/settings.php:203
+msgid "Published"
+msgstr "Publisert"
+
+#: admin/views/settings.php:196
+msgid "Publishing Settings"
+msgstr "Publiseringsinnstillinger"
+
+#: admin/views/settings.php:227
+msgid "Random"
+msgstr "Tilfeldig"
+
+#: admin/views/status.php:103
+msgid "Re-index Internal Links"
+msgstr "Re-indekser interne lenker"
+
+#: admin/class-admin.php:444
+msgid "Re-indexing completed."
+msgstr "Re-indeksering fullført."
+
+#: admin/class-admin.php:134
+msgid "Re-indexing..."
+msgstr "Re-indekserer..."
+
+#: admin/views/status.php:153
+msgid "Refresh Log"
+msgstr "Oppdater logg"
+
+#: admin/views/settings.php:559
+msgid "Remove"
+msgstr "Fjern"
+
+#: admin/views/settings.php:228
+msgid "Round Robin (rotating)"
+msgstr "Rundgang (roterende)"
+
+#: admin/views/status.php:100
+msgid "Run Autopilot Now"
+msgstr "Kjør autopilot nå"
+
+#: admin/views/settings.php:393
+msgid "Run Interval"
+msgstr "Kjøringsintervall"
+
+#: admin/class-admin.php:428
+msgid "Run completed."
+msgstr "Kjøring fullført."
+
+#: admin/class-admin.php:131
+msgid "Running autopilot... This may take a few minutes."
+msgstr "Kjører autopilot... Dette kan ta noen minutter."
+
+#: admin/views/settings.php:613
+msgid "Save Settings"
+msgstr "Lagre innstillinger"
+
+#: admin/views/settings.php:153
+msgid "Save Writing Style"
+msgstr "Lagre skrivestil"
+
+#: admin/views/settings.php:126
+msgid "Select Author"
+msgstr "Velg forfatter"
+
+#: admin/views/settings.php:140
+msgid ""
+"Select an author and click &laquo;Analyze&raquo; to generate a writing style"
+" description automatically, or enter one manually."
+msgstr ""
+"Velg en forfatter og klikk &laquo;Analyser&raquo; for å generere en "
+"skrivestilbeskrivelse automatisk, eller skriv inn en manuelt."
+
+#: admin/class-admin.php:145
+msgid "Select author photo"
+msgstr "Velg forfatter-foto"
+
+#: admin/views/settings.php:263
+msgid ""
+"Select which authors to use. For weighted distribution, the weight numbers "
+"indicate relative proportion."
+msgstr ""
+"Velg hvilke forfattere som skal brukes. For vektet fordeling angir "
+"vekttallene relativ andel."
+
+#: admin/class-admin.php:55 admin/class-admin.php:56
+#: admin/partials/header.php:11
+msgid "Settings"
+msgstr "Innstillinger"
+
+#: admin/class-admin.php:329
+msgid "Settings saved."
+msgstr "Innstillinger lagret."
+
+#: admin/views/settings.php:226
+msgid "Single (default author)"
+msgstr "Enkelt (standard forfatter)"
+
+#: admin/views/settings.php:110
+msgid "Site Identity"
+msgstr "Nettstedsidentitet"
+
+#: admin/class-admin.php:73 admin/class-admin.php:74
+#: admin/partials/header.php:19 admin/views/feeds.php:34
+msgid "Status"
+msgstr "Status"
+
+#: admin/views/settings.php:101
+msgid "Temperature"
+msgstr "Temperatur"
+
+#: admin/views/settings.php:490
+msgid "Test Connection"
+msgstr "Test tilkobling"
+
+#: admin/views/settings.php:446
+msgid ""
+"The autopilot only publishes within this time window (WordPress timezone)."
+msgstr ""
+"Autopiloten publiserer kun innenfor dette tidsvinduet (WordPress-tidssone)."
+
+#: admin/views/status.php:117 admin/views/status.php:157
+msgid "Time"
+msgstr "Tid"
+
+#: admin/views/status.php:120
+msgid "Tokens In"
+msgstr "Tokens inn"
+
+#: admin/views/status.php:121
+msgid "Tokens Out"
+msgstr "Tokens ut"
+
+#: admin/views/status.php:62
+msgid "Total Published"
+msgstr "Totalt publisert"
+
+#: admin/views/status.php:90
+msgid "Total Tokens"
+msgstr "Totalt tokens"
+
+#: admin/views/status.php:119
+msgid "Types"
+msgstr "Typer"
+
+#: admin/views/feeds.php:33
+msgid "URL"
+msgstr "URL"
+
+#: admin/class-admin.php:120 admin/class-admin.php:346
+msgid "URL is required."
+msgstr "URL er påkrevd."
+
+#: includes/class-article-writer.php:191
+msgid "Unknown API error"
+msgstr "Ukjent API-feil"
+
+#: admin/class-admin.php:524 includes/class-article-writer.php:70
+#: includes/class-facebook-sharer.php:517
+msgid "Unknown error"
+msgstr "Ukjent feil"
+
+#: admin/class-admin.php:529
+msgid "Unknown page"
+msgstr "Ukjent side"
+
+#: admin/views/settings.php:557
+msgid "Upload"
+msgstr "Last opp"
+
+#: admin/views/settings.php:521
+msgid ""
+"Upload a portrait photo for each author. The photo is used as a reference "
+"for the AI poster."
+msgstr ""
+"Last opp et portrettbilde for hver forfatter. Bildet brukes som referanse "
+"for AI-posteren."
+
+#: admin/class-admin.php:146
+msgid "Use this image"
+msgstr "Bruk dette bildet"
+
+#: admin/views/settings.php:97
+msgid "Used for authors without a custom writing style analysis."
+msgstr "Brukes for forfattere uten egendefinert skrivestilanalyse."
+
+#: admin/views/settings.php:219
+msgid "Used when author method is set to &laquo;Single&raquo;."
+msgstr "Brukes når forfattermetode er satt til &laquo;Enkelt&raquo;."
+
+#: admin/views/settings.php:229
+msgid "Weighted Distribution"
+msgstr "Vektet fordeling"
+
+#: admin/views/settings.php:421
+msgid "Work Hours"
+msgstr "Arbeidstid"
+
+#: admin/views/settings.php:138
+msgid "Writing Style"
+msgstr "Skrivestil"
+
+#: admin/views/settings.php:92
+msgid "Writing Style (global fallback)"
+msgstr "Skrivestil (global reserve)"
+
+#: admin/views/settings.php:122
+msgid "Writing Style per Author"
+msgstr "Skrivestil per forfatter"
+
+#: admin/class-admin.php:140 admin/class-admin.php:564
+msgid "Writing style saved."
+msgstr "Skrivestil lagret."
+
+#: admin/views/settings.php:314
+msgid "e.g. fal-ai/stable-diffusion-v35-large"
+msgstr "f.eks. fal-ai/stable-diffusion-v35-large"
+
+#: admin/views/settings.php:71
+msgid "e.g. meta-llama/llama-3-70b-instruct"
+msgstr "f.eks. meta-llama/llama-3-70b-instruct"
+
+#: admin/views/settings.php:588
+msgid "e.g. sports, entertainment"
+msgstr "f.eks. sport, underholdning"
+
+#: admin/views/settings.php:579
+msgid "e.g. technology, AI, climate"
+msgstr "f.eks. teknologi, AI, klima"
+
+#: admin/views/settings.php:88
+msgid "e.g. technology, health, finance"
+msgstr "f.eks. teknologi, helse, finans"
+
+#: admin/views/settings.php:37
+msgid "fal.ai API Key"
+msgstr "fal.ai API-nøkkel"
+
+#: includes/class-image-generator.php:77
+msgid "fal.ai API key is missing (inline image)."
+msgstr "fal.ai API-nøkkel mangler (inline-bilde)."
+
+#: includes/class-image-generator.php:26
+msgid "fal.ai API key is missing."
+msgstr "fal.ai API-nøkkel mangler."
+
+#: includes/class-image-generator.php:196
+msgid "fal.ai image generation failed."
+msgstr "fal.ai bildegenerering feilet."
+
+#: includes/class-image-generator.php:133
+msgid "fal.ai queue error: "
+msgstr "fal.ai queue-feil: "
+
+#: includes/class-image-generator.php:202
+msgid "fal.ai timeout after %d polls."
+msgstr "fal.ai timeout etter %d polls."
+
+#: admin/views/settings.php:437
+msgid "to"
+msgstr "til"
+
+#: admin/views/settings.php:256
+msgid "weight:"
+msgstr "vekt:"
+
+#: admin/views/settings.php:274
+msgid "— Use AI suggestion —"
+msgstr "— Bruk AI-forslag —"
+
+#: admin/views/settings.php:0
+msgid "GitHub Token (updates)"
+msgstr "GitHub-token (oppdateringer)"
+
+#: admin/views/settings.php:0
+msgid ""
+"Optional. A GitHub personal access token with <strong>no "
+"permissions</strong> (public repo). Avoids API rate limiting for update "
+"checks. Create one at <a href=\"https://github.com/settings/tokens/new\" "
+"target=\"_blank\" rel=\"noopener\">github.com/settings/tokens</a>."
+msgstr ""
+"Valgfritt. Et GitHub personal access token uten <strong>tillatelser</strong>"
+" (offentlig repo). Unngår API-ratebegrensning for oppdateringssjekker. "
+"Opprett en på <a href=\"https://github.com/settings/tokens/new\" "
+"target=\"_blank\" rel=\"noopener\">github.com/settings/tokens</a>."

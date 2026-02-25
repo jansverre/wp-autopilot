@@ -30,15 +30,15 @@ class Cron {
     public function add_schedules( $schedules ) {
         $schedules['every_2_hours'] = array(
             'interval' => 2 * HOUR_IN_SECONDS,
-            'display'  => 'Hver 2. time',
+            'display'  => __( 'Every 2 hours', 'wp-autopilot' ),
         );
         $schedules['every_6_hours'] = array(
             'interval' => 6 * HOUR_IN_SECONDS,
-            'display'  => 'Hver 6. time',
+            'display'  => __( 'Every 6 hours', 'wp-autopilot' ),
         );
         $schedules['every_12_hours'] = array(
             'interval' => 12 * HOUR_IN_SECONDS,
-            'display'  => 'Hver 12. time',
+            'display'  => __( 'Every 12 hours', 'wp-autopilot' ),
         );
         return $schedules;
     }
@@ -54,17 +54,17 @@ class Cron {
 
         // Check work hours (skip for manual runs).
         if ( ! defined( 'WPA_MANUAL_RUN' ) && ! $this->is_within_work_hours() ) {
-            Logger::info( 'Utenfor arbeidstid. Hopper over kjøring.' );
+            Logger::info( __( 'Outside work hours. Skipping run.', 'wp-autopilot' ) );
             return;
         }
 
         // Check daily limit.
         if ( $this->daily_count() >= (int) Settings::get( 'max_per_day', 10 ) ) {
-            Logger::info( 'Daglig grense nådd. Hopper over kjøring.' );
+            Logger::info( __( 'Daily limit reached. Skipping run.', 'wp-autopilot' ) );
             return;
         }
 
-        Logger::info( 'Autopilot-kjøring startet.' );
+        Logger::info( __( 'Autopilot run started.', 'wp-autopilot' ) );
 
         $fetcher   = new FeedFetcher();
         $writer    = new ArticleWriter();
@@ -75,7 +75,7 @@ class Cron {
         $items = $fetcher->fetch_new_items();
 
         if ( empty( $items ) ) {
-            Logger::info( 'Ingen nye artikler å behandle.' );
+            Logger::info( __( 'No new articles to process.', 'wp-autopilot' ) );
             return;
         }
 
@@ -92,7 +92,7 @@ class Cron {
         foreach ( $items as $item ) {
             // Re-check daily limit for each item.
             if ( $this->daily_count() >= $max_per_day ) {
-                Logger::info( 'Daglig grense nådd under kjøring.' );
+                Logger::info( __( 'Daily limit reached during run.', 'wp-autopilot' ) );
                 break;
             }
 
@@ -105,7 +105,8 @@ class Cron {
             // Generate article with AI (passing author_id for per-author style).
             $article = $writer->write( $item, $related, $author_id );
             if ( ! $article ) {
-                Logger::warning( sprintf( 'Kunne ikke generere artikkel for: "%s"', $item['title'] ) );
+                /* translators: %s: article title */
+                Logger::warning( sprintf( __( 'Could not generate article for: "%s"', 'wp-autopilot' ), $item['title'] ) );
                 $index++;
                 continue;
             }
@@ -165,7 +166,7 @@ class Cron {
                 // Update cost records with the actual post_id.
                 $this->update_cost_post_id( $post_id, $article, $image_id, $inline_images );
 
-                // Facebook-deling (kun for umiddelbart publiserte artikler).
+                // Facebook sharing (only for immediately published articles).
                 if ( $scheduled_date === null && Settings::get( 'fb_enabled' ) ) {
                     $fb = new FacebookSharer();
                     $fb->share( $post_id, $article, $author_id );
@@ -176,7 +177,8 @@ class Cron {
             $index++;
         }
 
-        Logger::info( sprintf( 'Autopilot-kjøring fullført. %d artikler opprettet.', $published ) );
+        /* translators: %d: number of articles created */
+        Logger::info( sprintf( __( 'Autopilot run completed. %d articles created.', 'wp-autopilot' ), $published ) );
     }
 
     /**
@@ -219,8 +221,8 @@ class Cron {
         global $wpdb;
         $table = $wpdb->prefix . 'wpa_costs';
 
-        // fb_text og fb_poster logges allerede med post_id i FacebookSharer,
-        // men denne metoden fanger opp eventuelle som ble logget med null.
+        // fb_text and fb_poster are already logged with post_id in FacebookSharer,
+        // but this method catches any that were logged with null.
         foreach ( array( 'fb_text', 'fb_poster' ) as $type ) {
             $wpdb->query( $wpdb->prepare(
                 "UPDATE {$table} SET post_id = %d WHERE post_id IS NULL AND type = %s ORDER BY id DESC LIMIT 1",

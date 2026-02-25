@@ -18,7 +18,7 @@ class FeedFetcher {
         $feeds      = json_decode( $feeds_json, true );
 
         if ( empty( $feeds ) || ! is_array( $feeds ) ) {
-            Logger::warning( 'Ingen feeds konfigurert.' );
+            Logger::warning( __( 'No feeds configured.', 'wp-autopilot' ) );
             return array();
         }
 
@@ -53,7 +53,8 @@ class FeedFetcher {
         shuffle( $all_items );
         $all_items = array_slice( $all_items, 0, $max_per_run );
 
-        Logger::info( sprintf( 'Feed-henting fullført: %d nye artikler funnet.', count( $all_items ) ) );
+        /* translators: %d: number of new articles found */
+        Logger::info( sprintf( __( 'Feed fetch completed: %d new articles found.', 'wp-autopilot' ), count( $all_items ) ) );
 
         return $all_items;
     }
@@ -74,13 +75,15 @@ class FeedFetcher {
         ) );
 
         if ( is_wp_error( $response ) ) {
-            Logger::error( sprintf( 'Feil ved henting av feed "%s": %s', $feed_name, $response->get_error_message() ) );
+            /* translators: 1: feed name, 2: error message */
+            Logger::error( sprintf( __( 'Error fetching feed "%1$s": %2$s', 'wp-autopilot' ), $feed_name, $response->get_error_message() ) );
             return array();
         }
 
         $body = wp_remote_retrieve_body( $response );
         if ( empty( $body ) ) {
-            Logger::warning( sprintf( 'Tom respons fra feed "%s".', $feed_name ) );
+            /* translators: %s: feed name */
+            Logger::warning( sprintf( __( 'Empty response from feed "%s".', 'wp-autopilot' ), $feed_name ) );
             return array();
         }
 
@@ -90,7 +93,8 @@ class FeedFetcher {
         libxml_use_internal_errors( $use_errors );
 
         if ( ! $xml ) {
-            Logger::error( sprintf( 'Kunne ikke parse XML fra feed "%s".', $feed_name ) );
+            /* translators: %s: feed name */
+            Logger::error( sprintf( __( 'Could not parse XML from feed "%s".', 'wp-autopilot' ), $feed_name ) );
             return array();
         }
 

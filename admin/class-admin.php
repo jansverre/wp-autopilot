@@ -52,8 +52,8 @@ class Admin {
 
         add_submenu_page(
             'wpa-settings',
-            'Innstillinger',
-            'Innstillinger',
+            __( 'Settings', 'wp-autopilot' ),
+            __( 'Settings', 'wp-autopilot' ),
             'manage_options',
             'wpa-settings',
             array( $this, 'render_settings' )
@@ -61,8 +61,8 @@ class Admin {
 
         add_submenu_page(
             'wpa-settings',
-            'Feeds',
-            'Feeds',
+            __( 'Feeds', 'wp-autopilot' ),
+            __( 'Feeds', 'wp-autopilot' ),
             'manage_options',
             'wpa-feeds',
             array( $this, 'render_feeds' )
@@ -70,8 +70,8 @@ class Admin {
 
         add_submenu_page(
             'wpa-settings',
-            'Status',
-            'Status',
+            __( 'Status', 'wp-autopilot' ),
+            __( 'Status', 'wp-autopilot' ),
             'manage_options',
             'wpa-status',
             array( $this, 'render_status' )
@@ -116,6 +116,35 @@ class Admin {
             'ajaxUrl'       => admin_url( 'admin-ajax.php' ),
             'nonce'         => wp_create_nonce( 'wpa_admin_nonce' ),
             'writingStyles' => json_decode( Settings::get( 'writing_styles', '{}' ), true ),
+            'i18n'          => array(
+                'urlRequired'           => __( 'URL is required.', 'wp-autopilot' ),
+                'feedAdded'             => __( 'Feed added.', 'wp-autopilot' ),
+                'errorAdding'           => __( 'Error adding feed.', 'wp-autopilot' ),
+                'networkError'          => __( 'Network error.', 'wp-autopilot' ),
+                'confirmDeleteFeed'     => __( 'Are you sure you want to delete this feed?', 'wp-autopilot' ),
+                'noFeeds'               => __( 'No feeds added yet.', 'wp-autopilot' ),
+                'active'                => __( 'Active', 'wp-autopilot' ),
+                'inactive'              => __( 'Inactive', 'wp-autopilot' ),
+                'activate'              => __( 'Activate', 'wp-autopilot' ),
+                'deactivate'            => __( 'Deactivate', 'wp-autopilot' ),
+                'delete'                => __( 'Delete', 'wp-autopilot' ),
+                'runningAutopilot'      => __( 'Running autopilot... This may take a few minutes.', 'wp-autopilot' ),
+                'errorRunning'          => __( 'Error during run.', 'wp-autopilot' ),
+                'networkOrTimeout'      => __( 'Network error or timeout.', 'wp-autopilot' ),
+                'reindexing'            => __( 'Re-indexing...', 'wp-autopilot' ),
+                'errorReindexing'       => __( 'Error during re-indexing.', 'wp-autopilot' ),
+                'noLogEntries'          => __( 'No log entries yet.', 'wp-autopilot' ),
+                'analyzingStyle'        => __( 'Analyzing writing style...', 'wp-autopilot' ),
+                'analysisComplete'      => __( 'Analysis complete. Click "Save writing style" to keep it.', 'wp-autopilot' ),
+                'errorAnalysis'         => __( 'Error during analysis.', 'wp-autopilot' ),
+                'styleSaved'            => __( 'Writing style saved.', 'wp-autopilot' ),
+                'errorSaving'           => __( 'Error saving.', 'wp-autopilot' ),
+                'fillPageIdAndToken'    => __( 'Please enter Page ID and access token.', 'wp-autopilot' ),
+                'connected'             => __( 'Connected:', 'wp-autopilot' ),
+                'connectionError'       => __( 'Connection error.', 'wp-autopilot' ),
+                'selectAuthorPhoto'     => __( 'Select author photo', 'wp-autopilot' ),
+                'useThisImage'          => __( 'Use this image', 'wp-autopilot' ),
+            ),
         ) );
     }
 
@@ -170,7 +199,7 @@ class Admin {
 
         // Text fields.
         $text_fields = array(
-            'openrouter_api_key', 'fal_api_key', 'ai_model', 'ai_custom_model',
+            'openrouter_api_key', 'fal_api_key', 'github_token', 'ai_model', 'ai_custom_model',
             'ai_language', 'ai_niche', 'ai_style', 'image_model', 'image_custom_model', 'image_style',
             'keyword_include', 'keyword_exclude',
             'inline_image_model', 'inline_image_custom_model',
@@ -297,7 +326,7 @@ class Admin {
 
         Settings::flush_cache();
 
-        add_settings_error( 'wpa_settings', 'settings_updated', 'Innstillinger lagret.', 'updated' );
+        add_settings_error( 'wpa_settings', 'settings_updated', __( 'Settings saved.', 'wp-autopilot' ), 'updated' );
     }
 
     /**
@@ -307,14 +336,14 @@ class Admin {
         check_ajax_referer( 'wpa_admin_nonce', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( 'Ingen tilgang.' );
+            wp_send_json_error( __( 'Access denied.', 'wp-autopilot' ) );
         }
 
         $name = sanitize_text_field( wp_unslash( $_POST['name'] ?? '' ) );
         $url  = esc_url_raw( wp_unslash( $_POST['url'] ?? '' ) );
 
         if ( empty( $url ) ) {
-            wp_send_json_error( 'URL er påkrevd.' );
+            wp_send_json_error( __( 'URL is required.', 'wp-autopilot' ) );
         }
 
         $feeds = json_decode( Settings::get( 'feeds', '[]' ), true );
@@ -341,7 +370,7 @@ class Admin {
         check_ajax_referer( 'wpa_admin_nonce', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( 'Ingen tilgang.' );
+            wp_send_json_error( __( 'Access denied.', 'wp-autopilot' ) );
         }
 
         $feed_id = sanitize_text_field( wp_unslash( $_POST['feed_id'] ?? '' ) );
@@ -363,7 +392,7 @@ class Admin {
         check_ajax_referer( 'wpa_admin_nonce', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( 'Ingen tilgang.' );
+            wp_send_json_error( __( 'Access denied.', 'wp-autopilot' ) );
         }
 
         $feed_id = sanitize_text_field( wp_unslash( $_POST['feed_id'] ?? '' ) );
@@ -388,7 +417,7 @@ class Admin {
         check_ajax_referer( 'wpa_admin_nonce', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( 'Ingen tilgang.' );
+            wp_send_json_error( __( 'Access denied.', 'wp-autopilot' ) );
         }
 
         define( 'WPA_MANUAL_RUN', true );
@@ -396,7 +425,7 @@ class Admin {
         $cron = new Cron();
         $cron->run();
 
-        wp_send_json_success( array( 'message' => 'Kjøring fullført.' ) );
+        wp_send_json_success( array( 'message' => __( 'Run completed.', 'wp-autopilot' ) ) );
     }
 
     /**
@@ -406,13 +435,13 @@ class Admin {
         check_ajax_referer( 'wpa_admin_nonce', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( 'Ingen tilgang.' );
+            wp_send_json_error( __( 'Access denied.', 'wp-autopilot' ) );
         }
 
         $links = new InternalLinks();
         $links->sync_existing_posts();
 
-        wp_send_json_success( array( 'message' => 'Re-indeksering fullført.' ) );
+        wp_send_json_success( array( 'message' => __( 'Re-indexing completed.', 'wp-autopilot' ) ) );
     }
 
     /**
@@ -422,7 +451,7 @@ class Admin {
         check_ajax_referer( 'wpa_admin_nonce', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( 'Ingen tilgang.' );
+            wp_send_json_error( __( 'Access denied.', 'wp-autopilot' ) );
         }
 
         $logs = Logger::get_latest( 50 );
@@ -437,14 +466,14 @@ class Admin {
         check_ajax_referer( 'wpa_admin_nonce', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( 'Ingen tilgang.' );
+            wp_send_json_error( __( 'Access denied.', 'wp-autopilot' ) );
         }
 
         $author_id = absint( $_POST['author_id'] ?? 0 );
         $num_posts = absint( $_POST['num_posts'] ?? 5 );
 
         if ( ! $author_id || ! get_userdata( $author_id ) ) {
-            wp_send_json_error( 'Ugyldig forfatter.' );
+            wp_send_json_error( __( 'Invalid author.', 'wp-autopilot' ) );
         }
 
         $writer = new ArticleWriter();
@@ -469,14 +498,14 @@ class Admin {
         check_ajax_referer( 'wpa_admin_nonce', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( 'Ingen tilgang.' );
+            wp_send_json_error( __( 'Access denied.', 'wp-autopilot' ) );
         }
 
         $page_id      = sanitize_text_field( wp_unslash( $_POST['page_id'] ?? '' ) );
         $access_token = sanitize_text_field( wp_unslash( $_POST['access_token'] ?? '' ) );
 
         if ( empty( $page_id ) || empty( $access_token ) ) {
-            wp_send_json_error( 'Fyll inn side-ID og tilgangstoken.' );
+            wp_send_json_error( __( 'Please enter Page ID and access token.', 'wp-autopilot' ) );
         }
 
         $api_url = 'https://graph.facebook.com/' . FacebookSharer::FB_API_VERSION
@@ -485,18 +514,19 @@ class Admin {
         $response = wp_remote_get( $api_url, array( 'timeout' => 15 ) );
 
         if ( is_wp_error( $response ) ) {
-            wp_send_json_error( 'Nettverksfeil: ' . $response->get_error_message() );
+            wp_send_json_error( __( 'Network error: ', 'wp-autopilot' ) . $response->get_error_message() );
         }
 
         $status_code = wp_remote_retrieve_response_code( $response );
         $data        = json_decode( wp_remote_retrieve_body( $response ), true );
 
         if ( $status_code !== 200 ) {
-            $error_msg = $data['error']['message'] ?? 'Ukjent feil';
-            wp_send_json_error( sprintf( 'Facebook returnerte feil %d: %s', $status_code, $error_msg ) );
+            $error_msg = $data['error']['message'] ?? __( 'Unknown error', 'wp-autopilot' );
+            /* translators: 1: HTTP status code, 2: error message */
+            wp_send_json_error( sprintf( __( 'Facebook returned error %d: %s', 'wp-autopilot' ), $status_code, $error_msg ) );
         }
 
-        $name = $data['name'] ?? 'Ukjent side';
+        $name = $data['name'] ?? __( 'Unknown page', 'wp-autopilot' );
         wp_send_json_success( array( 'name' => $name, 'id' => $data['id'] ?? $page_id ) );
     }
 
@@ -507,14 +537,14 @@ class Admin {
         check_ajax_referer( 'wpa_admin_nonce', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( 'Ingen tilgang.' );
+            wp_send_json_error( __( 'Access denied.', 'wp-autopilot' ) );
         }
 
         $author_id = absint( $_POST['author_id'] ?? 0 );
         $style     = sanitize_textarea_field( wp_unslash( $_POST['style'] ?? '' ) );
 
         if ( ! $author_id ) {
-            wp_send_json_error( 'Ugyldig forfatter.' );
+            wp_send_json_error( __( 'Invalid author.', 'wp-autopilot' ) );
         }
 
         $writing_styles = json_decode( Settings::get( 'writing_styles', '{}' ), true );
@@ -531,7 +561,7 @@ class Admin {
         Settings::set( 'writing_styles', wp_json_encode( $writing_styles ) );
 
         wp_send_json_success( array(
-            'message'        => 'Skrivestil lagret.',
+            'message'        => __( 'Writing style saved.', 'wp-autopilot' ),
             'writing_styles' => $writing_styles,
         ) );
     }

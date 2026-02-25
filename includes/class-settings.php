@@ -97,6 +97,7 @@ class Settings {
             'fb_image_mode',
             'fb_author_face',
             'fb_author_photos',
+            'github_token',
         );
 
         $settings = array();

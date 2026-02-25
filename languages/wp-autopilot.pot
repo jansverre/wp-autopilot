@@ -1,0 +1,1043 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: WP Autopilot 1.2.5\n"
+"Report-Msgid-Bugs-To: https://github.com/jansverre/wp-autopilot/issues\n"
+"POT-Creation-Date: 2026-02-25 21:22\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: wp-autopilot\n"
+"X-Generator: WP Autopilot i18n script\n"
+
+#: includes/class-publisher.php:132
+msgid ", scheduled: %s"
+msgstr ""
+
+#: admin/views/settings.php:106
+msgid "0 = deterministic, 2 = very creative. Default: 0.7"
+msgstr ""
+
+#: admin/views/settings.php:53
+msgid "AI Model"
+msgstr ""
+
+#: admin/views/settings.php:50
+msgid "AI Settings"
+msgstr ""
+
+#: admin/views/settings.php:500
+msgid "AI-generated poster"
+msgstr ""
+
+#: admin/views/settings.php:25
+msgid "API Keys"
+msgstr ""
+
+#: includes/class-article-writer.php:184
+msgid "API error: "
+msgstr ""
+
+#: admin/class-admin.php:339 admin/class-admin.php:373
+#: admin/class-admin.php:395 admin/class-admin.php:420
+#: admin/class-admin.php:438 admin/class-admin.php:454
+#: admin/class-admin.php:469 admin/class-admin.php:501
+#: admin/class-admin.php:540
+msgid "Access denied."
+msgstr ""
+
+#: admin/views/settings.php:527
+msgid "Action"
+msgstr ""
+
+#: admin/views/feeds.php:35 admin/views/status.php:97
+msgid "Actions"
+msgstr ""
+
+#: admin/class-admin.php:128 admin/views/feeds.php:55
+msgid "Activate"
+msgstr ""
+
+#: admin/class-admin.php:126 admin/views/feeds.php:50
+msgid "Active"
+msgstr ""
+
+#: admin/views/feeds.php:28
+msgid "Active Feeds"
+msgstr ""
+
+#: admin/views/feeds.php:21
+msgid "Add"
+msgstr ""
+
+#: admin/views/feeds.php:17
+msgid "Add Feed"
+msgstr ""
+
+#: admin/views/settings.php:187
+msgid "Add link to the original article"
+msgstr ""
+
+#: admin/views/settings.php:349
+msgid "After every H2"
+msgstr ""
+
+#: admin/views/settings.php:350
+msgid "After every other H2"
+msgstr ""
+
+#: admin/views/settings.php:351
+msgid "After every third H2"
+msgstr ""
+
+#: admin/class-admin.php:138
+msgid "Analysis complete. Click \"Save writing style\" to keep it."
+msgstr ""
+
+#: admin/views/settings.php:152
+msgid "Analyze Writing Style"
+msgstr ""
+
+#: admin/class-admin.php:137
+msgid "Analyzing writing style..."
+msgstr ""
+
+#: admin/class-admin.php:124
+msgid "Are you sure you want to delete this feed?"
+msgstr ""
+
+#: admin/views/status.php:118
+msgid "Article"
+msgstr ""
+
+#: includes/class-article-writer.php:109
+msgid "Article generated: \"%s\""
+msgstr ""
+
+#: admin/views/status.php:58
+msgid "Articles Today"
+msgstr ""
+
+#: admin/views/settings.php:525
+msgid "Author"
+msgstr ""
+
+#: admin/views/settings.php:223
+msgid "Author Method"
+msgstr ""
+
+#: admin/views/settings.php:520
+msgid "Author Reference Photos"
+msgstr ""
+
+#: admin/views/settings.php:509
+msgid "Author in Poster"
+msgstr ""
+
+#: admin/views/settings.php:234
+msgid "Authors"
+msgstr ""
+
+#: admin/views/settings.php:380
+msgid "Automatic Scheduling"
+msgstr ""
+
+#: admin/views/settings.php:462
+msgid "Automatically share autopilot articles to a Facebook Page"
+msgstr ""
+
+#: admin/views/status.php:38
+msgid "Autopilot"
+msgstr ""
+
+#: includes/class-cron.php:181
+msgid "Autopilot run completed. %d articles created."
+msgstr ""
+
+#: includes/class-cron.php:67
+msgid "Autopilot run started."
+msgstr ""
+
+#: admin/views/status.php:86
+msgid "Avg. per Article"
+msgstr ""
+
+#: admin/views/settings.php:364
+msgid "Choose a cheaper model for inline images to save costs."
+msgstr ""
+
+#: admin/views/settings.php:589
+msgid "Comma-separated. Articles containing these words will be filtered out."
+msgstr ""
+
+#: admin/views/settings.php:580
+msgid ""
+"Comma-separated. At least one word must appear in title/description. Leave "
+"empty to include all."
+msgstr ""
+
+#: admin/class-admin.php:143
+msgid "Connected:"
+msgstr ""
+
+#: admin/class-admin.php:144
+msgid "Connection error."
+msgstr ""
+
+#: admin/views/settings.php:163
+msgid "Content Settings"
+msgstr ""
+
+#: admin/views/status.php:160
+msgid "Context"
+msgstr ""
+
+#: admin/views/status.php:122
+msgid "Cost"
+msgstr ""
+
+#: admin/views/status.php:82
+msgid "Cost 30 Days"
+msgstr ""
+
+#: admin/views/status.php:78
+msgid "Cost 7 Days"
+msgstr ""
+
+#: admin/views/status.php:74
+msgid "Cost Today"
+msgstr ""
+
+#: admin/views/status.php:113
+msgid "Cost per Article (last 20)"
+msgstr ""
+
+#: includes/class-publisher.php:113
+msgid "Could not create post: "
+msgstr ""
+
+#: includes/class-image-generator.php:225
+msgid "Could not download image: "
+msgstr ""
+
+#: includes/class-image-generator.php:187
+msgid "Could not fetch fal.ai result: "
+msgstr ""
+
+#: includes/class-cron.php:109
+msgid "Could not generate article for: \"%s\""
+msgstr ""
+
+#: includes/class-article-writer.php:84
+msgid "Could not parse AI response as JSON."
+msgstr ""
+
+#: includes/class-feed-fetcher.php:97
+msgid "Could not parse XML from feed \"%s\"."
+msgstr ""
+
+#: includes/class-image-generator.php:240
+msgid "Could not upload image to media library: "
+msgstr ""
+
+#: admin/views/settings.php:310
+msgid "Custom Image Model"
+msgstr ""
+
+#: admin/views/settings.php:368
+msgid "Custom Inline Model"
+msgstr ""
+
+#: admin/views/settings.php:67
+msgid "Custom Model ID"
+msgstr ""
+
+#: admin/views/settings.php:400
+msgid "Daily"
+msgstr ""
+
+#: includes/class-cron.php:95
+msgid "Daily limit reached during run."
+msgstr ""
+
+#: includes/class-cron.php:63
+msgid "Daily limit reached. Skipping run."
+msgstr ""
+
+#: admin/views/settings.php:597
+msgid "Data Management"
+msgstr ""
+
+#: admin/class-admin.php:129 admin/views/feeds.php:55
+msgid "Deactivate"
+msgstr ""
+
+#: admin/views/settings.php:209
+msgid "Default Author"
+msgstr ""
+
+#: admin/views/settings.php:267
+msgid "Default Category"
+msgstr ""
+
+#: admin/class-admin.php:130 admin/views/feeds.php:57
+msgid "Delete"
+msgstr ""
+
+#: admin/views/settings.php:600
+msgid "Delete Data on Uninstall"
+msgstr ""
+
+#: admin/views/settings.php:605
+msgid ""
+"Delete all settings, feeds, logs, and database tables when the plugin is "
+"uninstalled"
+msgstr ""
+
+#: includes/class-image-generator.php:141
+msgid "Did not receive request_id from fal.ai."
+msgstr ""
+
+#: admin/views/status.php:41
+msgid "Disabled"
+msgstr ""
+
+#: admin/views/settings.php:202
+msgid "Draft"
+msgstr ""
+
+#: includes/class-article-writer.php:78
+msgid "Empty response from OpenRouter API."
+msgstr ""
+
+#: includes/class-feed-fetcher.php:86
+msgid "Empty response from feed \"%s\"."
+msgstr ""
+
+#: admin/views/settings.php:457
+msgid "Enable Facebook Sharing"
+msgstr ""
+
+#: admin/views/settings.php:335
+msgid "Enable Inline Images"
+msgstr ""
+
+#: admin/views/settings.php:388
+msgid "Enable automatic publishing"
+msgstr ""
+
+#: admin/views/settings.php:383 admin/views/status.php:41
+msgid "Enabled"
+msgstr ""
+
+#: admin/class-admin.php:122
+msgid "Error adding feed."
+msgstr ""
+
+#: admin/class-admin.php:139
+msgid "Error during analysis."
+msgstr ""
+
+#: admin/class-admin.php:135
+msgid "Error during re-indexing."
+msgstr ""
+
+#: admin/class-admin.php:132
+msgid "Error during run."
+msgstr ""
+
+#: includes/class-feed-fetcher.php:79
+msgid "Error fetching feed \"%1$s\": %2$s"
+msgstr ""
+
+#: admin/class-admin.php:141
+msgid "Error saving."
+msgstr ""
+
+#: admin/views/settings.php:399
+msgid "Every 12 Hours"
+msgstr ""
+
+#: includes/class-cron.php:41
+msgid "Every 12 hours"
+msgstr ""
+
+#: admin/views/settings.php:397
+msgid "Every 2 Hours"
+msgstr ""
+
+#: includes/class-cron.php:33
+msgid "Every 2 hours"
+msgstr ""
+
+#: admin/views/settings.php:398
+msgid "Every 6 Hours"
+msgstr ""
+
+#: includes/class-cron.php:37
+msgid "Every 6 hours"
+msgstr ""
+
+#: admin/views/settings.php:396
+msgid "Every Hour"
+msgstr ""
+
+#: admin/views/settings.php:584
+msgid "Exclude Keywords"
+msgstr ""
+
+#: includes/class-facebook-sharer.php:509
+msgid "Facebook API error: "
+msgstr ""
+
+#: includes/class-facebook-sharer.php:519
+msgid "Facebook API returned %1$d: %2$s"
+msgstr ""
+
+#: admin/views/settings.php:470
+msgid "Facebook Page ID"
+msgstr ""
+
+#: admin/views/settings.php:454
+msgid "Facebook Sharing"
+msgstr ""
+
+#: includes/class-facebook-sharer.php:253
+msgid "Facebook poster generated (ID: %1$d) for article %2$d."
+msgstr ""
+
+#: includes/class-facebook-sharer.php:412
+msgid "Facebook poster: Could not download image: "
+msgstr ""
+
+#: includes/class-facebook-sharer.php:375
+msgid "Facebook poster: Could not fetch fal.ai result: "
+msgstr ""
+
+#: includes/class-facebook-sharer.php:427
+msgid "Facebook poster: Could not upload to media library: "
+msgstr ""
+
+#: includes/class-facebook-sharer.php:327
+msgid "Facebook poster: Did not receive request_id from fal.ai."
+msgstr ""
+
+#: includes/class-facebook-sharer.php:176
+msgid "Facebook poster: fal.ai API key is missing."
+msgstr ""
+
+#: includes/class-facebook-sharer.php:386
+msgid "Facebook poster: fal.ai image generation failed."
+msgstr ""
+
+#: includes/class-facebook-sharer.php:319
+msgid "Facebook poster: fal.ai queue error: "
+msgstr ""
+
+#: includes/class-facebook-sharer.php:392
+msgid "Facebook poster: fal.ai timeout after %d polls."
+msgstr ""
+
+#: admin/class-admin.php:526
+msgid "Facebook returned error %d: %s"
+msgstr ""
+
+#: includes/class-facebook-sharer.php:125
+msgid "Facebook sharing: AI error, using excerpt. "
+msgstr ""
+
+#: includes/class-facebook-sharer.php:134
+msgid "Facebook sharing: AI returned %d, using excerpt."
+msgstr ""
+
+#: includes/class-facebook-sharer.php:148
+msgid "Facebook sharing: AI text generated for article %d."
+msgstr ""
+
+#: includes/class-facebook-sharer.php:70
+msgid "Facebook sharing: Article %1$d shared (FB post ID: %2$s)."
+msgstr ""
+
+#: includes/class-facebook-sharer.php:40
+msgid "Facebook sharing: Article %d already shared."
+msgstr ""
+
+#: includes/class-facebook-sharer.php:451
+msgid "Facebook sharing: Could not get poster URL, falling back to link post."
+msgstr ""
+
+#: includes/class-facebook-sharer.php:33
+msgid "Facebook sharing: Missing page ID or access token."
+msgstr ""
+
+#: includes/class-facebook-sharer.php:84
+msgid "Facebook sharing: OpenRouter API key missing, using excerpt."
+msgstr ""
+
+#: includes/class-facebook-sharer.php:58
+msgid "Facebook sharing: Poster generation failed, falling back to link post."
+msgstr ""
+
+#: admin/views/settings.php:499
+msgid "Featured image (OG scraping)"
+msgstr ""
+
+#: admin/views/settings.php:502
+msgid ""
+"Featured image: Facebook fetches the image automatically from the article. "
+"AI poster: Generates a unique poster with fal.ai."
+msgstr ""
+
+#: admin/class-admin.php:121
+msgid "Feed added."
+msgstr ""
+
+#: includes/class-feed-fetcher.php:57
+msgid "Feed fetch completed: %d new articles found."
+msgstr ""
+
+#: admin/class-admin.php:64 admin/class-admin.php:65
+#: admin/partials/header.php:15
+msgid "Feeds"
+msgstr ""
+
+#: admin/views/settings.php:475
+msgid ""
+"Find your Page ID under Settings &rarr; About on your Facebook Page, or "
+"visit <a href=\"https://www.facebook.com/pages/?category=your_pages\" "
+"target=\"_blank\" rel=\"noopener\">facebook.com/pages</a>."
+msgstr ""
+
+#: admin/views/settings.php:346
+msgid "Frequency"
+msgstr ""
+
+#: admin/views/settings.php:429
+msgid "From"
+msgstr ""
+
+#: admin/views/settings.php:289
+msgid "Generate Images"
+msgstr ""
+
+#: admin/views/settings.php:294
+msgid "Generate featured image with AI"
+msgstr ""
+
+#: admin/views/settings.php:340
+msgid "Generate images within the article text at H2 sections"
+msgstr ""
+
+#: admin/views/settings.php:42
+msgid ""
+"Get yours at <a href=\"https://fal.ai/dashboard/keys\" target=\"_blank\" "
+"rel=\"noopener\">fal.ai/dashboard/keys</a>"
+msgstr ""
+
+#: admin/views/settings.php:33
+msgid ""
+"Get yours at <a href=\"https://openrouter.ai/keys\" target=\"_blank\" "
+"rel=\"noopener\">openrouter.ai/keys</a>"
+msgstr ""
+
+#: admin/views/settings.php:299
+msgid "Image Model (fal.ai)"
+msgstr ""
+
+#: admin/views/settings.php:286
+msgid "Image Settings"
+msgstr ""
+
+#: admin/views/settings.php:319
+msgid "Image Style Prefix"
+msgstr ""
+
+#: admin/views/settings.php:496
+msgid "Image Type"
+msgstr ""
+
+#: includes/class-image-generator.php:58
+msgid "Image generated and uploaded (ID: %1$d) for \"%2$s\"."
+msgstr ""
+
+#: admin/class-admin.php:127 admin/views/feeds.php:50
+msgid "Inactive"
+msgstr ""
+
+#: admin/views/settings.php:575
+msgid "Include Keywords"
+msgstr ""
+
+#: admin/views/settings.php:182
+msgid "Include Source Link"
+msgstr ""
+
+#: admin/views/status.php:66
+msgid "Indexed Articles"
+msgstr ""
+
+#: admin/views/settings.php:356
+msgid "Inline Image Model"
+msgstr ""
+
+#: admin/views/settings.php:332
+msgid "Inline Images"
+msgstr ""
+
+#: includes/class-image-generator.php:104
+msgid "Inline image %1$d generated (ID: %2$d) for \"%3$s\"."
+msgstr ""
+
+#: admin/class-admin.php:476 admin/class-admin.php:547
+msgid "Invalid author."
+msgstr ""
+
+#: admin/views/settings.php:572
+msgid "Keyword Filtering"
+msgstr ""
+
+#: admin/views/settings.php:76
+msgid "Language"
+msgstr ""
+
+#: admin/views/settings.php:607
+msgid ""
+"Leave this off if you plan to reinstall or update manually. Data is "
+"preserved between installations."
+msgstr ""
+
+#: admin/views/status.php:158
+msgid "Level"
+msgstr ""
+
+#: admin/views/settings.php:426
+msgid "Limit publishing to work hours"
+msgstr ""
+
+#: admin/views/status.php:152
+msgid "Log (last 50 entries)"
+msgstr ""
+
+#: admin/views/settings.php:413
+msgid "Max Articles per Day"
+msgstr ""
+
+#: admin/views/settings.php:405
+msgid "Max Articles per Run"
+msgstr ""
+
+#: admin/views/settings.php:174
+msgid "Maximum Word Count"
+msgstr ""
+
+#: admin/views/status.php:159
+msgid "Message"
+msgstr ""
+
+#: admin/views/settings.php:166
+msgid "Minimum Word Count"
+msgstr ""
+
+#: admin/views/feeds.php:32
+msgid "Name"
+msgstr ""
+
+#: admin/views/feeds.php:19
+msgid "Name (optional)"
+msgstr ""
+
+#: admin/class-admin.php:133
+msgid "Network error or timeout."
+msgstr ""
+
+#: admin/class-admin.php:123
+msgid "Network error."
+msgstr ""
+
+#: admin/class-admin.php:517
+msgid "Network error: "
+msgstr ""
+
+#: admin/views/status.php:46
+msgid "Next Run"
+msgstr ""
+
+#: admin/views/settings.php:84
+msgid "Niche / Topic"
+msgstr ""
+
+#: admin/class-admin.php:125 admin/views/feeds.php:41
+msgid "No feeds added yet."
+msgstr ""
+
+#: includes/class-feed-fetcher.php:21
+msgid "No feeds configured."
+msgstr ""
+
+#: admin/class-admin.php:136 admin/views/status.php:166
+msgid "No log entries yet."
+msgstr ""
+
+#: includes/class-cron.php:78
+msgid "No new articles to process."
+msgstr ""
+
+#: includes/class-article-writer.php:137
+msgid "No published posts found for this author."
+msgstr ""
+
+#: admin/views/status.php:52
+msgid "Not scheduled"
+msgstr ""
+
+#: admin/views/settings.php:342
+msgid ""
+"Note: Each inline image takes 6&ndash;60 seconds. With many images per "
+"article, the run can take a long time."
+msgstr ""
+
+#: admin/views/settings.php:144
+msgid "Number of Articles to Analyze"
+msgstr ""
+
+#: admin/views/settings.php:28
+msgid "OpenRouter API Key"
+msgstr ""
+
+#: includes/class-article-writer.php:61
+msgid "OpenRouter API error: "
+msgstr ""
+
+#: includes/class-article-writer.php:22 includes/class-article-writer.php:124
+msgid "OpenRouter API key is missing."
+msgstr ""
+
+#: includes/class-article-writer.php:72
+msgid "OpenRouter API returned %1$d: %2$s"
+msgstr ""
+
+#: includes/class-cron.php:57
+msgid "Outside work hours. Skipping run."
+msgstr ""
+
+#: admin/views/settings.php:372
+msgid "Overrides the dropdown selection"
+msgstr ""
+
+#: admin/views/settings.php:72 admin/views/settings.php:315
+msgid "Overrides the selection above. Leave empty to use the dropdown."
+msgstr ""
+
+#: admin/views/settings.php:479
+msgid "Page Access Token"
+msgstr ""
+
+#: admin/views/settings.php:484
+msgid ""
+"Page Access Token with <code>pages_manage_posts</code> and "
+"<code>pages_read_engagement</code> permissions. Generate via <a "
+"href=\"https://developers.facebook.com/tools/explorer/\" target=\"_blank\" "
+"rel=\"noopener\">Graph API Explorer</a>."
+msgstr ""
+
+#: admin/views/settings.php:204
+msgid "Pending Review"
+msgstr ""
+
+#: admin/views/settings.php:526
+msgid "Photo"
+msgstr ""
+
+#: admin/class-admin.php:142 admin/class-admin.php:508
+msgid "Please enter Page ID and access token."
+msgstr ""
+
+#: admin/views/settings.php:199
+msgid "Post Status"
+msgstr ""
+
+#: includes/class-publisher.php:137
+msgid "Post created: \"%1$s\" (ID: %2$d, status: %3$s%4$s)"
+msgstr ""
+
+#: admin/views/settings.php:324
+msgid "Prepended to the AI-generated image prompt."
+msgstr ""
+
+#: admin/views/settings.php:203
+msgid "Published"
+msgstr ""
+
+#: admin/views/settings.php:196
+msgid "Publishing Settings"
+msgstr ""
+
+#: admin/views/settings.php:227
+msgid "Random"
+msgstr ""
+
+#: admin/views/status.php:103
+msgid "Re-index Internal Links"
+msgstr ""
+
+#: admin/class-admin.php:444
+msgid "Re-indexing completed."
+msgstr ""
+
+#: admin/class-admin.php:134
+msgid "Re-indexing..."
+msgstr ""
+
+#: admin/views/status.php:153
+msgid "Refresh Log"
+msgstr ""
+
+#: admin/views/settings.php:559
+msgid "Remove"
+msgstr ""
+
+#: admin/views/settings.php:228
+msgid "Round Robin (rotating)"
+msgstr ""
+
+#: admin/views/status.php:100
+msgid "Run Autopilot Now"
+msgstr ""
+
+#: admin/views/settings.php:393
+msgid "Run Interval"
+msgstr ""
+
+#: admin/class-admin.php:428
+msgid "Run completed."
+msgstr ""
+
+#: admin/class-admin.php:131
+msgid "Running autopilot... This may take a few minutes."
+msgstr ""
+
+#: admin/views/settings.php:613
+msgid "Save Settings"
+msgstr ""
+
+#: admin/views/settings.php:153
+msgid "Save Writing Style"
+msgstr ""
+
+#: admin/views/settings.php:126
+msgid "Select Author"
+msgstr ""
+
+#: admin/views/settings.php:140
+msgid ""
+"Select an author and click &laquo;Analyze&raquo; to generate a writing style"
+" description automatically, or enter one manually."
+msgstr ""
+
+#: admin/class-admin.php:145
+msgid "Select author photo"
+msgstr ""
+
+#: admin/views/settings.php:263
+msgid ""
+"Select which authors to use. For weighted distribution, the weight numbers "
+"indicate relative proportion."
+msgstr ""
+
+#: admin/class-admin.php:55 admin/class-admin.php:56
+#: admin/partials/header.php:11
+msgid "Settings"
+msgstr ""
+
+#: admin/class-admin.php:329
+msgid "Settings saved."
+msgstr ""
+
+#: admin/views/settings.php:226
+msgid "Single (default author)"
+msgstr ""
+
+#: admin/views/settings.php:110
+msgid "Site Identity"
+msgstr ""
+
+#: admin/class-admin.php:73 admin/class-admin.php:74
+#: admin/partials/header.php:19 admin/views/feeds.php:34
+msgid "Status"
+msgstr ""
+
+#: admin/views/settings.php:101
+msgid "Temperature"
+msgstr ""
+
+#: admin/views/settings.php:490
+msgid "Test Connection"
+msgstr ""
+
+#: admin/views/settings.php:446
+msgid ""
+"The autopilot only publishes within this time window (WordPress timezone)."
+msgstr ""
+
+#: admin/views/status.php:117 admin/views/status.php:157
+msgid "Time"
+msgstr ""
+
+#: admin/views/status.php:120
+msgid "Tokens In"
+msgstr ""
+
+#: admin/views/status.php:121
+msgid "Tokens Out"
+msgstr ""
+
+#: admin/views/status.php:62
+msgid "Total Published"
+msgstr ""
+
+#: admin/views/status.php:90
+msgid "Total Tokens"
+msgstr ""
+
+#: admin/views/status.php:119
+msgid "Types"
+msgstr ""
+
+#: admin/views/feeds.php:33
+msgid "URL"
+msgstr ""
+
+#: admin/class-admin.php:120 admin/class-admin.php:346
+msgid "URL is required."
+msgstr ""
+
+#: includes/class-article-writer.php:191
+msgid "Unknown API error"
+msgstr ""
+
+#: admin/class-admin.php:524 includes/class-article-writer.php:70
+#: includes/class-facebook-sharer.php:517
+msgid "Unknown error"
+msgstr ""
+
+#: admin/class-admin.php:529
+msgid "Unknown page"
+msgstr ""
+
+#: admin/views/settings.php:557
+msgid "Upload"
+msgstr ""
+
+#: admin/views/settings.php:521
+msgid ""
+"Upload a portrait photo for each author. The photo is used as a reference "
+"for the AI poster."
+msgstr ""
+
+#: admin/class-admin.php:146
+msgid "Use this image"
+msgstr ""
+
+#: admin/views/settings.php:97
+msgid "Used for authors without a custom writing style analysis."
+msgstr ""
+
+#: admin/views/settings.php:219
+msgid "Used when author method is set to &laquo;Single&raquo;."
+msgstr ""
+
+#: admin/views/settings.php:229
+msgid "Weighted Distribution"
+msgstr ""
+
+#: admin/views/settings.php:421
+msgid "Work Hours"
+msgstr ""
+
+#: admin/views/settings.php:138
+msgid "Writing Style"
+msgstr ""
+
+#: admin/views/settings.php:92
+msgid "Writing Style (global fallback)"
+msgstr ""
+
+#: admin/views/settings.php:122
+msgid "Writing Style per Author"
+msgstr ""
+
+#: admin/class-admin.php:140 admin/class-admin.php:564
+msgid "Writing style saved."
+msgstr ""
+
+#: admin/views/settings.php:314
+msgid "e.g. fal-ai/stable-diffusion-v35-large"
+msgstr ""
+
+#: admin/views/settings.php:71
+msgid "e.g. meta-llama/llama-3-70b-instruct"
+msgstr ""
+
+#: admin/views/settings.php:588
+msgid "e.g. sports, entertainment"
+msgstr ""
+
+#: admin/views/settings.php:579
+msgid "e.g. technology, AI, climate"
+msgstr ""
+
+#: admin/views/settings.php:88
+msgid "e.g. technology, health, finance"
+msgstr ""
+
+#: admin/views/settings.php:37
+msgid "fal.ai API Key"
+msgstr ""
+
+#: includes/class-image-generator.php:77
+msgid "fal.ai API key is missing (inline image)."
+msgstr ""
+
+#: includes/class-image-generator.php:26
+msgid "fal.ai API key is missing."
+msgstr ""
+
+#: includes/class-image-generator.php:196
+msgid "fal.ai image generation failed."
+msgstr ""
+
+#: includes/class-image-generator.php:133
+msgid "fal.ai queue error: "
+msgstr ""
+
+#: includes/class-image-generator.php:202
+msgid "fal.ai timeout after %d polls."
+msgstr ""
+
+#: admin/views/settings.php:437
+msgid "to"
+msgstr ""
+
+#: admin/views/settings.php:256
+msgid "weight:"
+msgstr ""
+
+#: admin/views/settings.php:274
+msgid "— Use AI suggestion —"
+msgstr ""
+
+#: admin/views/settings.php:0
+msgid "GitHub Token (updates)"
+msgstr ""
+
+#: admin/views/settings.php:0
+msgid ""
+"Optional. A GitHub personal access token with <strong>no "
+"permissions</strong> (public repo). Avoids API rate limiting for update "
+"checks. Create one at <a href=\"https://github.com/settings/tokens/new\" "
+"target=\"_blank\" rel=\"noopener\">github.com/settings/tokens</a>."
+msgstr ""

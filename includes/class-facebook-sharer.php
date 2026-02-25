@@ -30,20 +30,21 @@ class FacebookSharer {
         $access_token = Settings::get( 'fb_access_token' );
 
         if ( empty( $page_id ) || empty( $access_token ) ) {
-            Logger::warning( 'Facebook-deling: Mangler side-ID eller tilgangstoken.' );
+            Logger::warning( __( 'Facebook sharing: Missing page ID or access token.', 'wp-autopilot' ) );
             return;
         }
 
-        // Hindre dobbeltdeling.
+        // Prevent double sharing.
         if ( get_post_meta( $post_id, '_wpa_fb_shared', true ) ) {
-            Logger::info( sprintf( 'Facebook-deling: Artikkel %d allerede delt.', $post_id ) );
+            /* translators: %d: post ID */
+            Logger::info( sprintf( __( 'Facebook sharing: Article %d already shared.', 'wp-autopilot' ), $post_id ) );
             return;
         }
 
-        // Generer FB-tekst.
+        // Generate FB text.
         $fb_text = $this->generate_fb_text( $post_id, $article );
 
-        // Generer poster om valgt.
+        // Generate poster if selected.
         $poster_id = null;
         if ( Settings::get( 'fb_image_mode' ) === 'generated_poster' ) {
             $poster_id = $this->generate_poster(
@@ -54,18 +55,19 @@ class FacebookSharer {
             );
 
             if ( ! $poster_id ) {
-                Logger::warning( 'Facebook-deling: Poster-generering feilet, faller tilbake til link-post.' );
+                Logger::warning( __( 'Facebook sharing: Poster generation failed, falling back to link post.', 'wp-autopilot' ) );
             }
         }
 
-        // Post til Facebook.
+        // Post to Facebook.
         $link      = get_permalink( $post_id );
         $fb_result = $this->post_to_facebook( $fb_text, $link, $poster_id );
 
         if ( $fb_result ) {
             update_post_meta( $post_id, '_wpa_fb_shared', true );
             update_post_meta( $post_id, '_wpa_fb_post_id', $fb_result );
-            Logger::info( sprintf( 'Facebook-deling: Artikkel %d delt (FB post ID: %s).', $post_id, $fb_result ) );
+            /* translators: 1: post ID, 2: Facebook post ID */
+            Logger::info( sprintf( __( 'Facebook sharing: Article %1$d shared (FB post ID: %2$s).', 'wp-autopilot' ), $post_id, $fb_result ) );
         }
     }
 
@@ -79,7 +81,7 @@ class FacebookSharer {
     private function generate_fb_text( $post_id, $article ) {
         $api_key = Settings::get( 'openrouter_api_key' );
         if ( empty( $api_key ) ) {
-            Logger::warning( 'Facebook-deling: OpenRouter API-nøkkel mangler, bruker excerpt.' );
+            Logger::warning( __( 'Facebook sharing: OpenRouter API key missing, using excerpt.', 'wp-autopilot' ) );
             return $this->fallback_text( $post_id, $article );
         }
 
@@ -120,7 +122,7 @@ class FacebookSharer {
         ) );
 
         if ( is_wp_error( $response ) ) {
-            Logger::warning( 'Facebook-deling: AI-feil, bruker excerpt. ' . $response->get_error_message() );
+            Logger::warning( __( 'Facebook sharing: AI error, using excerpt. ', 'wp-autopilot' ) . $response->get_error_message() );
             return $this->fallback_text( $post_id, $article );
         }
 
@@ -128,7 +130,8 @@ class FacebookSharer {
         $data        = json_decode( wp_remote_retrieve_body( $response ), true );
 
         if ( $status_code !== 200 ) {
-            Logger::warning( sprintf( 'Facebook-deling: AI returnerte %d, bruker excerpt.', $status_code ) );
+            /* translators: %d: HTTP status code */
+            Logger::warning( sprintf( __( 'Facebook sharing: AI returned %d, using excerpt.', 'wp-autopilot' ), $status_code ) );
             return $this->fallback_text( $post_id, $article );
         }
 
@@ -138,10 +141,11 @@ class FacebookSharer {
             return $this->fallback_text( $post_id, $article );
         }
 
-        // Logg kostnad.
+        // Log cost.
         CostTracker::log_text( $post_id, $model, $data );
 
-        Logger::info( sprintf( 'Facebook-deling: AI-tekst generert for artikkel %d.', $post_id ) );
+        /* translators: %d: post ID */
+        Logger::info( sprintf( __( 'Facebook sharing: AI text generated for article %d.', 'wp-autopilot' ), $post_id ) );
 
         return $text;
     }
@@ -169,18 +173,18 @@ class FacebookSharer {
     public function generate_poster( $post_id, $title, $excerpt, $author_id ) {
         $api_key = Settings::get( 'fal_api_key' );
         if ( empty( $api_key ) ) {
-            Logger::error( 'Facebook-poster: fal.ai API-nøkkel mangler.' );
+            Logger::error( __( 'Facebook poster: fal.ai API key is missing.', 'wp-autopilot' ) );
             return null;
         }
 
         $language = $this->locale_to_language( get_locale() );
 
-        // Samle referansebilder.
+        // Collect reference images.
         $image_urls     = array();
         $has_author_photo = false;
         $has_logo       = false;
 
-        // Forfatter-referansebilde.
+        // Author reference photo.
         if ( Settings::get( 'fb_author_face' ) && $author_id ) {
             $author_photos = json_decode( Settings::get( 'fb_author_photos', '{}' ), true );
             $photo_id      = $author_photos[ $author_id ] ?? null;
@@ -203,22 +207,22 @@ class FacebookSharer {
             }
         }
 
-        // Velg modell og bygg prompt basert på tilgjengelige referansebilder.
+        // Select model and build prompt based on available reference images.
         if ( $has_author_photo && $has_logo ) {
-            // Forfatter + logo → edit-modell.
+            // Author + logo → edit model.
             $model  = self::POSTER_EDIT_MODEL;
             $prompt = $this->build_poster_prompt_author_logo( $title, $excerpt, $language );
         } elseif ( $has_logo ) {
-            // Kun logo → edit-modell.
+            // Logo only → edit model.
             $model  = self::POSTER_EDIT_MODEL;
             $prompt = $this->build_poster_prompt_logo_only( $title, $excerpt, $language );
         } else {
-            // Ingen referansebilder → vanlig generering.
+            // No reference images → standard generation.
             $model  = self::POSTER_MODEL;
             $prompt = $this->build_poster_prompt_plain( $title, $excerpt, $language );
         }
 
-        // Bygg request body.
+        // Build request body.
         $request_body = array(
             'prompt'            => $prompt,
             'aspect_ratio'      => '16:9',
@@ -229,30 +233,31 @@ class FacebookSharer {
             $request_body['image_urls'] = $image_urls;
         }
 
-        // Submit til fal.ai queue.
+        // Submit to fal.ai queue.
         $request_id = $this->submit_to_fal( $api_key, $model, $request_body );
         if ( ! $request_id ) {
             return null;
         }
 
-        // Poll for resultat.
+        // Poll for result.
         $image_url = $this->poll_fal_result( $api_key, $model, $request_id );
         if ( ! $image_url ) {
             return null;
         }
 
-        // Last opp til WP Media Library.
+        // Upload to WP Media Library.
         $attachment_id = $this->upload_poster( $image_url, $title );
         if ( $attachment_id ) {
             CostTracker::log_image( $post_id, 'fb_poster', $model );
-            Logger::info( sprintf( 'Facebook-poster generert (ID: %d) for artikkel %d.', $attachment_id, $post_id ) );
+            /* translators: 1: attachment ID, 2: post ID */
+            Logger::info( sprintf( __( 'Facebook poster generated (ID: %1$d) for article %2$d.', 'wp-autopilot' ), $attachment_id, $post_id ) );
         }
 
         return $attachment_id;
     }
 
     /**
-     * Poster-prompt med forfatter-referansebilde + logo.
+     * Poster prompt with author reference photo + logo.
      */
     private function build_poster_prompt_author_logo( $title, $excerpt, $language ) {
         return "Create a professional, scroll-stopping Facebook sharing poster for this news article.\n\n"
@@ -268,7 +273,7 @@ class FacebookSharer {
     }
 
     /**
-     * Poster-prompt med kun logo (uten forfatter).
+     * Poster prompt with logo only (without author).
      */
     private function build_poster_prompt_logo_only( $title, $excerpt, $language ) {
         return "Create a professional, scroll-stopping Facebook sharing poster for this news article.\n\n"
@@ -281,7 +286,7 @@ class FacebookSharer {
     }
 
     /**
-     * Poster-prompt uten referansebilder.
+     * Poster prompt without reference images.
      */
     private function build_poster_prompt_plain( $title, $excerpt, $language ) {
         return "Create a professional, scroll-stopping Facebook sharing poster for this news article.\n\n"
@@ -311,7 +316,7 @@ class FacebookSharer {
         ) );
 
         if ( is_wp_error( $response ) ) {
-            Logger::error( 'Facebook-poster: fal.ai queue-feil: ' . $response->get_error_message() );
+            Logger::error( __( 'Facebook poster: fal.ai queue error: ', 'wp-autopilot' ) . $response->get_error_message() );
             return null;
         }
 
@@ -319,7 +324,7 @@ class FacebookSharer {
         $request_id = $data['request_id'] ?? null;
 
         if ( ! $request_id ) {
-            Logger::error( 'Facebook-poster: Fikk ikke request_id fra fal.ai.', $data );
+            Logger::error( __( 'Facebook poster: Did not receive request_id from fal.ai.', 'wp-autopilot' ), $data );
             return null;
         }
 
@@ -367,23 +372,24 @@ class FacebookSharer {
                 );
 
                 if ( is_wp_error( $result_response ) ) {
-                    Logger::error( 'Facebook-poster: Kunne ikke hente fal.ai-resultat: ' . $result_response->get_error_message() );
+                    Logger::error( __( 'Facebook poster: Could not fetch fal.ai result: ', 'wp-autopilot' ) . $result_response->get_error_message() );
                     return null;
                 }
 
                 $result = json_decode( wp_remote_retrieve_body( $result_response ), true );
 
-                // Håndter begge responsformat.
+                // Handle both response formats.
                 return $result['images'][0]['url'] ?? $result['image']['url'] ?? null;
             }
 
             if ( $status === 'FAILED' ) {
-                Logger::error( 'Facebook-poster: fal.ai bildegenerering feilet.', $data );
+                Logger::error( __( 'Facebook poster: fal.ai image generation failed.', 'wp-autopilot' ), $data );
                 return null;
             }
         }
 
-        Logger::error( 'Facebook-poster: fal.ai timeout etter ' . self::MAX_POLLS . ' polls.' );
+        /* translators: %d: number of poll attempts */
+        Logger::error( sprintf( __( 'Facebook poster: fal.ai timeout after %d polls.', 'wp-autopilot' ), self::MAX_POLLS ) );
         return null;
     }
 
@@ -403,7 +409,7 @@ class FacebookSharer {
 
         $tmp = download_url( $url, 60 );
         if ( is_wp_error( $tmp ) ) {
-            Logger::error( 'Facebook-poster: Kunne ikke laste ned bilde: ' . $tmp->get_error_message() );
+            Logger::error( __( 'Facebook poster: Could not download image: ', 'wp-autopilot' ) . $tmp->get_error_message() );
             return null;
         }
 
@@ -418,7 +424,7 @@ class FacebookSharer {
 
         if ( is_wp_error( $attachment_id ) ) {
             @unlink( $tmp );
-            Logger::error( 'Facebook-poster: Kunne ikke laste opp til mediebiblioteket: ' . $attachment_id->get_error_message() );
+            Logger::error( __( 'Facebook poster: Could not upload to media library: ', 'wp-autopilot' ) . $attachment_id->get_error_message() );
             return null;
         }
 
@@ -439,14 +445,14 @@ class FacebookSharer {
         $api_base     = 'https://graph.facebook.com/' . self::FB_API_VERSION;
 
         if ( $poster_id ) {
-            // Post med bilde via /photos endpoint.
+            // Post with image via /photos endpoint.
             $poster_url = wp_get_attachment_url( $poster_id );
             if ( ! $poster_url ) {
-                Logger::warning( 'Facebook-deling: Kunne ikke hente poster-URL, faller tilbake til link-post.' );
+                Logger::warning( __( 'Facebook sharing: Could not get poster URL, falling back to link post.', 'wp-autopilot' ) );
                 return $this->post_link_to_facebook( $message, $link );
             }
 
-            // Inkluder lenken i meldingen for poster-posts.
+            // Include the link in the message for poster posts.
             $full_message = $message . "\n\n" . $link;
 
             $response = wp_remote_post( "{$api_base}/{$page_id}/photos", array(
@@ -458,7 +464,7 @@ class FacebookSharer {
                 ),
             ) );
         } else {
-            // Link-post via /feed endpoint (FB scraper henter OG-bilde).
+            // Link post via /feed endpoint (FB scraper fetches OG image).
             $response = $this->post_link_to_facebook_raw( $message, $link );
             return $this->handle_fb_response( $response );
         }
@@ -500,7 +506,7 @@ class FacebookSharer {
      */
     private function handle_fb_response( $response ) {
         if ( is_wp_error( $response ) ) {
-            Logger::error( 'Facebook API-feil: ' . $response->get_error_message() );
+            Logger::error( __( 'Facebook API error: ', 'wp-autopilot' ) . $response->get_error_message() );
             return null;
         }
 
@@ -508,12 +514,13 @@ class FacebookSharer {
         $data        = json_decode( wp_remote_retrieve_body( $response ), true );
 
         if ( $status_code !== 200 ) {
-            $error_msg = $data['error']['message'] ?? 'Ukjent feil';
-            Logger::error( sprintf( 'Facebook API returnerte %d: %s', $status_code, $error_msg ) );
+            $error_msg = $data['error']['message'] ?? __( 'Unknown error', 'wp-autopilot' );
+            /* translators: 1: HTTP status code, 2: error message */
+            Logger::error( sprintf( __( 'Facebook API returned %1$d: %2$s', 'wp-autopilot' ), $status_code, $error_msg ) );
             return null;
         }
 
-        // /feed returnerer {id}, /photos returnerer {id, post_id}.
+        // /feed returns {id}, /photos returns {id, post_id}.
         return $data['id'] ?? $data['post_id'] ?? null;
     }
 

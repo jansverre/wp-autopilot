@@ -8,15 +8,15 @@ if ( ! defined( 'ABSPATH' ) ) {
     <nav class="nav-tab-wrapper wpa-tabs">
         <a href="<?php echo esc_url( admin_url( 'admin.php?page=wpa-settings' ) ); ?>"
            class="nav-tab <?php echo ( $_GET['page'] ?? '' ) === 'wpa-settings' ? 'nav-tab-active' : ''; ?>">
-            Innstillinger
+            <?php esc_html_e( 'Settings', 'wp-autopilot' ); ?>
         </a>
         <a href="<?php echo esc_url( admin_url( 'admin.php?page=wpa-feeds' ) ); ?>"
            class="nav-tab <?php echo ( $_GET['page'] ?? '' ) === 'wpa-feeds' ? 'nav-tab-active' : ''; ?>">
-            Feeds
+            <?php esc_html_e( 'Feeds', 'wp-autopilot' ); ?>
         </a>
         <a href="<?php echo esc_url( admin_url( 'admin.php?page=wpa-status' ) ); ?>"
            class="nav-tab <?php echo ( $_GET['page'] ?? '' ) === 'wpa-status' ? 'nav-tab-active' : ''; ?>">
-            Status
+            <?php esc_html_e( 'Status', 'wp-autopilot' ); ?>
         </a>
     </nav>
     <div class="wpa-content">

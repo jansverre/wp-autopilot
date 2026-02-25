@@ -110,7 +110,7 @@ class Publisher {
         $post_id = wp_insert_post( $post_data, true );
 
         if ( is_wp_error( $post_id ) ) {
-            Logger::error( 'Kunne ikke opprette innlegg: ' . $post_id->get_error_message() );
+            Logger::error( __( 'Could not create post: ', 'wp-autopilot' ) . $post_id->get_error_message() );
             return null;
         }
 
@@ -128,11 +128,13 @@ class Publisher {
 
         $actual_status = $scheduled_date && $post_status === 'publish' ? 'future' : $post_status;
         $schedule_info = $scheduled_date && $post_status === 'publish'
-            ? sprintf( ', planlagt: %s', get_date_from_gmt( $scheduled_date, 'j. M H:i' ) )
+            /* translators: %s: scheduled date */
+            ? sprintf( __( ', scheduled: %s', 'wp-autopilot' ), get_date_from_gmt( $scheduled_date, 'j. M H:i' ) )
             : '';
 
+        /* translators: 1: post title, 2: post ID, 3: post status, 4: schedule info */
         Logger::info( sprintf(
-            'Innlegg opprettet: "%s" (ID: %d, status: %s%s)',
+            __( 'Post created: "%1$s" (ID: %2$d, status: %3$s%4$s)', 'wp-autopilot' ),
             $title,
             $post_id,
             $actual_status,

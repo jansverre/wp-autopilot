@@ -35,35 +35,35 @@ $article_costs = CostTracker::get_article_costs( 20 );
 <!-- Status Cards -->
 <div class="wpa-status-cards">
     <div class="wpa-card">
-        <h3>Autopilot</h3>
+        <h3><?php esc_html_e( 'Autopilot', 'wp-autopilot' ); ?></h3>
         <p class="wpa-card-value">
             <span class="wpa-status-badge <?php echo $settings['enabled'] ? 'wpa-active' : 'wpa-inactive'; ?>">
-                <?php echo $settings['enabled'] ? 'Aktivert' : 'Deaktivert'; ?>
+                <?php echo $settings['enabled'] ? esc_html__( 'Enabled', 'wp-autopilot' ) : esc_html__( 'Disabled', 'wp-autopilot' ); ?>
             </span>
         </p>
     </div>
     <div class="wpa-card">
-        <h3>Neste kjøring</h3>
+        <h3><?php esc_html_e( 'Next Run', 'wp-autopilot' ); ?></h3>
         <p class="wpa-card-value">
             <?php
             if ( $next_run ) {
                 echo esc_html( date_i18n( 'j. M Y H:i', $next_run ) );
             } else {
-                echo 'Ikke planlagt';
+                esc_html_e( 'Not scheduled', 'wp-autopilot' );
             }
             ?>
         </p>
     </div>
     <div class="wpa-card">
-        <h3>Artikler i dag</h3>
+        <h3><?php esc_html_e( 'Articles Today', 'wp-autopilot' ); ?></h3>
         <p class="wpa-card-value"><?php echo esc_html( $articles_today . ' / ' . $settings['max_per_day'] ); ?></p>
     </div>
     <div class="wpa-card">
-        <h3>Totalt publisert</h3>
+        <h3><?php esc_html_e( 'Total Published', 'wp-autopilot' ); ?></h3>
         <p class="wpa-card-value"><?php echo esc_html( $total_articles ); ?></p>
     </div>
     <div class="wpa-card">
-        <h3>Indekserte artikler</h3>
+        <h3><?php esc_html_e( 'Indexed Articles', 'wp-autopilot' ); ?></h3>
         <p class="wpa-card-value"><?php echo esc_html( $indexed_links ); ?></p>
     </div>
 </div>
@@ -71,36 +71,36 @@ $article_costs = CostTracker::get_article_costs( 20 );
 <!-- Cost Cards -->
 <div class="wpa-status-cards">
     <div class="wpa-card">
-        <h3>Kostnad i dag</h3>
+        <h3><?php esc_html_e( 'Cost Today', 'wp-autopilot' ); ?></h3>
         <p class="wpa-card-value">$<?php echo esc_html( number_format( $cost_summary['cost_today'], 4 ) ); ?></p>
     </div>
     <div class="wpa-card">
-        <h3>Kostnad 7 dager</h3>
+        <h3><?php esc_html_e( 'Cost 7 Days', 'wp-autopilot' ); ?></h3>
         <p class="wpa-card-value">$<?php echo esc_html( number_format( $cost_summary['cost_7d'], 4 ) ); ?></p>
     </div>
     <div class="wpa-card">
-        <h3>Kostnad 30 dager</h3>
+        <h3><?php esc_html_e( 'Cost 30 Days', 'wp-autopilot' ); ?></h3>
         <p class="wpa-card-value">$<?php echo esc_html( number_format( $cost_summary['cost_30d'], 4 ) ); ?></p>
     </div>
     <div class="wpa-card">
-        <h3>Snitt per artikkel</h3>
+        <h3><?php esc_html_e( 'Avg. per Article', 'wp-autopilot' ); ?></h3>
         <p class="wpa-card-value">$<?php echo esc_html( number_format( $cost_summary['avg_per_article'], 4 ) ); ?></p>
     </div>
     <div class="wpa-card">
-        <h3>Totale tokens</h3>
+        <h3><?php esc_html_e( 'Total Tokens', 'wp-autopilot' ); ?></h3>
         <p class="wpa-card-value"><?php echo esc_html( number_format( $cost_summary['tokens_in_total'] + $cost_summary['tokens_out_total'] ) ); ?></p>
     </div>
 </div>
 
 <!-- Actions -->
 <div class="wpa-section">
-    <h2>Handlinger</h2>
+    <h2><?php esc_html_e( 'Actions', 'wp-autopilot' ); ?></h2>
     <p>
         <button type="button" id="wpa-run-now" class="button button-primary">
-            Kjør autopilot nå
+            <?php esc_html_e( 'Run Autopilot Now', 'wp-autopilot' ); ?>
         </button>
         <button type="button" id="wpa-reindex" class="button">
-            Re-indekser interne lenker
+            <?php esc_html_e( 'Re-index Internal Links', 'wp-autopilot' ); ?>
         </button>
         <span id="wpa-action-spinner" class="spinner"></span>
     </p>
@@ -110,16 +110,16 @@ $article_costs = CostTracker::get_article_costs( 20 );
 <!-- Cost Table -->
 <?php if ( ! empty( $article_costs ) ) : ?>
 <div class="wpa-section">
-    <h2>Kostnader per artikkel (siste 20)</h2>
+    <h2><?php esc_html_e( 'Cost per Article (last 20)', 'wp-autopilot' ); ?></h2>
     <table class="wp-list-table widefat fixed striped">
         <thead>
             <tr>
-                <th style="width: 15%;">Tidspunkt</th>
-                <th>Artikkel</th>
-                <th style="width: 10%;">Typer</th>
-                <th style="width: 10%;">Tokens inn</th>
-                <th style="width: 10%;">Tokens ut</th>
-                <th style="width: 10%;">Kostnad</th>
+                <th style="width: 15%;"><?php esc_html_e( 'Time', 'wp-autopilot' ); ?></th>
+                <th><?php esc_html_e( 'Article', 'wp-autopilot' ); ?></th>
+                <th style="width: 10%;"><?php esc_html_e( 'Types', 'wp-autopilot' ); ?></th>
+                <th style="width: 10%;"><?php esc_html_e( 'Tokens In', 'wp-autopilot' ); ?></th>
+                <th style="width: 10%;"><?php esc_html_e( 'Tokens Out', 'wp-autopilot' ); ?></th>
+                <th style="width: 10%;"><?php esc_html_e( 'Cost', 'wp-autopilot' ); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -149,21 +149,21 @@ $article_costs = CostTracker::get_article_costs( 20 );
 
 <!-- Log -->
 <div class="wpa-section">
-    <h2>Logg (siste 50 rader)</h2>
-    <button type="button" id="wpa-refresh-log" class="button" style="margin-bottom: 10px;">Oppdater logg</button>
+    <h2><?php esc_html_e( 'Log (last 50 entries)', 'wp-autopilot' ); ?></h2>
+    <button type="button" id="wpa-refresh-log" class="button" style="margin-bottom: 10px;"><?php esc_html_e( 'Refresh Log', 'wp-autopilot' ); ?></button>
     <table class="wp-list-table widefat fixed striped" id="wpa-log-table">
         <thead>
             <tr>
-                <th style="width: 15%;">Tidspunkt</th>
-                <th style="width: 8%;">Nivå</th>
-                <th>Melding</th>
-                <th style="width: 20%;">Kontekst</th>
+                <th style="width: 15%;"><?php esc_html_e( 'Time', 'wp-autopilot' ); ?></th>
+                <th style="width: 8%;"><?php esc_html_e( 'Level', 'wp-autopilot' ); ?></th>
+                <th><?php esc_html_e( 'Message', 'wp-autopilot' ); ?></th>
+                <th style="width: 20%;"><?php esc_html_e( 'Context', 'wp-autopilot' ); ?></th>
             </tr>
         </thead>
         <tbody id="wpa-log-body">
             <?php if ( empty( $logs ) ) : ?>
                 <tr>
-                    <td colspan="4">Ingen logg-innslag ennå.</td>
+                    <td colspan="4"><?php esc_html_e( 'No log entries yet.', 'wp-autopilot' ); ?></td>
                 </tr>
             <?php else : ?>
                 <?php foreach ( $logs as $log ) : ?>

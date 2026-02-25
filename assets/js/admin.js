@@ -1,6 +1,8 @@
 (function ($) {
     'use strict';
 
+    var i18n = (typeof wpaAdmin !== 'undefined' && wpaAdmin.i18n) ? wpaAdmin.i18n : {};
+
     // --- Feed Management ---
 
     // Add feed
@@ -9,7 +11,7 @@
         var url = $('#wpa-feed-url').val().trim();
 
         if (!url) {
-            $('#wpa-feed-message').text('URL er påkrevd.').removeClass('success').addClass('error');
+            $('#wpa-feed-message').text(i18n.urlRequired || 'URL is required.').removeClass('success').addClass('error');
             return;
         }
 
@@ -33,20 +35,20 @@
                 $('#wpa-feed-name').val('');
                 $('#wpa-feed-url').val('');
                 renderFeeds(response.data.feeds);
-                $('#wpa-feed-message').text('Feed lagt til.').removeClass('error').addClass('success');
+                $('#wpa-feed-message').text(i18n.feedAdded || 'Feed added.').removeClass('error').addClass('success');
             } else {
-                $('#wpa-feed-message').text(response.data || 'Feil ved tillegging.').removeClass('success').addClass('error');
+                $('#wpa-feed-message').text(response.data || i18n.errorAdding || 'Error adding feed.').removeClass('success').addClass('error');
             }
         }).fail(function () {
             $btn.prop('disabled', false);
             $spinner.removeClass('is-active');
-            $('#wpa-feed-message').text('Nettverksfeil.').removeClass('success').addClass('error');
+            $('#wpa-feed-message').text(i18n.networkError || 'Network error.').removeClass('success').addClass('error');
         });
     });
 
     // Delete feed
     $(document).on('click', '.wpa-delete-feed', function () {
-        if (!confirm('Er du sikker på at du vil slette denne feeden?')) {
+        if (!confirm(i18n.confirmDeleteFeed || 'Are you sure you want to delete this feed?')) {
             return;
         }
 
@@ -83,14 +85,14 @@
         $body.empty();
 
         if (!feeds || feeds.length === 0) {
-            $body.append('<tr class="wpa-no-feeds"><td colspan="4">Ingen feeds lagt til ennå.</td></tr>');
+            $body.append('<tr class="wpa-no-feeds"><td colspan="4">' + escHtml(i18n.noFeeds || 'No feeds added yet.') + '</td></tr>');
             return;
         }
 
         feeds.forEach(function (feed) {
             var statusClass = feed.active ? 'wpa-active' : 'wpa-inactive';
-            var statusText = feed.active ? 'Aktiv' : 'Inaktiv';
-            var toggleText = feed.active ? 'Deaktiver' : 'Aktiver';
+            var statusText = feed.active ? (i18n.active || 'Active') : (i18n.inactive || 'Inactive');
+            var toggleText = feed.active ? (i18n.deactivate || 'Deactivate') : (i18n.activate || 'Activate');
 
             var row = '<tr data-feed-id="' + feed.id + '">' +
                 '<td>' + escHtml(feed.name) + '</td>' +
@@ -98,7 +100,7 @@
                 '<td><span class="wpa-status-badge ' + statusClass + '">' + statusText + '</span></td>' +
                 '<td>' +
                 '<button type="button" class="button wpa-toggle-feed" data-feed-id="' + feed.id + '">' + toggleText + '</button> ' +
-                '<button type="button" class="button wpa-delete-feed" data-feed-id="' + feed.id + '">Slett</button>' +
+                '<button type="button" class="button wpa-delete-feed" data-feed-id="' + feed.id + '">' + escHtml(i18n.delete || 'Delete') + '</button>' +
                 '</td></tr>';
 
             $body.append(row);
@@ -114,7 +116,7 @@
 
         $btn.prop('disabled', true);
         $spinner.addClass('is-active');
-        $msg.text('Kjører autopilot... Dette kan ta noen minutter.').removeClass('error success');
+        $msg.text(i18n.runningAutopilot || 'Running autopilot... This may take a few minutes.').removeClass('error success');
 
         $.post(wpaAdmin.ajaxUrl, {
             action: 'wpa_run_now',
@@ -127,12 +129,12 @@
                 $msg.text(response.data.message).removeClass('error').addClass('success');
                 refreshLog();
             } else {
-                $msg.text(response.data || 'Feil under kjøring.').removeClass('success').addClass('error');
+                $msg.text(response.data || i18n.errorRunning || 'Error during run.').removeClass('success').addClass('error');
             }
         }).fail(function () {
             $btn.prop('disabled', false);
             $spinner.removeClass('is-active');
-            $msg.text('Nettverksfeil eller timeout.').removeClass('success').addClass('error');
+            $msg.text(i18n.networkOrTimeout || 'Network error or timeout.').removeClass('success').addClass('error');
         });
     });
 
@@ -145,7 +147,7 @@
 
         $btn.prop('disabled', true);
         $spinner.addClass('is-active');
-        $msg.text('Re-indekserer...').removeClass('error success');
+        $msg.text(i18n.reindexing || 'Re-indexing...').removeClass('error success');
 
         $.post(wpaAdmin.ajaxUrl, {
             action: 'wpa_reindex',
@@ -157,12 +159,12 @@
             if (response.success) {
                 $msg.text(response.data.message).removeClass('error').addClass('success');
             } else {
-                $msg.text(response.data || 'Feil under re-indeksering.').removeClass('success').addClass('error');
+                $msg.text(response.data || i18n.errorReindexing || 'Error during re-indexing.').removeClass('success').addClass('error');
             }
         }).fail(function () {
             $btn.prop('disabled', false);
             $spinner.removeClass('is-active');
-            $msg.text('Nettverksfeil.').removeClass('success').addClass('error');
+            $msg.text(i18n.networkError || 'Network error.').removeClass('success').addClass('error');
         });
     });
 
@@ -182,7 +184,7 @@
                 $body.empty();
 
                 if (response.data.logs.length === 0) {
-                    $body.append('<tr><td colspan="4">Ingen logg-innslag ennå.</td></tr>');
+                    $body.append('<tr><td colspan="4">' + escHtml(i18n.noLogEntries || 'No log entries yet.') + '</td></tr>');
                     return;
                 }
 
@@ -278,7 +280,7 @@
 
         $btn.prop('disabled', true);
         $spinner.addClass('is-active');
-        $msg.text('Analyserer skrivestil...').removeClass('error success');
+        $msg.text(i18n.analyzingStyle || 'Analyzing writing style...').removeClass('error success');
 
         $.post(wpaAdmin.ajaxUrl, {
             action: 'wpa_analyze_style',
@@ -294,14 +296,14 @@
                 $('#wpa_writing_style_text').val(style);
                 // Update local cache so switching authors and back preserves the text.
                 writingStyles[authorId] = style;
-                $msg.text('Analyse fullført. Klikk «Lagre skrivestil» for å beholde den.').removeClass('error').addClass('success');
+                $msg.text(i18n.analysisComplete || 'Analysis complete. Click "Save writing style" to keep it.').removeClass('error').addClass('success');
             } else {
-                $msg.text(response.data || 'Feil under analyse.').removeClass('success').addClass('error');
+                $msg.text(response.data || i18n.errorAnalysis || 'Error during analysis.').removeClass('success').addClass('error');
             }
         }).fail(function () {
             $btn.prop('disabled', false);
             $spinner.removeClass('is-active');
-            $msg.text('Nettverksfeil eller timeout.').removeClass('success').addClass('error');
+            $msg.text(i18n.networkOrTimeout || 'Network error or timeout.').removeClass('success').addClass('error');
         });
     });
 
@@ -334,14 +336,14 @@
                 }
                 // Re-set textarea from cache to ensure it stays.
                 $('#wpa_writing_style_text').val(writingStyles[authorId] || '');
-                $msg.text('Skrivestil lagret.').removeClass('error').addClass('success');
+                $msg.text(i18n.styleSaved || 'Writing style saved.').removeClass('error').addClass('success');
             } else {
-                $msg.text(response.data || 'Feil ved lagring.').removeClass('success').addClass('error');
+                $msg.text(response.data || i18n.errorSaving || 'Error saving.').removeClass('success').addClass('error');
             }
         }).fail(function () {
             $btn.prop('disabled', false);
             $spinner.removeClass('is-active');
-            $msg.text('Nettverksfeil.').removeClass('success').addClass('error');
+            $msg.text(i18n.networkError || 'Network error.').removeClass('success').addClass('error');
         });
     });
 
@@ -371,7 +373,7 @@
         var token = $('#wpa_fb_access_token').val().trim();
 
         if (!pageId || !token) {
-            $msg.text('Fyll inn side-ID og tilgangstoken.').removeClass('success').addClass('error');
+            $msg.text(i18n.fillPageIdAndToken || 'Please enter Page ID and access token.').removeClass('success').addClass('error');
             return;
         }
 
@@ -389,14 +391,14 @@
             $spinner.removeClass('is-active');
 
             if (response.success) {
-                $msg.text('Tilkoblet: ' + response.data.name + ' (ID: ' + response.data.id + ')').removeClass('error').addClass('success');
+                $msg.text((i18n.connected || 'Connected:') + ' ' + response.data.name + ' (ID: ' + response.data.id + ')').removeClass('error').addClass('success');
             } else {
-                $msg.text(response.data || 'Tilkoblingsfeil.').removeClass('success').addClass('error');
+                $msg.text(response.data || i18n.connectionError || 'Connection error.').removeClass('success').addClass('error');
             }
         }).fail(function () {
             $btn.prop('disabled', false);
             $spinner.removeClass('is-active');
-            $msg.text('Nettverksfeil.').removeClass('success').addClass('error');
+            $msg.text(i18n.networkError || 'Network error.').removeClass('success').addClass('error');
         });
     });
 
@@ -409,8 +411,8 @@
         var $removeBtn = $('.wpa-fb-remove-photo[data-author-id="' + authorId + '"]');
 
         var frame = wp.media({
-            title: 'Velg forfatter-foto',
-            button: { text: 'Bruk dette bildet' },
+            title: i18n.selectAuthorPhoto || 'Select author photo',
+            button: { text: i18n.useThisImage || 'Use this image' },
             multiple: false,
             library: { type: 'image' }
         });

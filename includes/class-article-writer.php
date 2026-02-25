@@ -19,7 +19,7 @@ class ArticleWriter {
     public function write( array $news_item, array $related_links = array(), $author_id = null ) {
         $api_key = Settings::get( 'openrouter_api_key' );
         if ( empty( $api_key ) ) {
-            Logger::error( 'OpenRouter API-nøkkel mangler.' );
+            Logger::error( __( 'OpenRouter API key is missing.', 'wp-autopilot' ) );
             return null;
         }
 
@@ -58,7 +58,7 @@ class ArticleWriter {
         ) );
 
         if ( is_wp_error( $response ) ) {
-            Logger::error( 'OpenRouter API-feil: ' . $response->get_error_message() );
+            Logger::error( __( 'OpenRouter API error: ', 'wp-autopilot' ) . $response->get_error_message() );
             return null;
         }
 
@@ -67,20 +67,21 @@ class ArticleWriter {
         $data = json_decode( $response_body, true );
 
         if ( $status_code !== 200 ) {
-            $error_msg = $data['error']['message'] ?? 'Ukjent feil';
-            Logger::error( sprintf( 'OpenRouter API returnerte %d: %s', $status_code, $error_msg ) );
+            $error_msg = $data['error']['message'] ?? __( 'Unknown error', 'wp-autopilot' );
+            /* translators: 1: HTTP status code, 2: error message */
+            Logger::error( sprintf( __( 'OpenRouter API returned %1$d: %2$s', 'wp-autopilot' ), $status_code, $error_msg ) );
             return null;
         }
 
         $content = $data['choices'][0]['message']['content'] ?? null;
         if ( empty( $content ) ) {
-            Logger::error( 'Tomt svar fra OpenRouter API.' );
+            Logger::error( __( 'Empty response from OpenRouter API.', 'wp-autopilot' ) );
             return null;
         }
 
         $article = json_decode( $content, true );
         if ( ! $article || empty( $article['title'] ) || empty( $article['content'] ) ) {
-            Logger::error( 'Kunne ikke parse AI-respons som JSON.', $content );
+            Logger::error( __( 'Could not parse AI response as JSON.', 'wp-autopilot' ), $content );
             return null;
         }
 
@@ -104,7 +105,8 @@ class ArticleWriter {
         $article['_usage'] = $data['usage'] ?? array();
         $article['_response_data'] = $data;
 
-        Logger::info( sprintf( 'Artikkel generert: "%s"', $article['title'] ) );
+        /* translators: %s: article title */
+        Logger::info( sprintf( __( 'Article generated: "%s"', 'wp-autopilot' ), $article['title'] ) );
 
         return $article;
     }
@@ -119,7 +121,7 @@ class ArticleWriter {
     public function analyze_style( $author_id, $num_posts = 5 ) {
         $api_key = Settings::get( 'openrouter_api_key' );
         if ( empty( $api_key ) ) {
-            return array( 'error' => 'OpenRouter API-nøkkel mangler.' );
+            return array( 'error' => __( 'OpenRouter API key is missing.', 'wp-autopilot' ) );
         }
 
         $posts = get_posts( array(
@@ -132,7 +134,7 @@ class ArticleWriter {
         ) );
 
         if ( empty( $posts ) ) {
-            return array( 'error' => 'Ingen publiserte innlegg funnet for denne forfatteren.' );
+            return array( 'error' => __( 'No published posts found for this author.', 'wp-autopilot' ) );
         }
 
         // Build sample text from posts.
@@ -179,14 +181,14 @@ class ArticleWriter {
         ) );
 
         if ( is_wp_error( $response ) ) {
-            return array( 'error' => 'API-feil: ' . $response->get_error_message() );
+            return array( 'error' => __( 'API error: ', 'wp-autopilot' ) . $response->get_error_message() );
         }
 
         $status_code = wp_remote_retrieve_response_code( $response );
         $data = json_decode( wp_remote_retrieve_body( $response ), true );
 
         if ( $status_code !== 200 ) {
-            return array( 'error' => $data['error']['message'] ?? 'Ukjent API-feil' );
+            return array( 'error' => $data['error']['message'] ?? __( 'Unknown API error', 'wp-autopilot' ) );
         }
 
         $style = $data['choices'][0]['message']['content'] ?? '';
