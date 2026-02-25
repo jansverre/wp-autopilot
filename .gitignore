@@ -8,5 +8,9 @@ Thumbs.db
 *.swp
 *.swo
 
+# Claude Code
+CLAUDE.md
+.claude/
+
 # Build artifacts
 *.zip

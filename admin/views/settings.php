@@ -449,6 +449,124 @@ $author_ids = array_column( $post_authors, 'id' );
         </table>
     </div>
 
+    <!-- Facebook Sharing -->
+    <div class="wpa-section">
+        <h2>Facebook-deling</h2>
+        <table class="form-table">
+            <tr>
+                <th><label for="wpa_fb_enabled">Aktiver Facebook-deling</label></th>
+                <td>
+                    <label>
+                        <input type="checkbox" id="wpa_fb_enabled" name="wpa_fb_enabled"
+                               value="1" <?php checked( $settings['fb_enabled'] ?? false ); ?>>
+                        Del autopilot-artikler automatisk til Facebook-side
+                    </label>
+                </td>
+            </tr>
+        </table>
+        <div id="wpa-fb-settings" style="<?php echo empty( $settings['fb_enabled'] ) ? 'display:none;' : ''; ?>">
+            <table class="form-table">
+                <tr>
+                    <th><label for="wpa_fb_page_id">Facebook side-ID</label></th>
+                    <td>
+                        <input type="text" id="wpa_fb_page_id" name="wpa_fb_page_id"
+                               value="<?php echo esc_attr( $settings['fb_page_id'] ?? '' ); ?>"
+                               class="regular-text">
+                        <p class="description">Finn din side-ID under Innstillinger &rarr; Om på din Facebook-side, eller bruk <a href="https://www.facebook.com/pages/?category=your_pages" target="_blank" rel="noopener">facebook.com/pages</a>.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th><label for="wpa_fb_access_token">Side-tilgangstoken</label></th>
+                    <td>
+                        <input type="password" id="wpa_fb_access_token" name="wpa_fb_access_token"
+                               value="<?php echo esc_attr( $settings['fb_access_token'] ?? '' ); ?>"
+                               class="large-text" autocomplete="off">
+                        <p class="description">Page Access Token med <code>pages_manage_posts</code> og <code>pages_read_engagement</code> tillatelser. Genereres via <a href="https://developers.facebook.com/tools/explorer/" target="_blank" rel="noopener">Graph API Explorer</a>.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <td>
+                        <button type="button" id="wpa-test-fb" class="button">Test tilkobling</button>
+                        <span id="wpa-fb-test-spinner" class="spinner"></span>
+                        <span id="wpa-fb-test-message" class="wpa-message"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th><label for="wpa_fb_image_mode">Bildetype</label></th>
+                    <td>
+                        <select id="wpa_fb_image_mode" name="wpa_fb_image_mode">
+                            <option value="featured_image" <?php selected( $settings['fb_image_mode'] ?? 'featured_image', 'featured_image' ); ?>>Featured image (OG-scraping)</option>
+                            <option value="generated_poster" <?php selected( $settings['fb_image_mode'] ?? 'featured_image', 'generated_poster' ); ?>>AI-generert poster</option>
+                        </select>
+                        <p class="description">Featured image: Facebook henter bildet automatisk fra artikkelen. AI-poster: Genererer en unik poster med fal.ai.</p>
+                    </td>
+                </tr>
+            </table>
+            <div id="wpa-fb-poster-settings" style="<?php echo ( $settings['fb_image_mode'] ?? 'featured_image' ) !== 'generated_poster' ? 'display:none;' : ''; ?>">
+                <table class="form-table">
+                    <tr>
+                        <th><label for="wpa_fb_author_face">Forfatter i poster</label></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" id="wpa_fb_author_face" name="wpa_fb_author_face"
+                                       value="1" <?php checked( $settings['fb_author_face'] ?? false ); ?>>
+                                Inkluder forfatterens ansikt i posteren (krever referansebilde)
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+                <div id="wpa-fb-author-photos" style="<?php echo empty( $settings['fb_author_face'] ) ? 'display:none;' : ''; ?>">
+                    <h3 style="margin-top: 20px;">Forfatter-referansebilder</h3>
+                    <p class="description" style="margin-bottom: 10px;">Last opp et portrettbilde for hver forfatter. Bildet brukes som referanse for AI-posteren.</p>
+                    <table class="widefat" style="max-width: 700px;">
+                        <thead>
+                            <tr>
+                                <th>Forfatter</th>
+                                <th>Bilde</th>
+                                <th>Handling</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $fb_author_photos = json_decode( $settings['fb_author_photos'] ?? '{}', true );
+                            if ( ! is_array( $fb_author_photos ) ) {
+                                $fb_author_photos = array();
+                            }
+                            $wp_users = get_users( array( 'role__in' => array( 'administrator', 'editor', 'author' ) ) );
+                            foreach ( $wp_users as $user ) :
+                                $photo_attachment_id = $fb_author_photos[ $user->ID ] ?? 0;
+                                $photo_url = $photo_attachment_id ? wp_get_attachment_image_url( (int) $photo_attachment_id, 'thumbnail' ) : '';
+                            ?>
+                                <tr>
+                                    <td><?php echo esc_html( $user->display_name ); ?></td>
+                                    <td>
+                                        <div class="wpa-fb-photo-preview" data-author-id="<?php echo esc_attr( $user->ID ); ?>">
+                                            <?php if ( $photo_url ) : ?>
+                                                <img src="<?php echo esc_url( $photo_url ); ?>" style="max-width: 60px; max-height: 60px; border-radius: 4px;">
+                                            <?php else : ?>
+                                                <span class="dashicons dashicons-format-image" style="font-size: 40px; color: #ccc;"></span>
+                                            <?php endif; ?>
+                                        </div>
+                                        <input type="hidden" name="wpa_fb_author_photo_<?php echo esc_attr( $user->ID ); ?>"
+                                               class="wpa-fb-photo-input"
+                                               data-author-id="<?php echo esc_attr( $user->ID ); ?>"
+                                               value="<?php echo esc_attr( $photo_attachment_id ); ?>">
+                                    </td>
+                                    <td>
+                                        <button type="button" class="button wpa-fb-upload-photo" data-author-id="<?php echo esc_attr( $user->ID ); ?>">Last opp</button>
+                                        <button type="button" class="button wpa-fb-remove-photo" data-author-id="<?php echo esc_attr( $user->ID ); ?>"
+                                                style="<?php echo $photo_attachment_id ? '' : 'display:none;'; ?>">Fjern</button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Keyword Filtering -->
     <div class="wpa-section">
         <h2>Nøkkelordfiltrering</h2>

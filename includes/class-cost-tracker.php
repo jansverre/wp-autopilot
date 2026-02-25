@@ -15,7 +15,8 @@ class CostTracker {
     private static $image_prices = array(
         'fal-ai/flux-2-pro'              => 0.05,
         'fal-ai/flux-2/klein/realtime'   => 0.01,
-        'fal-ai/nano-banana-pro'         => 0.02,
+        'fal-ai/nano-banana-pro'         => 0.15,
+        'fal-ai/nano-banana-pro/edit'    => 0.165,
         'xai/grok-imagine-image'         => 0.07,
     );
 

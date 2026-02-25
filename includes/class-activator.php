@@ -11,7 +11,7 @@ class Activator {
     /**
      * Current DB schema version.
      */
-    const DB_VERSION = 2;
+    const DB_VERSION = 3;
 
     /**
      * Run on plugin activation.
@@ -167,6 +167,14 @@ class Activator {
 
             // Data management
             'delete_data_on_uninstall' => false,
+
+            // Facebook sharing
+            'fb_enabled'          => false,
+            'fb_page_id'          => '',
+            'fb_access_token'     => '',
+            'fb_image_mode'       => 'featured_image',
+            'fb_author_face'      => false,
+            'fb_author_photos'    => '{}',
 
             // Feeds stored as JSON array
             'feeds'               => '[]',

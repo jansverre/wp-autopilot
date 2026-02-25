@@ -3,10 +3,10 @@
  * Plugin Name:       WP Autopilot
  * Plugin URI:        https://github.com/jansverre/wp-autopilot
  * Description:       AI-powered content automation — fetches news from RSS feeds, writes articles via OpenRouter, generates featured images with fal.ai, and publishes to WordPress on autopilot.
- * Version:           1.1.0
+ * Version:           1.2.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
- * Author:            Jan Sverre
+ * Author:            Jan Sverre Bauge
  * Author URI:        https://github.com/jansverre
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'WPA_VERSION', '1.1.0' );
+define( 'WPA_VERSION', '1.2.0' );
 define( 'WPA_PLUGIN_FILE', __FILE__ );
 define( 'WPA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WPA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -112,6 +112,42 @@ add_action( 'plugins_loaded', function () {
             $links->add_article( $post->ID, $post->post_title, get_permalink( $post->ID ), $post->post_content );
         }
     } );
+
+    // Facebook-deling for planlagte poster (future → publish).
+    add_action( 'transition_post_status', function ( $new_status, $old_status, $post ) {
+        if ( $new_status !== 'publish' || $old_status !== 'future' ) {
+            return;
+        }
+
+        if ( ! \WPAutopilot\Includes\Settings::get( 'fb_enabled' ) ) {
+            return;
+        }
+
+        // Sjekk at dette er en autopilot-artikkel (finnes i wpa_seen_articles).
+        global $wpdb;
+        $seen_table = $wpdb->prefix . 'wpa_seen_articles';
+        $is_autopilot = $wpdb->get_var( $wpdb->prepare(
+            "SELECT COUNT(*) FROM {$seen_table} WHERE post_id = %d",
+            $post->ID
+        ) );
+
+        if ( ! $is_autopilot ) {
+            return;
+        }
+
+        // Hindre dobbeltdeling.
+        if ( get_post_meta( $post->ID, '_wpa_fb_shared', true ) ) {
+            return;
+        }
+
+        $article = array(
+            'title'   => $post->post_title,
+            'excerpt' => $post->post_excerpt ?: wp_trim_words( $post->post_content, 30 ),
+        );
+
+        $fb = new \WPAutopilot\Includes\FacebookSharer();
+        $fb->share( $post->ID, $article, (int) $post->post_author );
+    }, 10, 3 );
 
     // Admin panel.
     if ( is_admin() ) {

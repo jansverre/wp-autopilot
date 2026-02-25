@@ -8,6 +8,7 @@ use WPAutopilot\Includes\Cron;
 use WPAutopilot\Includes\InternalLinks;
 use WPAutopilot\Includes\ArticleWriter;
 use WPAutopilot\Includes\CostTracker;
+use WPAutopilot\Includes\FacebookSharer;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -32,6 +33,7 @@ class Admin {
         add_action( 'wp_ajax_wpa_get_log', array( $this, 'ajax_get_log' ) );
         add_action( 'wp_ajax_wpa_analyze_style', array( $this, 'ajax_analyze_style' ) );
         add_action( 'wp_ajax_wpa_save_writing_style', array( $this, 'ajax_save_writing_style' ) );
+        add_action( 'wp_ajax_wpa_test_fb', array( $this, 'ajax_test_fb' ) );
     }
 
     /**
@@ -88,6 +90,11 @@ class Admin {
 
         if ( ! in_array( $hook, $plugin_pages, true ) ) {
             return;
+        }
+
+        // Enqueue WP Media uploader on settings page (for FB author photos).
+        if ( $hook === 'toplevel_page_wpa-settings' ) {
+            wp_enqueue_media();
         }
 
         wp_enqueue_style(
@@ -245,6 +252,31 @@ class Admin {
             }
         }
 
+        // Facebook settings.
+        if ( isset( $_POST['wpa_fb_page_id'] ) ) {
+            Settings::set( 'fb_page_id', sanitize_text_field( wp_unslash( $_POST['wpa_fb_page_id'] ) ) );
+        }
+        if ( isset( $_POST['wpa_fb_access_token'] ) ) {
+            Settings::set( 'fb_access_token', sanitize_text_field( wp_unslash( $_POST['wpa_fb_access_token'] ) ) );
+        }
+        if ( isset( $_POST['wpa_fb_image_mode'] ) ) {
+            $fb_mode = sanitize_text_field( wp_unslash( $_POST['wpa_fb_image_mode'] ) );
+            if ( in_array( $fb_mode, array( 'featured_image', 'generated_poster' ), true ) ) {
+                Settings::set( 'fb_image_mode', $fb_mode );
+            }
+        }
+
+        // Facebook author photos (collect per-author hidden inputs).
+        $fb_author_photos = array();
+        $wp_users = get_users( array( 'role__in' => array( 'administrator', 'editor', 'author' ), 'fields' => 'ID' ) );
+        foreach ( $wp_users as $uid ) {
+            $key = 'wpa_fb_author_photo_' . $uid;
+            if ( isset( $_POST[ $key ] ) && absint( $_POST[ $key ] ) > 0 ) {
+                $fb_author_photos[ (int) $uid ] = absint( $_POST[ $key ] );
+            }
+        }
+        Settings::set( 'fb_author_photos', wp_json_encode( $fb_author_photos ) );
+
         // Checkboxes.
         Settings::set( 'enabled', ! empty( $_POST['wpa_enabled'] ) );
         Settings::set( 'generate_images', ! empty( $_POST['wpa_generate_images'] ) );
@@ -252,6 +284,8 @@ class Admin {
         Settings::set( 'work_hours_enabled', ! empty( $_POST['wpa_work_hours_enabled'] ) );
         Settings::set( 'delete_data_on_uninstall', ! empty( $_POST['wpa_delete_data_on_uninstall'] ) );
         Settings::set( 'inline_images_enabled', ! empty( $_POST['wpa_inline_images_enabled'] ) );
+        Settings::set( 'fb_enabled', ! empty( $_POST['wpa_fb_enabled'] ) );
+        Settings::set( 'fb_author_face', ! empty( $_POST['wpa_fb_author_face'] ) );
 
         // Reschedule cron if interval or enabled changed.
         $new_interval = Settings::get( 'cron_interval' );
@@ -426,6 +460,44 @@ class Admin {
         }
 
         wp_send_json_success( array( 'style' => $result['style'] ) );
+    }
+
+    /**
+     * AJAX: Test Facebook connection.
+     */
+    public function ajax_test_fb() {
+        check_ajax_referer( 'wpa_admin_nonce', 'nonce' );
+
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( 'Ingen tilgang.' );
+        }
+
+        $page_id      = sanitize_text_field( wp_unslash( $_POST['page_id'] ?? '' ) );
+        $access_token = sanitize_text_field( wp_unslash( $_POST['access_token'] ?? '' ) );
+
+        if ( empty( $page_id ) || empty( $access_token ) ) {
+            wp_send_json_error( 'Fyll inn side-ID og tilgangstoken.' );
+        }
+
+        $api_url = 'https://graph.facebook.com/' . FacebookSharer::FB_API_VERSION
+            . '/' . $page_id . '?fields=name,id&access_token=' . urlencode( $access_token );
+
+        $response = wp_remote_get( $api_url, array( 'timeout' => 15 ) );
+
+        if ( is_wp_error( $response ) ) {
+            wp_send_json_error( 'Nettverksfeil: ' . $response->get_error_message() );
+        }
+
+        $status_code = wp_remote_retrieve_response_code( $response );
+        $data        = json_decode( wp_remote_retrieve_body( $response ), true );
+
+        if ( $status_code !== 200 ) {
+            $error_msg = $data['error']['message'] ?? 'Ukjent feil';
+            wp_send_json_error( sprintf( 'Facebook returnerte feil %d: %s', $status_code, $error_msg ) );
+        }
+
+        $name = $data['name'] ?? 'Ukjent side';
+        wp_send_json_success( array( 'name' => $name, 'id' => $data['id'] ?? $page_id ) );
     }
 
     /**

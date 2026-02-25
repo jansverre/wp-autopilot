@@ -91,6 +91,12 @@ class Settings {
             'keyword_exclude',
             'delete_data_on_uninstall',
             'feeds',
+            'fb_enabled',
+            'fb_page_id',
+            'fb_access_token',
+            'fb_image_mode',
+            'fb_author_face',
+            'fb_author_photos',
         );
 
         $settings = array();

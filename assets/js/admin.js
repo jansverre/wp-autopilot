@@ -345,6 +345,102 @@
         });
     });
 
+    // --- Facebook Sharing ---
+
+    // Toggle FB settings visibility.
+    $('#wpa_fb_enabled').on('change', function () {
+        $('#wpa-fb-settings').toggle($(this).is(':checked'));
+    });
+
+    // Toggle poster settings visibility.
+    $('#wpa_fb_image_mode').on('change', function () {
+        $('#wpa-fb-poster-settings').toggle($(this).val() === 'generated_poster');
+    });
+
+    // Toggle author photos visibility.
+    $('#wpa_fb_author_face').on('change', function () {
+        $('#wpa-fb-author-photos').toggle($(this).is(':checked'));
+    });
+
+    // Test Facebook connection.
+    $('#wpa-test-fb').on('click', function () {
+        var $btn = $(this);
+        var $spinner = $('#wpa-fb-test-spinner');
+        var $msg = $('#wpa-fb-test-message');
+        var pageId = $('#wpa_fb_page_id').val().trim();
+        var token = $('#wpa_fb_access_token').val().trim();
+
+        if (!pageId || !token) {
+            $msg.text('Fyll inn side-ID og tilgangstoken.').removeClass('success').addClass('error');
+            return;
+        }
+
+        $btn.prop('disabled', true);
+        $spinner.addClass('is-active');
+        $msg.text('').removeClass('error success');
+
+        $.post(wpaAdmin.ajaxUrl, {
+            action: 'wpa_test_fb',
+            nonce: wpaAdmin.nonce,
+            page_id: pageId,
+            access_token: token
+        }, function (response) {
+            $btn.prop('disabled', false);
+            $spinner.removeClass('is-active');
+
+            if (response.success) {
+                $msg.text('Tilkoblet: ' + response.data.name + ' (ID: ' + response.data.id + ')').removeClass('error').addClass('success');
+            } else {
+                $msg.text(response.data || 'Tilkoblingsfeil.').removeClass('success').addClass('error');
+            }
+        }).fail(function () {
+            $btn.prop('disabled', false);
+            $spinner.removeClass('is-active');
+            $msg.text('Nettverksfeil.').removeClass('success').addClass('error');
+        });
+    });
+
+    // WP Media uploader for author photos.
+    $(document).on('click', '.wpa-fb-upload-photo', function (e) {
+        e.preventDefault();
+        var authorId = $(this).data('author-id');
+        var $preview = $('.wpa-fb-photo-preview[data-author-id="' + authorId + '"]');
+        var $input = $('.wpa-fb-photo-input[data-author-id="' + authorId + '"]');
+        var $removeBtn = $('.wpa-fb-remove-photo[data-author-id="' + authorId + '"]');
+
+        var frame = wp.media({
+            title: 'Velg forfatter-foto',
+            button: { text: 'Bruk dette bildet' },
+            multiple: false,
+            library: { type: 'image' }
+        });
+
+        frame.on('select', function () {
+            var attachment = frame.state().get('selection').first().toJSON();
+            var thumbUrl = attachment.sizes && attachment.sizes.thumbnail
+                ? attachment.sizes.thumbnail.url
+                : attachment.url;
+
+            $preview.html('<img src="' + thumbUrl + '" style="max-width: 60px; max-height: 60px; border-radius: 4px;">');
+            $input.val(attachment.id);
+            $removeBtn.show();
+        });
+
+        frame.open();
+    });
+
+    // Remove author photo.
+    $(document).on('click', '.wpa-fb-remove-photo', function (e) {
+        e.preventDefault();
+        var authorId = $(this).data('author-id');
+        var $preview = $('.wpa-fb-photo-preview[data-author-id="' + authorId + '"]');
+        var $input = $('.wpa-fb-photo-input[data-author-id="' + authorId + '"]');
+
+        $preview.html('<span class="dashicons dashicons-format-image" style="font-size: 40px; color: #ccc;"></span>');
+        $input.val('');
+        $(this).hide();
+    });
+
     // --- Utility ---
 
     function escHtml(str) {

@@ -164,6 +164,13 @@ class Cron {
 
                 // Update cost records with the actual post_id.
                 $this->update_cost_post_id( $post_id, $article, $image_id, $inline_images );
+
+                // Facebook-deling (kun for umiddelbart publiserte artikler).
+                if ( $scheduled_date === null && Settings::get( 'fb_enabled' ) ) {
+                    $fb = new FacebookSharer();
+                    $fb->share( $post_id, $article, $author_id );
+                    $this->update_fb_cost_post_id( $post_id );
+                }
             }
 
             $index++;
@@ -201,6 +208,24 @@ class Cron {
                 "UPDATE {$table} SET post_id = %d WHERE post_id IS NULL AND type = 'inline_image' ORDER BY id DESC LIMIT %d",
                 $post_id,
                 $count
+            ) );
+        }
+    }
+
+    /**
+     * Update Facebook cost entries that were logged with null post_id.
+     */
+    private function update_fb_cost_post_id( $post_id ) {
+        global $wpdb;
+        $table = $wpdb->prefix . 'wpa_costs';
+
+        // fb_text og fb_poster logges allerede med post_id i FacebookSharer,
+        // men denne metoden fanger opp eventuelle som ble logget med null.
+        foreach ( array( 'fb_text', 'fb_poster' ) as $type ) {
+            $wpdb->query( $wpdb->prepare(
+                "UPDATE {$table} SET post_id = %d WHERE post_id IS NULL AND type = %s ORDER BY id DESC LIMIT 1",
+                $post_id,
+                $type
             ) );
         }
     }
