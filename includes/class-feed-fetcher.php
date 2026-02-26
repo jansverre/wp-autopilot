@@ -22,6 +22,11 @@ class FeedFetcher {
             return array();
         }
 
+        // Free: max 3 feeds.
+        if ( ! License::is_pro() ) {
+            $feeds = array_slice( $feeds, 0, 3 );
+        }
+
         $max_per_run      = (int) Settings::get( 'max_per_run', 3 );
         $keyword_include  = Settings::get( 'keyword_include', '' );
         $keyword_exclude  = Settings::get( 'keyword_exclude', '' );

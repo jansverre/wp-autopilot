@@ -11,7 +11,7 @@ class Activator {
     /**
      * Current DB schema version.
      */
-    const DB_VERSION = 4;
+    const DB_VERSION = 5;
 
     /**
      * Run on plugin activation.
@@ -34,6 +34,11 @@ class Activator {
         $current = (int) get_option( 'wpa_db_version', 1 );
 
         if ( $current < self::DB_VERSION ) {
+            // Mark existing installations for grace period (upgrading from pre-v2).
+            if ( $current > 0 && $current < 5 && get_option( 'wpa_installed_before_v2' ) === false ) {
+                add_option( 'wpa_installed_before_v2', current_time( 'mysql' ) );
+            }
+
             self::create_tables();
             self::set_default_options();
             update_option( 'wpa_db_version', self::DB_VERSION );

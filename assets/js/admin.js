@@ -443,6 +443,74 @@
         $(this).hide();
     });
 
+    // --- License Activation ---
+
+    $('#wpa-activate-license').on('click', function () {
+        var $btn = $(this);
+        var $spinner = $('#wpa-license-spinner');
+        var $msg = $('#wpa-license-message');
+        var key = $('#wpa-license-key-input').val().trim();
+
+        if (!key) {
+            $msg.text(i18n.licenseKeyRequired || 'Please enter a license key.').removeClass('success').addClass('error');
+            return;
+        }
+
+        $btn.prop('disabled', true);
+        $spinner.addClass('is-active');
+        $msg.text(i18n.licenseActivating || 'Activating...').removeClass('error success');
+
+        $.post(wpaAdmin.ajaxUrl, {
+            action: 'wpa_activate_license',
+            nonce: wpaAdmin.nonce,
+            license_key: key
+        }, function (response) {
+            $btn.prop('disabled', false);
+            $spinner.removeClass('is-active');
+
+            if (response.success) {
+                $msg.text(response.data.message).removeClass('error').addClass('success');
+                // Reload to update UI state.
+                setTimeout(function () { location.reload(); }, 1500);
+            } else {
+                $msg.text(response.data || 'Activation failed.').removeClass('success').addClass('error');
+            }
+        }).fail(function () {
+            $btn.prop('disabled', false);
+            $spinner.removeClass('is-active');
+            $msg.text(i18n.networkError || 'Network error.').removeClass('success').addClass('error');
+        });
+    });
+
+    $('#wpa-deactivate-license').on('click', function () {
+        var $btn = $(this);
+        var $spinner = $('#wpa-license-spinner');
+        var $msg = $('#wpa-license-message');
+
+        $btn.prop('disabled', true);
+        $spinner.addClass('is-active');
+        $msg.text(i18n.licenseDeactivating || 'Deactivating...').removeClass('error success');
+
+        $.post(wpaAdmin.ajaxUrl, {
+            action: 'wpa_deactivate_license',
+            nonce: wpaAdmin.nonce
+        }, function (response) {
+            $btn.prop('disabled', false);
+            $spinner.removeClass('is-active');
+
+            if (response.success) {
+                $msg.text(response.data.message).removeClass('error').addClass('success');
+                setTimeout(function () { location.reload(); }, 1500);
+            } else {
+                $msg.text(response.data || 'Error.').removeClass('success').addClass('error');
+            }
+        }).fail(function () {
+            $btn.prop('disabled', false);
+            $spinner.removeClass('is-active');
+            $msg.text(i18n.networkError || 'Network error.').removeClass('success').addClass('error');
+        });
+    });
+
     // --- Utility ---
 
     function escHtml(str) {

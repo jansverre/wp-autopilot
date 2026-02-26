@@ -4,27 +4,46 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use WPAutopilot\Includes\Settings;
+use WPAutopilot\Includes\License;
 
 $feeds = json_decode( Settings::get( 'feeds', '[]' ), true );
 if ( ! is_array( $feeds ) ) {
     $feeds = array();
 }
+$is_pro      = License::is_pro();
+$feed_count  = count( $feeds );
+$feed_limit  = $is_pro ? 0 : 3; // 0 = unlimited
+$at_limit    = ! $is_pro && $feed_count >= $feed_limit;
 ?>
 
 <?php include WPA_PLUGIN_DIR . 'admin/partials/header.php'; ?>
 
 <div class="wpa-section">
-    <h2><?php esc_html_e( 'Add Feed', 'wp-autopilot' ); ?></h2>
+    <h2><?php esc_html_e( 'Add Feed', 'wp-autopilot' ); ?>
+        <?php if ( ! $is_pro ) : ?>
+            <span class="wpa-feed-counter">
+                <?php
+                /* translators: 1: current feed count, 2: maximum feed count */
+                printf( esc_html__( '(%1$d / %2$d)', 'wp-autopilot' ), $feed_count, $feed_limit );
+                ?>
+            </span>
+        <?php endif; ?>
+    </h2>
+    <?php if ( $at_limit ) : ?>
+        <div class="wpa-upgrade-notice">
+            <p><?php _e( 'You have reached the free limit of 3 feeds. <a href="https://baugeit.no/wp-autopilot/" target="_blank" rel="noopener">Upgrade to Pro</a> for unlimited feeds.', 'wp-autopilot' ); ?></p>
+        </div>
+    <?php endif; ?>
     <div class="wpa-add-feed-form">
         <input type="text" id="wpa-feed-name" placeholder="<?php esc_attr_e( 'Name (optional)', 'wp-autopilot' ); ?>" class="regular-text">
         <input type="url" id="wpa-feed-url" placeholder="https://example.com/feed" class="regular-text" required>
-        <button type="button" id="wpa-add-feed" class="button button-primary"><?php esc_html_e( 'Add', 'wp-autopilot' ); ?></button>
+        <button type="button" id="wpa-add-feed" class="button button-primary" <?php echo $at_limit ? 'disabled' : ''; ?>><?php esc_html_e( 'Add', 'wp-autopilot' ); ?></button>
         <span id="wpa-feed-spinner" class="spinner"></span>
     </div>
     <p id="wpa-feed-message" class="wpa-message"></p>
 </div>
 
-<div class="wpa-section">
+<div class="wpa-section" data-feed-limit="<?php echo esc_attr( $feed_limit ); ?>" data-is-pro="<?php echo $is_pro ? '1' : '0'; ?>">
     <h2><?php esc_html_e( 'Active Feeds', 'wp-autopilot' ); ?></h2>
     <table class="wp-list-table widefat fixed striped" id="wpa-feeds-table">
         <thead>

@@ -86,7 +86,7 @@ class Cron {
         // Calculate spread-out schedule times for the articles.
         $schedule_times = $this->calculate_schedule_times( $item_count );
 
-        $inline_images_enabled = (bool) Settings::get( 'inline_images_enabled' );
+        $inline_images_enabled = (bool) Settings::get( 'inline_images_enabled' ) && License::is_pro();
         $posters_this_run = 0;
 
         $index = 0;
@@ -167,8 +167,8 @@ class Cron {
                 // Update cost records with the actual post_id.
                 $this->update_cost_post_id( $post_id, $article, $image_id, $inline_images );
 
-                // Facebook sharing (only for immediately published articles).
-                if ( $scheduled_date === null && Settings::get( 'fb_enabled' ) ) {
+                // Facebook sharing (only for immediately published articles, Pro only).
+                if ( $scheduled_date === null && Settings::get( 'fb_enabled' ) && License::is_pro() ) {
                     $fb     = new FacebookSharer();
                     $result = $fb->share( $post_id, $article, $author_id, $posters_this_run );
                     if ( $result && ! empty( $result['had_poster'] ) ) {

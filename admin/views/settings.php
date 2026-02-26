@@ -4,8 +4,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use WPAutopilot\Includes\Settings;
+use WPAutopilot\Includes\License;
 
 $settings = Settings::all();
+$is_pro   = License::is_pro();
 $post_authors = json_decode( $settings['post_authors'] ?? '[]', true );
 if ( ! is_array( $post_authors ) ) {
     $post_authors = array();
@@ -16,6 +18,40 @@ $author_ids = array_column( $post_authors, 'id' );
 <?php include WPA_PLUGIN_DIR . 'admin/partials/header.php'; ?>
 
 <?php settings_errors( 'wpa_settings' ); ?>
+
+<!-- License -->
+<div class="wpa-section wpa-license-section">
+    <h2><?php esc_html_e( 'License', 'wp-autopilot' ); ?>
+        <?php if ( $is_pro ) : ?>
+            <span class="wpa-pro-badge wpa-pro-active"><?php esc_html_e( 'PRO', 'wp-autopilot' ); ?></span>
+        <?php else : ?>
+            <span class="wpa-pro-badge wpa-pro-free"><?php esc_html_e( 'FREE', 'wp-autopilot' ); ?></span>
+        <?php endif; ?>
+    </h2>
+    <?php if ( $is_pro && License::has_key() ) : ?>
+        <p class="wpa-license-status wpa-license-active">
+            <?php
+            /* translators: %s: masked license key */
+            printf( esc_html__( 'Pro license active: %s', 'wp-autopilot' ), '<code>' . esc_html( License::get_masked_key() ) . '</code>' );
+            ?>
+        </p>
+        <button type="button" id="wpa-deactivate-license" class="button"><?php esc_html_e( 'Deactivate License', 'wp-autopilot' ); ?></button>
+        <span id="wpa-license-spinner" class="spinner"></span>
+        <span id="wpa-license-message" class="wpa-message"></span>
+    <?php elseif ( $is_pro && ! License::has_key() ) : ?>
+        <p class="wpa-license-status wpa-license-active">
+            <?php esc_html_e( 'Pro features unlocked via developer override.', 'wp-autopilot' ); ?>
+        </p>
+    <?php else : ?>
+        <p class="description"><?php _e( 'Enter your Pro license key to unlock all features. <a href="https://baugeit.no/wp-autopilot/" target="_blank" rel="noopener">Get a license</a>', 'wp-autopilot' ); ?></p>
+        <div class="wpa-license-form" style="margin-top: 10px;">
+            <input type="text" id="wpa-license-key-input" class="regular-text" placeholder="<?php esc_attr_e( 'Enter license key...', 'wp-autopilot' ); ?>">
+            <button type="button" id="wpa-activate-license" class="button button-primary"><?php esc_html_e( 'Activate', 'wp-autopilot' ); ?></button>
+            <span id="wpa-license-spinner" class="spinner"></span>
+        </div>
+        <p id="wpa-license-message" class="wpa-message"></p>
+    <?php endif; ?>
+</div>
 
 <form method="post" action="">
     <?php wp_nonce_field( 'wpa_save_settings', 'wpa_settings_nonce' ); ?>
@@ -127,8 +163,17 @@ $author_ids = array_column( $post_authors, 'id' );
     </div>
 
     <!-- Writing Style Analysis -->
-    <div class="wpa-section">
-        <h2><?php esc_html_e( 'Writing Style per Author', 'wp-autopilot' ); ?></h2>
+    <div class="wpa-section<?php echo $is_pro ? '' : ' wpa-pro-locked'; ?>">
+        <h2><?php esc_html_e( 'Writing Style per Author', 'wp-autopilot' ); ?>
+            <?php if ( ! $is_pro ) : ?>
+                <span class="wpa-pro-badge"><?php esc_html_e( 'PRO', 'wp-autopilot' ); ?></span>
+            <?php endif; ?>
+        </h2>
+        <?php if ( ! $is_pro ) : ?>
+            <div class="wpa-upgrade-notice">
+                <p><?php _e( 'AI-powered writing style analysis per author. <a href="https://baugeit.no/wp-autopilot/" target="_blank" rel="noopener">Upgrade to Pro</a>', 'wp-autopilot' ); ?></p>
+            </div>
+        <?php endif; ?>
         <p class="description" style="margin-bottom: 15px;"><?php _e( 'Analyze an author\'s writing style based on their published articles. The style is automatically used when the autopilot writes articles for this author.', 'wp-autopilot' ); ?></p>
         <table class="form-table">
             <tr>
@@ -233,9 +278,9 @@ $author_ids = array_column( $post_authors, 'id' );
                 <td>
                     <select id="wpa_author_method" name="wpa_author_method">
                         <option value="single" <?php selected( $settings['author_method'] ?? 'single', 'single' ); ?>><?php echo esc_html__( 'Single (default author)', 'wp-autopilot' ); ?></option>
-                        <option value="random" <?php selected( $settings['author_method'] ?? 'single', 'random' ); ?>><?php echo esc_html__( 'Random', 'wp-autopilot' ); ?></option>
-                        <option value="round_robin" <?php selected( $settings['author_method'] ?? 'single', 'round_robin' ); ?>><?php echo esc_html__( 'Round Robin (rotating)', 'wp-autopilot' ); ?></option>
-                        <option value="percentage" <?php selected( $settings['author_method'] ?? 'single', 'percentage' ); ?>><?php echo esc_html__( 'Weighted Distribution', 'wp-autopilot' ); ?></option>
+                        <option value="random" <?php selected( $settings['author_method'] ?? 'single', 'random' ); ?> <?php echo $is_pro ? '' : 'disabled'; ?>><?php echo esc_html__( 'Random', 'wp-autopilot' ); ?><?php echo $is_pro ? '' : ' (PRO)'; ?></option>
+                        <option value="round_robin" <?php selected( $settings['author_method'] ?? 'single', 'round_robin' ); ?> <?php echo $is_pro ? '' : 'disabled'; ?>><?php echo esc_html__( 'Round Robin (rotating)', 'wp-autopilot' ); ?><?php echo $is_pro ? '' : ' (PRO)'; ?></option>
+                        <option value="percentage" <?php selected( $settings['author_method'] ?? 'single', 'percentage' ); ?> <?php echo $is_pro ? '' : 'disabled'; ?>><?php echo esc_html__( 'Weighted Distribution', 'wp-autopilot' ); ?><?php echo $is_pro ? '' : ' (PRO)'; ?></option>
                     </select>
                 </td>
             </tr>
@@ -337,15 +382,24 @@ $author_ids = array_column( $post_authors, 'id' );
     </div>
 
     <!-- Inline Images -->
-    <div class="wpa-section">
-        <h2><?php esc_html_e( 'Inline Images', 'wp-autopilot' ); ?></h2>
+    <div class="wpa-section<?php echo $is_pro ? '' : ' wpa-pro-locked'; ?>">
+        <h2><?php esc_html_e( 'Inline Images', 'wp-autopilot' ); ?>
+            <?php if ( ! $is_pro ) : ?>
+                <span class="wpa-pro-badge"><?php esc_html_e( 'PRO', 'wp-autopilot' ); ?></span>
+            <?php endif; ?>
+        </h2>
+        <?php if ( ! $is_pro ) : ?>
+            <div class="wpa-upgrade-notice">
+                <p><?php _e( 'Generate AI images within article text at H2 sections. <a href="https://baugeit.no/wp-autopilot/" target="_blank" rel="noopener">Upgrade to Pro</a>', 'wp-autopilot' ); ?></p>
+            </div>
+        <?php endif; ?>
         <table class="form-table">
             <tr>
                 <th><label for="wpa_inline_images_enabled"><?php esc_html_e( 'Enable Inline Images', 'wp-autopilot' ); ?></label></th>
                 <td>
                     <label>
                         <input type="checkbox" id="wpa_inline_images_enabled" name="wpa_inline_images_enabled"
-                               value="1" <?php checked( $settings['inline_images_enabled'] ?? false ); ?>>
+                               value="1" <?php checked( $settings['inline_images_enabled'] ?? false ); ?> <?php echo $is_pro ? '' : 'disabled'; ?>>
                         <?php esc_html_e( 'Generate images within the article text at H2 sections', 'wp-autopilot' ); ?>
                     </label>
                     <p class="description"><?php _e( 'Note: Each inline image takes 6&ndash;60 seconds. With many images per article, the run can take a long time.', 'wp-autopilot' ); ?></p>
@@ -459,15 +513,24 @@ $author_ids = array_column( $post_authors, 'id' );
     </div>
 
     <!-- Facebook Sharing -->
-    <div class="wpa-section">
-        <h2><?php esc_html_e( 'Facebook Sharing', 'wp-autopilot' ); ?></h2>
+    <div class="wpa-section<?php echo $is_pro ? '' : ' wpa-pro-locked'; ?>">
+        <h2><?php esc_html_e( 'Facebook Sharing', 'wp-autopilot' ); ?>
+            <?php if ( ! $is_pro ) : ?>
+                <span class="wpa-pro-badge"><?php esc_html_e( 'PRO', 'wp-autopilot' ); ?></span>
+            <?php endif; ?>
+        </h2>
+        <?php if ( ! $is_pro ) : ?>
+            <div class="wpa-upgrade-notice">
+                <p><?php _e( 'Auto-share articles to Facebook with AI-generated text and posters. <a href="https://baugeit.no/wp-autopilot/" target="_blank" rel="noopener">Upgrade to Pro</a>', 'wp-autopilot' ); ?></p>
+            </div>
+        <?php endif; ?>
         <table class="form-table">
             <tr>
                 <th><label for="wpa_fb_enabled"><?php esc_html_e( 'Enable Facebook Sharing', 'wp-autopilot' ); ?></label></th>
                 <td>
                     <label>
                         <input type="checkbox" id="wpa_fb_enabled" name="wpa_fb_enabled"
-                               value="1" <?php checked( $settings['fb_enabled'] ?? false ); ?>>
+                               value="1" <?php checked( $settings['fb_enabled'] ?? false ); ?> <?php echo $is_pro ? '' : 'disabled'; ?>>
                         <?php esc_html_e( 'Automatically share autopilot articles to a Facebook Page', 'wp-autopilot' ); ?>
                     </label>
                 </td>

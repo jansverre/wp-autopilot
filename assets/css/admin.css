@@ -185,3 +185,96 @@
 .wpa-author-item label {
     font-weight: normal;
 }
+
+/* PRO Badges */
+.wpa-pro-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    vertical-align: middle;
+    margin-left: 8px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+}
+
+.wpa-pro-badge.wpa-pro-active {
+    background: linear-gradient(135deg, #43e97b, #38f9d7);
+    color: #155724;
+}
+
+.wpa-pro-badge.wpa-pro-free {
+    background: #f0f0f1;
+    color: #666;
+}
+
+/* Locked (PRO-only) sections */
+.wpa-pro-locked {
+    position: relative;
+}
+
+.wpa-pro-locked .form-table {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.wpa-pro-locked .wpa-upgrade-notice {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Upgrade notice box */
+.wpa-upgrade-notice {
+    background: #f0f6ff;
+    border: 1px solid #c3d9f7;
+    border-left: 4px solid #667eea;
+    border-radius: 4px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+}
+
+.wpa-upgrade-notice p {
+    margin: 0;
+    color: #1d2327;
+}
+
+.wpa-upgrade-notice a {
+    font-weight: 600;
+    color: #667eea;
+    text-decoration: none;
+}
+
+.wpa-upgrade-notice a:hover {
+    text-decoration: underline;
+}
+
+/* License section */
+.wpa-license-section {
+    border-left: 4px solid #667eea;
+}
+
+.wpa-license-form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.wpa-license-status {
+    font-weight: 600;
+}
+
+.wpa-license-active {
+    color: #155724;
+}
+
+/* Feed counter */
+.wpa-feed-counter {
+    font-size: 14px;
+    font-weight: normal;
+    color: #666;
+    margin-left: 5px;
+}

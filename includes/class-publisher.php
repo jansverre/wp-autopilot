@@ -17,6 +17,11 @@ class Publisher {
         $method  = Settings::get( 'author_method', 'single' );
         $authors = json_decode( Settings::get( 'post_authors', '[]' ), true );
 
+        // Free: force single-author mode.
+        if ( ! License::is_pro() ) {
+            $method = 'single';
+        }
+
         // Fallback to single author if no multi-author config.
         if ( $method === 'single' || empty( $authors ) ) {
             return (int) Settings::get( 'post_author', 1 );

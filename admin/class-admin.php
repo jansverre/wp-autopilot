@@ -9,6 +9,7 @@ use WPAutopilot\Includes\InternalLinks;
 use WPAutopilot\Includes\ArticleWriter;
 use WPAutopilot\Includes\CostTracker;
 use WPAutopilot\Includes\FacebookSharer;
+use WPAutopilot\Includes\License;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -34,6 +35,8 @@ class Admin {
         add_action( 'wp_ajax_wpa_analyze_style', array( $this, 'ajax_analyze_style' ) );
         add_action( 'wp_ajax_wpa_save_writing_style', array( $this, 'ajax_save_writing_style' ) );
         add_action( 'wp_ajax_wpa_test_fb', array( $this, 'ajax_test_fb' ) );
+        add_action( 'wp_ajax_wpa_activate_license', array( $this, 'ajax_activate_license' ) );
+        add_action( 'wp_ajax_wpa_deactivate_license', array( $this, 'ajax_deactivate_license' ) );
     }
 
     /**
@@ -115,6 +118,9 @@ class Admin {
         wp_localize_script( 'wpa-admin-js', 'wpaAdmin', array(
             'ajaxUrl'       => admin_url( 'admin-ajax.php' ),
             'nonce'         => wp_create_nonce( 'wpa_admin_nonce' ),
+            'isPro'         => License::is_pro(),
+            'hasKey'        => License::has_key(),
+            'maskedKey'     => License::get_masked_key(),
             'writingStyles' => json_decode( Settings::get( 'writing_styles', '{}' ), true ),
             'i18n'          => array(
                 'urlRequired'           => __( 'URL is required.', 'wp-autopilot' ),
@@ -144,6 +150,11 @@ class Admin {
                 'connectionError'       => __( 'Connection error.', 'wp-autopilot' ),
                 'selectAuthorPhoto'     => __( 'Select author photo', 'wp-autopilot' ),
                 'useThisImage'          => __( 'Use this image', 'wp-autopilot' ),
+                'licenseActivating'     => __( 'Activating...', 'wp-autopilot' ),
+                'licenseDeactivating'   => __( 'Deactivating...', 'wp-autopilot' ),
+                'licenseKeyRequired'    => __( 'Please enter a license key.', 'wp-autopilot' ),
+                'proFeature'            => __( 'This feature requires a Pro license.', 'wp-autopilot' ),
+                'feedLimitReached'      => __( 'Free version supports up to 3 feeds. Upgrade to Pro for unlimited feeds.', 'wp-autopilot' ),
             ),
         ) );
     }
@@ -377,6 +388,11 @@ class Admin {
             $feeds = array();
         }
 
+        // Free: max 3 feeds.
+        if ( ! License::is_pro() && count( $feeds ) >= 3 ) {
+            wp_send_json_error( __( 'Free version supports up to 3 feeds. Upgrade to Pro for unlimited feeds.', 'wp-autopilot' ) );
+        }
+
         $feeds[] = array(
             'id'     => wp_generate_uuid4(),
             'name'   => $name ?: wp_parse_url( $url, PHP_URL_HOST ),
@@ -495,6 +511,11 @@ class Admin {
             wp_send_json_error( __( 'Access denied.', 'wp-autopilot' ) );
         }
 
+        // Pro-only feature.
+        if ( ! License::is_pro() ) {
+            wp_send_json_error( __( 'Writing style analysis requires a Pro license.', 'wp-autopilot' ) );
+        }
+
         $author_id = absint( $_POST['author_id'] ?? 0 );
         $num_posts = absint( $_POST['num_posts'] ?? 5 );
 
@@ -554,6 +575,48 @@ class Admin {
 
         $name = $data['name'] ?? __( 'Unknown page', 'wp-autopilot' );
         wp_send_json_success( array( 'name' => $name, 'id' => $data['id'] ?? $page_id ) );
+    }
+
+    /**
+     * AJAX: Activate a Pro license key.
+     */
+    public function ajax_activate_license() {
+        check_ajax_referer( 'wpa_admin_nonce', 'nonce' );
+
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( __( 'Access denied.', 'wp-autopilot' ) );
+        }
+
+        $key    = sanitize_text_field( wp_unslash( $_POST['license_key'] ?? '' ) );
+        $result = License::activate( $key );
+
+        if ( $result['success'] ) {
+            wp_send_json_success( array(
+                'message'   => $result['message'],
+                'maskedKey' => License::get_masked_key(),
+                'isPro'     => true,
+            ) );
+        }
+
+        wp_send_json_error( $result['message'] );
+    }
+
+    /**
+     * AJAX: Deactivate Pro license.
+     */
+    public function ajax_deactivate_license() {
+        check_ajax_referer( 'wpa_admin_nonce', 'nonce' );
+
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( __( 'Access denied.', 'wp-autopilot' ) );
+        }
+
+        $result = License::deactivate();
+
+        wp_send_json_success( array(
+            'message' => $result['message'],
+            'isPro'   => License::is_pro(),
+        ) );
     }
 
     /**

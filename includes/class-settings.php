@@ -102,6 +102,7 @@ class Settings {
             'fb_poster_authors',
             'fb_no_poster_mode',
             'github_token',
+            'license_key',
         );
 
         $settings = array();

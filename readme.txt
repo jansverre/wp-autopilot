@@ -3,7 +3,7 @@ Contributors: jansverre
 Tags: ai content, rss, autopilot, content generation, automation
 Requires at least: 5.8
 Tested up to: 6.9
-Stable tag: 1.2.6
+Stable tag: 2.0.0
 Requires PHP: 7.4
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -14,9 +14,9 @@ AI-powered content automation — fetches news from RSS feeds, writes unique art
 
 WP Autopilot automates your content pipeline. It fetches news from RSS feeds you configure, uses AI to write unique articles based on those news items, generates landscape featured images, and publishes them to your WordPress site — either as drafts for review or directly.
 
-**Key Features:**
+**Free Features:**
 
-* Fetch news from multiple RSS feeds (RSS 2.0 and Atom)
+* Up to 3 RSS feeds (RSS 2.0 and Atom)
 * AI-powered article writing via OpenRouter (supports 7+ models including Gemini, Claude, GPT, and Qwen)
 * AI-generated landscape featured images via fal.ai (FLUX, Grok Imagine, and more)
 * Full image SEO: AI-generated alt text, captions, and descriptions
@@ -27,9 +27,20 @@ WP Autopilot automates your content pipeline. It fetches news from RSS feeds you
 * Keyword include/exclude filtering for RSS items
 * Daily and per-run article limits
 * Complete admin panel with three pages: Settings, Feeds, and Status
+* Full cost tracking — monitor token usage and estimated costs per article
 * Activity log with the last 500 entries
 * Manual "Run Now" button for on-demand content generation
 * Custom model support — use any model ID available on OpenRouter or fal.ai
+
+**Pro Features (license key required):**
+
+* Unlimited RSS feeds
+* Multiple authors with random, round-robin, and weighted distribution
+* Per-author writing style analysis — AI analyzes published posts and replicates each author's voice
+* Inline AI-generated images within article content at H2 sections
+* Facebook auto-sharing with AI-generated text and AI-generated posters
+
+[Get WP Autopilot Pro](https://baugeit.no/wp-autopilot/)
 
 **How It Works:**
 
@@ -49,12 +60,17 @@ WP Autopilot automates your content pipeline. It fetches news from RSS feeds you
 4. Add RSS feeds under **WP Autopilot > Feeds**
 5. Configure your preferred AI model, language, writing style, and publishing options
 6. Enable automatic scheduling or use the **Run Now** button under **WP Autopilot > Status**
+7. (Optional) Enter a Pro license key under **WP Autopilot > Settings** to unlock Pro features
 
 == Frequently Asked Questions ==
 
 = What API keys do I need? =
 
 You need an API key from [OpenRouter](https://openrouter.ai/keys) for article writing. Optionally, you need a key from [fal.ai](https://fal.ai/dashboard/keys) for image generation. Both services offer free tiers.
+
+= What is the difference between Free and Pro? =
+
+The free version is a fully functional autopilot: RSS feeds, AI articles, AI images, internal linking, scheduling, and cost tracking. Pro adds unlimited feeds, multi-author support, per-author writing styles, inline images, and Facebook sharing. See the full comparison at [baugeit.no/wp-autopilot](https://baugeit.no/wp-autopilot/).
 
 = Which AI models are supported? =
 
@@ -74,7 +90,7 @@ The internal links index is automatically updated. When you trash or delete a po
 
 = Can I control when articles are published? =
 
-Yes. You can set a work hours window (e.g. 08:00–22:00) so the autopilot only runs during those hours. Articles are also spread evenly between runs instead of being published in bulk.
+Yes. You can set a work hours window (e.g. 08:00-22:00) so the autopilot only runs during those hours. Articles are also spread evenly between runs instead of being published in bulk.
 
 = What language are articles written in? =
 
@@ -91,6 +107,23 @@ Yes. WP Autopilot creates standard WordPress posts with proper HTML, featured im
 3. Status page — view statistics, run autopilot manually, and browse the activity log
 
 == Changelog ==
+
+= 2.0.0 =
+* New: Free/Pro model — free version fully functional, Pro unlocks advanced features with a license key
+* New: License activation system via Lemon Squeezy
+* New: Free limit of 3 RSS feeds (unlimited with Pro)
+* New: Multi-author, writing style analysis, inline images, and Facebook sharing now require Pro
+* New: PRO badges and upgrade notices in settings for discoverability
+* New: 30-day grace period for existing users upgrading from v1.x
+
+= 1.2.6 =
+* Facebook poster cost control
+
+= 1.2.5 =
+* Full i18n support — English defaults, Norwegian (nb_NO) translations
+
+= 1.2.0 =
+* New: Facebook auto-sharing with AI-generated text and optional AI poster
 
 = 1.1.0 =
 * New: Site identity prompt — describe your site's purpose, values, and audience for better article tone
@@ -115,6 +148,9 @@ Yes. WP Autopilot creates standard WordPress posts with proper HTML, featured im
 
 == Upgrade Notice ==
 
+= 2.0.0 =
+Introduces Free/Pro model. Existing users get a 30-day grace period with all features unlocked. After that, advanced features (unlimited feeds, multi-author, inline images, Facebook sharing) require a Pro license key.
+
 = 1.0.0 =
 Initial release.
 
@@ -137,3 +173,19 @@ Featured images are generated by sending image prompts to the [fal.ai](https://f
 * Service URL: https://queue.fal.run/
 * Terms of Service: https://fal.ai/terms
 * Privacy Policy: https://fal.ai/privacy
+
+= Facebook Graph API (Pro feature) =
+
+When Facebook sharing is enabled (Pro), the plugin sends article links, AI-generated text, and optionally AI-generated poster images to the [Facebook Graph API](https://developers.facebook.com/docs/graph-api/) to publish posts on your configured Facebook Page. Only article content and images are transmitted — no personal user data beyond your Page Access Token.
+
+* Service URL: https://graph.facebook.com/
+* Terms of Service: https://www.facebook.com/terms.php
+* Privacy Policy: https://www.facebook.com/privacy/policy/
+
+= Lemon Squeezy =
+
+Pro license keys are validated against the [Lemon Squeezy](https://lemonsqueezy.com/) API. The data sent is the license key and your site's domain name. No other data is transmitted.
+
+* Service URL: https://api.lemonsqueezy.com/v1/licenses/
+* Terms of Service: https://www.lemonsqueezy.com/terms
+* Privacy Policy: https://www.lemonsqueezy.com/privacy
