@@ -87,6 +87,7 @@ class Cron {
         $schedule_times = $this->calculate_schedule_times( $item_count );
 
         $inline_images_enabled = (bool) Settings::get( 'inline_images_enabled' );
+        $posters_this_run = 0;
 
         $index = 0;
         foreach ( $items as $item ) {
@@ -168,8 +169,11 @@ class Cron {
 
                 // Facebook sharing (only for immediately published articles).
                 if ( $scheduled_date === null && Settings::get( 'fb_enabled' ) ) {
-                    $fb = new FacebookSharer();
-                    $fb->share( $post_id, $article, $author_id );
+                    $fb     = new FacebookSharer();
+                    $result = $fb->share( $post_id, $article, $author_id, $posters_this_run );
+                    if ( $result && ! empty( $result['had_poster'] ) ) {
+                        $posters_this_run++;
+                    }
                     $this->update_fb_cost_post_id( $post_id );
                 }
             }

@@ -295,6 +295,32 @@ class Admin {
             }
         }
 
+        // Facebook poster cost control.
+        if ( isset( $_POST['wpa_fb_poster_per_run'] ) ) {
+            Settings::set( 'fb_poster_per_run', absint( $_POST['wpa_fb_poster_per_run'] ) );
+        }
+        if ( isset( $_POST['wpa_fb_poster_daily_limit'] ) ) {
+            Settings::set( 'fb_poster_daily_limit', absint( $_POST['wpa_fb_poster_daily_limit'] ) );
+        }
+        if ( isset( $_POST['wpa_fb_no_poster_mode'] ) ) {
+            $no_poster_mode = sanitize_text_field( wp_unslash( $_POST['wpa_fb_no_poster_mode'] ) );
+            if ( in_array( $no_poster_mode, array( 'ai_text', 'excerpt', 'skip' ), true ) ) {
+                Settings::set( 'fb_no_poster_mode', $no_poster_mode );
+            }
+        }
+
+        // Facebook poster authors (checkboxes → JSON array of IDs).
+        $fb_poster_author_ids = array();
+        if ( ! empty( $_POST['wpa_fb_poster_authors'] ) && is_array( $_POST['wpa_fb_poster_authors'] ) ) {
+            foreach ( $_POST['wpa_fb_poster_authors'] as $uid ) {
+                $uid = absint( $uid );
+                if ( $uid && get_userdata( $uid ) ) {
+                    $fb_poster_author_ids[] = $uid;
+                }
+            }
+        }
+        Settings::set( 'fb_poster_authors', wp_json_encode( $fb_poster_author_ids ) );
+
         // Facebook author photos (collect per-author hidden inputs).
         $fb_author_photos = array();
         $wp_users = get_users( array( 'role__in' => array( 'administrator', 'editor', 'author' ), 'fields' => 'ID' ) );

@@ -97,6 +97,10 @@ class Settings {
             'fb_image_mode',
             'fb_author_face',
             'fb_author_photos',
+            'fb_poster_per_run',
+            'fb_poster_daily_limit',
+            'fb_poster_authors',
+            'fb_no_poster_mode',
             'github_token',
         );
 

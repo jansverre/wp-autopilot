@@ -1,7 +1,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Autopilot 1.2.5\n"
+"Project-Id-Version: WP Autopilot 1.2.6\n"
 "Report-Msgid-Bugs-To: https://github.com/jansverre/wp-autopilot/issues\n"
 "POT-Creation-Date: 2026-02-25 21:22\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -1040,4 +1040,71 @@ msgid ""
 "permissions</strong> (public repo). Avoids API rate limiting for update "
 "checks. Create one at <a href=\"https://github.com/settings/tokens/new\" "
 "target=\"_blank\" rel=\"noopener\">github.com/settings/tokens</a>."
+msgstr ""
+
+#: admin/views/settings.php:0
+msgid "Posters per Run"
+msgstr ""
+
+#: admin/views/settings.php:0
+msgid ""
+"0 = unlimited. Limits posters per autopilot run, spreading them naturally "
+"across the day."
+msgstr ""
+
+#: admin/views/settings.php:0
+msgid "Max Posters per Day"
+msgstr ""
+
+#: admin/views/settings.php:0
+msgid "0 = unlimited. Safety net for total daily poster cost."
+msgstr ""
+
+#: admin/views/settings.php:0
+msgid "Poster Authors"
+msgstr ""
+
+#: admin/views/settings.php:0
+msgid ""
+"Only these authors get AI posters. Leave all unchecked = all authors get "
+"posters."
+msgstr ""
+
+#: admin/views/settings.php:0
+msgid "Sharing without Poster"
+msgstr ""
+
+#: admin/views/settings.php:0
+msgid "AI-generated text + link ($)"
+msgstr ""
+
+#: admin/views/settings.php:0
+msgid "Excerpt + link (free)"
+msgstr ""
+
+#: admin/views/settings.php:0
+msgid "Don't share on Facebook"
+msgstr ""
+
+#: admin/views/settings.php:0
+msgid ""
+"Fallback for articles that don't get an AI poster (limit reached or author "
+"excluded)."
+msgstr ""
+
+#: includes/class-facebook-sharer.php:0
+msgid ""
+"Facebook sharing: Skipping article %d (poster not eligible, mode: skip)."
+msgstr ""
+
+#: includes/class-facebook-sharer.php:0
+msgid "Facebook poster: Author %d not in poster author list."
+msgstr ""
+
+#: includes/class-facebook-sharer.php:0
+msgid "Facebook poster: Per-run limit reached (%d)."
+msgstr ""
+
+#: includes/class-facebook-sharer.php:0
+msgid "Facebook poster: Daily limit reached (%d)."
 msgstr ""

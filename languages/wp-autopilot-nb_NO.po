@@ -1,7 +1,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Autopilot 1.2.5\n"
+"Project-Id-Version: WP Autopilot 1.2.6\n"
 "Report-Msgid-Bugs-To: https://github.com/jansverre/wp-autopilot/issues\n"
 "POT-Creation-Date: 2026-02-25 21:22\n"
 "PO-Revision-Date: 2026-02-25 21:22\n"
@@ -1076,3 +1076,78 @@ msgstr ""
 " (offentlig repo). Unngår API-ratebegrensning for oppdateringssjekker. "
 "Opprett en på <a href=\"https://github.com/settings/tokens/new\" "
 "target=\"_blank\" rel=\"noopener\">github.com/settings/tokens</a>."
+
+#: admin/views/settings.php:0
+msgid "Posters per Run"
+msgstr "Plakater per kjøring"
+
+#: admin/views/settings.php:0
+msgid ""
+"0 = unlimited. Limits posters per autopilot run, spreading them naturally "
+"across the day."
+msgstr ""
+"0 = ubegrenset. Begrenser plakater per autopilot-kjøring, sprer dem "
+"naturlig utover dagen."
+
+#: admin/views/settings.php:0
+msgid "Max Posters per Day"
+msgstr "Maks plakater per dag"
+
+#: admin/views/settings.php:0
+msgid "0 = unlimited. Safety net for total daily poster cost."
+msgstr "0 = ubegrenset. Sikkerhetsnett for total daglig plakatkostnad."
+
+#: admin/views/settings.php:0
+msgid "Poster Authors"
+msgstr "Plakat-forfattere"
+
+#: admin/views/settings.php:0
+msgid ""
+"Only these authors get AI posters. Leave all unchecked = all authors get "
+"posters."
+msgstr ""
+"Kun disse forfatterne får AI-plakater. La alle stå uhaket = alle forfattere "
+"får plakater."
+
+#: admin/views/settings.php:0
+msgid "Sharing without Poster"
+msgstr "Deling uten plakat"
+
+#: admin/views/settings.php:0
+msgid "AI-generated text + link ($)"
+msgstr "AI-generert tekst + lenke ($)"
+
+#: admin/views/settings.php:0
+msgid "Excerpt + link (free)"
+msgstr "Utdrag + lenke (gratis)"
+
+#: admin/views/settings.php:0
+msgid "Don't share on Facebook"
+msgstr "Ikke del på Facebook"
+
+#: admin/views/settings.php:0
+msgid ""
+"Fallback for articles that don't get an AI poster (limit reached or author "
+"excluded)."
+msgstr ""
+"Reserve for artikler som ikke får AI-plakat (grense nådd eller forfatter "
+"ekskludert)."
+
+#: includes/class-facebook-sharer.php:0
+msgid ""
+"Facebook sharing: Skipping article %d (poster not eligible, mode: skip)."
+msgstr ""
+"Facebook-deling: Hopper over artikkel %d (ikke kvalifisert for plakat, "
+"modus: hopp over)."
+
+#: includes/class-facebook-sharer.php:0
+msgid "Facebook poster: Author %d not in poster author list."
+msgstr "Facebook-plakat: Forfatter %d ikke i plakat-forfatterlisten."
+
+#: includes/class-facebook-sharer.php:0
+msgid "Facebook poster: Per-run limit reached (%d)."
+msgstr "Facebook-plakat: Per-kjøring-grense nådd (%d)."
+
+#: includes/class-facebook-sharer.php:0
+msgid "Facebook poster: Daily limit reached (%d)."
+msgstr "Facebook-plakat: Daglig grense nådd (%d)."

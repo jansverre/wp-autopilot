@@ -515,6 +515,57 @@ $author_ids = array_column( $post_authors, 'id' );
             <div id="wpa-fb-poster-settings" style="<?php echo ( $settings['fb_image_mode'] ?? 'featured_image' ) !== 'generated_poster' ? 'display:none;' : ''; ?>">
                 <table class="form-table">
                     <tr>
+                        <th><label for="wpa_fb_poster_per_run"><?php esc_html_e( 'Posters per Run', 'wp-autopilot' ); ?></label></th>
+                        <td>
+                            <input type="number" id="wpa_fb_poster_per_run" name="wpa_fb_poster_per_run"
+                                   value="<?php echo esc_attr( $settings['fb_poster_per_run'] ?? 0 ); ?>"
+                                   min="0" class="small-text">
+                            <p class="description"><?php _e( '0 = unlimited. Limits posters per autopilot run, spreading them naturally across the day.', 'wp-autopilot' ); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label for="wpa_fb_poster_daily_limit"><?php esc_html_e( 'Max Posters per Day', 'wp-autopilot' ); ?></label></th>
+                        <td>
+                            <input type="number" id="wpa_fb_poster_daily_limit" name="wpa_fb_poster_daily_limit"
+                                   value="<?php echo esc_attr( $settings['fb_poster_daily_limit'] ?? 0 ); ?>"
+                                   min="0" class="small-text">
+                            <p class="description"><?php _e( '0 = unlimited. Safety net for total daily poster cost.', 'wp-autopilot' ); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><?php esc_html_e( 'Poster Authors', 'wp-autopilot' ); ?></th>
+                        <td>
+                            <?php
+                            $fb_poster_authors = json_decode( $settings['fb_poster_authors'] ?? '[]', true );
+                            if ( ! is_array( $fb_poster_authors ) ) {
+                                $fb_poster_authors = array();
+                            }
+                            $fb_poster_author_ids = array_map( 'intval', $fb_poster_authors );
+                            $poster_users = get_users( array( 'role__in' => array( 'administrator', 'editor', 'author' ) ) );
+                            foreach ( $poster_users as $puser ) :
+                            ?>
+                                <label style="display: block; margin-bottom: 4px;">
+                                    <input type="checkbox" name="wpa_fb_poster_authors[]"
+                                           value="<?php echo esc_attr( $puser->ID ); ?>"
+                                           <?php checked( in_array( $puser->ID, $fb_poster_author_ids, true ) ); ?>>
+                                    <?php echo esc_html( $puser->display_name ); ?>
+                                </label>
+                            <?php endforeach; ?>
+                            <p class="description"><?php _e( 'Only these authors get AI posters. Leave all unchecked = all authors get posters.', 'wp-autopilot' ); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label for="wpa_fb_no_poster_mode"><?php esc_html_e( 'Sharing without Poster', 'wp-autopilot' ); ?></label></th>
+                        <td>
+                            <select id="wpa_fb_no_poster_mode" name="wpa_fb_no_poster_mode">
+                                <option value="ai_text" <?php selected( $settings['fb_no_poster_mode'] ?? 'ai_text', 'ai_text' ); ?>><?php echo esc_html__( 'AI-generated text + link ($)', 'wp-autopilot' ); ?></option>
+                                <option value="excerpt" <?php selected( $settings['fb_no_poster_mode'] ?? 'ai_text', 'excerpt' ); ?>><?php echo esc_html__( 'Excerpt + link (free)', 'wp-autopilot' ); ?></option>
+                                <option value="skip" <?php selected( $settings['fb_no_poster_mode'] ?? 'ai_text', 'skip' ); ?>><?php echo esc_html__( 'Don\'t share on Facebook', 'wp-autopilot' ); ?></option>
+                            </select>
+                            <p class="description"><?php _e( 'Fallback for articles that don\'t get an AI poster (limit reached or author excluded).', 'wp-autopilot' ); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
                         <th><label for="wpa_fb_author_face"><?php esc_html_e( 'Author in Poster', 'wp-autopilot' ); ?></label></th>
                         <td>
                             <label>

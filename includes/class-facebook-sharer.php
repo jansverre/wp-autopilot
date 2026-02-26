@@ -17,13 +17,15 @@ class FacebookSharer {
     /**
      * Share an article to Facebook.
      *
-     * @param int   $post_id   WordPress post ID.
-     * @param array $article   Article data from ArticleWriter.
-     * @param int   $author_id Author user ID.
+     * @param int   $post_id          WordPress post ID.
+     * @param array $article          Article data from ArticleWriter.
+     * @param int   $author_id        Author user ID.
+     * @param int   $posters_this_run Number of posters already generated this run.
+     * @return array|null Result with 'had_poster' key, or null on early exit.
      */
-    public function share( $post_id, $article, $author_id ) {
+    public function share( $post_id, $article, $author_id, $posters_this_run = 0 ) {
         if ( ! Settings::get( 'fb_enabled' ) ) {
-            return;
+            return null;
         }
 
         $page_id      = Settings::get( 'fb_page_id' );
@@ -31,22 +33,23 @@ class FacebookSharer {
 
         if ( empty( $page_id ) || empty( $access_token ) ) {
             Logger::warning( __( 'Facebook sharing: Missing page ID or access token.', 'wp-autopilot' ) );
-            return;
+            return null;
         }
 
         // Prevent double sharing.
         if ( get_post_meta( $post_id, '_wpa_fb_shared', true ) ) {
             /* translators: %d: post ID */
             Logger::info( sprintf( __( 'Facebook sharing: Article %d already shared.', 'wp-autopilot' ), $post_id ) );
-            return;
+            return null;
         }
 
-        // Generate FB text.
-        $fb_text = $this->generate_fb_text( $post_id, $article );
+        $link       = get_permalink( $post_id );
+        $had_poster = false;
 
-        // Generate poster if selected.
-        $poster_id = null;
-        if ( Settings::get( 'fb_image_mode' ) === 'generated_poster' ) {
+        // Determine if this article should get a poster.
+        if ( Settings::get( 'fb_image_mode' ) === 'generated_poster' && $this->is_poster_eligible( $author_id, $posters_this_run ) ) {
+            // Full poster path: AI text + generated poster.
+            $fb_text   = $this->generate_fb_text( $post_id, $article );
             $poster_id = $this->generate_poster(
                 $post_id,
                 $article['title'] ?? get_the_title( $post_id ),
@@ -54,14 +57,26 @@ class FacebookSharer {
                 $author_id
             );
 
-            if ( ! $poster_id ) {
+            if ( $poster_id ) {
+                $fb_result  = $this->post_to_facebook( $fb_text, $link, $poster_id );
+                $had_poster = true;
+            } else {
+                // Poster generation failed — fallback to link post.
                 Logger::warning( __( 'Facebook sharing: Poster generation failed, falling back to link post.', 'wp-autopilot' ) );
+                $fb_result = $this->post_to_facebook( $fb_text, $link );
             }
+        } elseif ( Settings::get( 'fb_image_mode' ) === 'generated_poster' ) {
+            // Not poster-eligible — use fallback mode.
+            $fb_result = $this->share_without_poster( $post_id, $article, $link );
+            if ( $fb_result === false ) {
+                // 'skip' mode — no sharing.
+                return array( 'had_poster' => false );
+            }
+        } else {
+            // featured_image mode: AI text + link post.
+            $fb_text   = $this->generate_fb_text( $post_id, $article );
+            $fb_result = $this->post_to_facebook( $fb_text, $link );
         }
-
-        // Post to Facebook.
-        $link      = get_permalink( $post_id );
-        $fb_result = $this->post_to_facebook( $fb_text, $link, $poster_id );
 
         if ( $fb_result ) {
             update_post_meta( $post_id, '_wpa_fb_shared', true );
@@ -69,6 +84,88 @@ class FacebookSharer {
             /* translators: 1: post ID, 2: Facebook post ID */
             Logger::info( sprintf( __( 'Facebook sharing: Article %1$d shared (FB post ID: %2$s).', 'wp-autopilot' ), $post_id, $fb_result ) );
         }
+
+        return array( 'had_poster' => $had_poster );
+    }
+
+    /**
+     * Handle sharing without a poster based on fb_no_poster_mode setting.
+     *
+     * @param int    $post_id WordPress post ID.
+     * @param array  $article Article data.
+     * @param string $link    Article permalink.
+     * @return string|null|false FB post ID, null on failure, false if skipped.
+     */
+    private function share_without_poster( $post_id, $article, $link ) {
+        $mode = Settings::get( 'fb_no_poster_mode', 'ai_text' );
+
+        switch ( $mode ) {
+            case 'ai_text':
+                $fb_text = $this->generate_fb_text( $post_id, $article );
+                return $this->post_to_facebook( $fb_text, $link );
+
+            case 'excerpt':
+                $fb_text = $this->fallback_text( $post_id, $article );
+                return $this->post_to_facebook( $fb_text, $link );
+
+            case 'skip':
+                /* translators: %d: post ID */
+                Logger::info( sprintf( __( 'Facebook sharing: Skipping article %d (poster not eligible, mode: skip).', 'wp-autopilot' ), $post_id ) );
+                return false;
+
+            default:
+                $fb_text = $this->generate_fb_text( $post_id, $article );
+                return $this->post_to_facebook( $fb_text, $link );
+        }
+    }
+
+    /**
+     * Check if this article is eligible for a poster image.
+     *
+     * @param int $author_id        Author user ID.
+     * @param int $posters_this_run Number of posters already generated this run.
+     * @return bool
+     */
+    public function is_poster_eligible( $author_id, $posters_this_run = 0 ) {
+        // Check author whitelist.
+        $poster_authors = json_decode( Settings::get( 'fb_poster_authors', '[]' ), true );
+        if ( ! empty( $poster_authors ) && ! in_array( (int) $author_id, array_map( 'intval', $poster_authors ), true ) ) {
+            /* translators: %d: author user ID */
+            Logger::info( sprintf( __( 'Facebook poster: Author %d not in poster author list.', 'wp-autopilot' ), $author_id ) );
+            return false;
+        }
+
+        // Check per-run limit.
+        $per_run = (int) Settings::get( 'fb_poster_per_run', 0 );
+        if ( $per_run > 0 && $posters_this_run >= $per_run ) {
+            /* translators: %d: per-run poster limit */
+            Logger::info( sprintf( __( 'Facebook poster: Per-run limit reached (%d).', 'wp-autopilot' ), $per_run ) );
+            return false;
+        }
+
+        // Check daily limit.
+        $daily_limit = (int) Settings::get( 'fb_poster_daily_limit', 0 );
+        if ( $daily_limit > 0 && $this->get_today_poster_count() >= $daily_limit ) {
+            /* translators: %d: daily poster limit */
+            Logger::info( sprintf( __( 'Facebook poster: Daily limit reached (%d).', 'wp-autopilot' ), $daily_limit ) );
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Count posters generated today.
+     *
+     * @return int
+     */
+    public function get_today_poster_count() {
+        global $wpdb;
+        $table = $wpdb->prefix . 'wpa_costs';
+
+        return (int) $wpdb->get_var(
+            "SELECT COUNT(*) FROM {$table} WHERE type = 'fb_poster' AND DATE(created_at) = CURDATE()"
+        );
     }
 
     /**
@@ -225,6 +322,9 @@ class FacebookSharer {
         // Build request body.
         $request_body = array(
             'prompt'            => $prompt,
+            'image_size'        => 'landscape_16_9',
+            'width'             => 1280,
+            'height'            => 720,
             'aspect_ratio'      => '16:9',
             'enable_web_search' => true,
         );

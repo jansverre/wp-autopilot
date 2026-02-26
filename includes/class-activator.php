@@ -11,7 +11,7 @@ class Activator {
     /**
      * Current DB schema version.
      */
-    const DB_VERSION = 3;
+    const DB_VERSION = 4;
 
     /**
      * Run on plugin activation.
@@ -175,6 +175,10 @@ class Activator {
             'fb_image_mode'       => 'featured_image',
             'fb_author_face'      => false,
             'fb_author_photos'    => '{}',
+            'fb_poster_per_run'   => 0,
+            'fb_poster_daily_limit' => 0,
+            'fb_poster_authors'   => '[]',
+            'fb_no_poster_mode'   => 'ai_text',
 
             // Feeds stored as JSON array
             'feeds'               => '[]',
