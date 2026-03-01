@@ -9,11 +9,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 class License {
 
     /**
-     * Lemon Squeezy API endpoint for license validation.
+     * Gumroad API endpoint for license verification.
      */
-    const LS_VALIDATE_URL = 'https://api.lemonsqueezy.com/v1/licenses/validate';
-    const LS_ACTIVATE_URL = 'https://api.lemonsqueezy.com/v1/licenses/activate';
-    const LS_DEACTIVATE_URL = 'https://api.lemonsqueezy.com/v1/licenses/deactivate';
+    const GUMROAD_API_URL  = 'https://api.gumroad.com/v2/licenses/verify';
+    const GUMROAD_PRODUCT_ID = ''; // Set when Gumroad product is created.
 
     /**
      * Transient key for caching pro status.
@@ -45,6 +44,11 @@ class License {
      * @return bool
      */
     public static function is_pro() {
+        // All features unlocked until Gumroad product is configured.
+        if ( empty( self::GUMROAD_PRODUCT_ID ) ) {
+            return true;
+        }
+
         // Developer override via wp-config.php.
         if ( defined( 'WPA_PRO' ) && WPA_PRO ) {
             return true;
@@ -86,7 +90,7 @@ class License {
     /**
      * Activate a license key.
      *
-     * @param string $key License key from Lemon Squeezy.
+     * @param string $key License key from Gumroad.
      * @return array {success: bool, message: string}
      */
     public static function activate( $key ) {
@@ -99,11 +103,12 @@ class License {
             );
         }
 
-        $response = wp_remote_post( self::LS_ACTIVATE_URL, array(
+        $response = wp_remote_post( self::GUMROAD_API_URL, array(
             'timeout' => 15,
             'body'    => array(
-                'license_key'   => $key,
-                'instance_name' => self::get_instance_name(),
+                'product_id'           => self::GUMROAD_PRODUCT_ID,
+                'license_key'          => $key,
+                'increment_uses_count' => 'true',
             ),
         ) );
 
@@ -116,12 +121,8 @@ class License {
 
         $data = json_decode( wp_remote_retrieve_body( $response ), true );
 
-        if ( ! empty( $data['activated'] ) || ( ! empty( $data['license_key'] ) && $data['license_key']['status'] === 'active' ) ) {
-            // Store the key and instance ID.
+        if ( ! empty( $data['success'] ) && self::is_purchase_valid( $data['purchase'] ?? array() ) ) {
             update_option( 'wpa_license_key', $key );
-            if ( ! empty( $data['instance']['id'] ) ) {
-                update_option( 'wpa_license_instance_id', $data['instance']['id'] );
-            }
 
             // Clear caches.
             self::$is_pro_cache = true;
@@ -133,7 +134,15 @@ class License {
             );
         }
 
-        $error = $data['error'] ?? ( $data['message'] ?? __( 'Invalid license key.', 'wp-autopilot' ) );
+        // Valid key but purchase refunded/disputed/cancelled.
+        if ( ! empty( $data['success'] ) ) {
+            return array(
+                'success' => false,
+                'message' => __( 'This license is no longer valid (refunded or cancelled).', 'wp-autopilot' ),
+            );
+        }
+
+        $error = $data['message'] ?? __( 'Invalid license key.', 'wp-autopilot' );
 
         return array(
             'success' => false,
@@ -142,13 +151,12 @@ class License {
     }
 
     /**
-     * Deactivate the current license.
+     * Deactivate the current license (local only — Gumroad decrement requires OAuth).
      *
      * @return array {success: bool, message: string}
      */
     public static function deactivate() {
-        $key         = get_option( 'wpa_license_key', '' );
-        $instance_id = get_option( 'wpa_license_instance_id', '' );
+        $key = get_option( 'wpa_license_key', '' );
 
         if ( empty( $key ) ) {
             return array(
@@ -157,26 +165,9 @@ class License {
             );
         }
 
-        $response = wp_remote_post( self::LS_DEACTIVATE_URL, array(
-            'timeout' => 15,
-            'body'    => array(
-                'license_key' => $key,
-                'instance_id' => $instance_id,
-            ),
-        ) );
-
-        // Remove local data regardless of API response.
         delete_option( 'wpa_license_key' );
-        delete_option( 'wpa_license_instance_id' );
         self::$is_pro_cache = null;
         delete_transient( self::TRANSIENT_KEY );
-
-        if ( is_wp_error( $response ) ) {
-            return array(
-                'success' => true,
-                'message' => __( 'License removed locally. Could not reach license server.', 'wp-autopilot' ),
-            );
-        }
 
         return array(
             'success' => true,
@@ -185,19 +176,18 @@ class License {
     }
 
     /**
-     * Validate a license key against Lemon Squeezy.
+     * Validate a license key against Gumroad.
      *
      * @param string $key License key.
      * @return bool
      */
     private static function validate_key( $key ) {
-        $instance_id = get_option( 'wpa_license_instance_id', '' );
-
-        $response = wp_remote_post( self::LS_VALIDATE_URL, array(
+        $response = wp_remote_post( self::GUMROAD_API_URL, array(
             'timeout' => 15,
             'body'    => array(
-                'license_key' => $key,
-                'instance_id' => $instance_id,
+                'product_id'           => self::GUMROAD_PRODUCT_ID,
+                'license_key'          => $key,
+                'increment_uses_count' => 'false',
             ),
         ) );
 
@@ -208,7 +198,37 @@ class License {
 
         $data = json_decode( wp_remote_retrieve_body( $response ), true );
 
-        return ! empty( $data['valid'] );
+        return ! empty( $data['success'] ) && self::is_purchase_valid( $data['purchase'] ?? array() );
+    }
+
+    /**
+     * Check that a Gumroad purchase is still valid (not refunded, disputed, or cancelled).
+     *
+     * @param array $purchase Purchase data from Gumroad API response.
+     * @return bool
+     */
+    private static function is_purchase_valid( $purchase ) {
+        if ( empty( $purchase ) ) {
+            return false;
+        }
+
+        if ( ! empty( $purchase['refunded'] ) ) {
+            return false;
+        }
+
+        if ( ! empty( $purchase['disputed'] ) ) {
+            return false;
+        }
+
+        if ( ! empty( $purchase['subscription_cancelled_at'] ) ) {
+            return false;
+        }
+
+        if ( ! empty( $purchase['subscription_failed_at'] ) ) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -226,15 +246,6 @@ class License {
         $grace_end = strtotime( $installed_before_v2 ) + ( self::GRACE_PERIOD_DAYS * DAY_IN_SECONDS );
 
         return time() < $grace_end;
-    }
-
-    /**
-     * Get a unique instance name for this site.
-     *
-     * @return string
-     */
-    private static function get_instance_name() {
-        return wp_parse_url( home_url(), PHP_URL_HOST );
     }
 
     /**

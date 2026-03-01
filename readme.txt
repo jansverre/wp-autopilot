@@ -110,7 +110,7 @@ Yes. WP Autopilot creates standard WordPress posts with proper HTML, featured im
 
 = 2.0.0 =
 * New: Free/Pro model — free version fully functional, Pro unlocks advanced features with a license key
-* New: License activation system via Lemon Squeezy
+* New: License activation system via Gumroad
 * New: Free limit of 3 RSS feeds (unlimited with Pro)
 * New: Multi-author, writing style analysis, inline images, and Facebook sharing now require Pro
 * New: PRO badges and upgrade notices in settings for discoverability
@@ -182,10 +182,10 @@ When Facebook sharing is enabled (Pro), the plugin sends article links, AI-gener
 * Terms of Service: https://www.facebook.com/terms.php
 * Privacy Policy: https://www.facebook.com/privacy/policy/
 
-= Lemon Squeezy =
+= Gumroad =
 
-Pro license keys are validated against the [Lemon Squeezy](https://lemonsqueezy.com/) API. The data sent is the license key and your site's domain name. No other data is transmitted.
+Pro license keys are validated against the [Gumroad](https://gumroad.com/) API. The data sent is the license key and the product identifier. No personal user data is transmitted.
 
-* Service URL: https://api.lemonsqueezy.com/v1/licenses/
-* Terms of Service: https://www.lemonsqueezy.com/terms
-* Privacy Policy: https://www.lemonsqueezy.com/privacy
+* Service URL: https://api.gumroad.com/v2/licenses/verify
+* Terms of Service: https://gumroad.com/terms
+* Privacy Policy: https://gumroad.com/privacy

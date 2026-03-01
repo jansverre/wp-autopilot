@@ -313,6 +313,12 @@ class Admin {
         if ( isset( $_POST['wpa_fb_poster_daily_limit'] ) ) {
             Settings::set( 'fb_poster_daily_limit', absint( $_POST['wpa_fb_poster_daily_limit'] ) );
         }
+        if ( isset( $_POST['wpa_fb_poster_aspect_ratio'] ) ) {
+            $fb_ar = sanitize_text_field( wp_unslash( $_POST['wpa_fb_poster_aspect_ratio'] ) );
+            if ( in_array( $fb_ar, array( '4:5', '1:1', '5:4', '16:9' ), true ) ) {
+                Settings::set( 'fb_poster_aspect_ratio', $fb_ar );
+            }
+        }
         if ( isset( $_POST['wpa_fb_no_poster_mode'] ) ) {
             $no_poster_mode = sanitize_text_field( wp_unslash( $_POST['wpa_fb_no_poster_mode'] ) );
             if ( in_array( $no_poster_mode, array( 'ai_text', 'excerpt', 'skip' ), true ) ) {

@@ -83,6 +83,9 @@ class FacebookSharer {
             update_post_meta( $post_id, '_wpa_fb_post_id', $fb_result );
             /* translators: 1: post ID, 2: Facebook post ID */
             Logger::info( sprintf( __( 'Facebook sharing: Article %1$d shared (FB post ID: %2$s).', 'wp-autopilot' ), $post_id, $fb_result ) );
+        } else {
+            /* translators: %d: post ID */
+            Logger::warning( sprintf( __( 'Facebook sharing: Failed to post article %d to Facebook. Check access token permissions.', 'wp-autopilot' ), $post_id ) );
         }
 
         return array( 'had_poster' => $had_poster );
@@ -319,13 +322,23 @@ class FacebookSharer {
             $prompt = $this->build_poster_prompt_plain( $title, $excerpt, $language );
         }
 
+        // Determine aspect ratio from settings.
+        $ratio = Settings::get( 'fb_poster_aspect_ratio', '4:5' );
+        $ratio_map = array(
+            '4:5'  => array( 'width' => 1080, 'height' => 1350, 'image_size' => 'portrait_4_5',   'aspect_ratio' => '4:5' ),
+            '1:1'  => array( 'width' => 1080, 'height' => 1080, 'image_size' => 'square',          'aspect_ratio' => '1:1' ),
+            '5:4'  => array( 'width' => 1350, 'height' => 1080, 'image_size' => 'landscape_5_4',   'aspect_ratio' => '5:4' ),
+            '16:9' => array( 'width' => 1280, 'height' => 720,  'image_size' => 'landscape_16_9',  'aspect_ratio' => '16:9' ),
+        );
+        $dims = $ratio_map[ $ratio ] ?? $ratio_map['4:5'];
+
         // Build request body.
         $request_body = array(
             'prompt'            => $prompt,
-            'image_size'        => 'landscape_16_9',
-            'width'             => 1280,
-            'height'            => 720,
-            'aspect_ratio'      => '16:9',
+            'image_size'        => $dims['image_size'],
+            'width'             => $dims['width'],
+            'height'            => $dims['height'],
+            'aspect_ratio'      => $dims['aspect_ratio'],
             'enable_web_search' => true,
         );
 
@@ -513,7 +526,11 @@ class FacebookSharer {
             return null;
         }
 
-        $filename = sanitize_file_name( 'fb-poster-' . sanitize_title( $title ) ) . '.png';
+        // Convert to WebP for smaller file sizes.
+        $tmp = ImageGenerator::convert_to_webp( $tmp );
+        $ext = ( substr( $tmp, -5 ) === '.webp' ) ? '.webp' : '.png';
+
+        $filename = sanitize_file_name( 'fb-poster-' . sanitize_title( $title ) ) . $ext;
 
         $file_array = array(
             'name'     => $filename,
@@ -615,8 +632,9 @@ class FacebookSharer {
 
         if ( $status_code !== 200 ) {
             $error_msg = $data['error']['message'] ?? __( 'Unknown error', 'wp-autopilot' );
+            $body      = wp_remote_retrieve_body( $response );
             /* translators: 1: HTTP status code, 2: error message */
-            Logger::error( sprintf( __( 'Facebook API returned %1$d: %2$s', 'wp-autopilot' ), $status_code, $error_msg ) );
+            Logger::error( sprintf( __( 'Facebook API returned %1$d: %2$s', 'wp-autopilot' ), $status_code, $error_msg ), array( 'response_body' => $body ) );
             return null;
         }
 

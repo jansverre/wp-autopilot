@@ -204,6 +204,34 @@ class ImageGenerator {
     }
 
     /**
+     * Convert a temporary image file to WebP format.
+     *
+     * @param string $tmp_path Path to temporary image file.
+     * @return string Original path if conversion fails, new .webp path on success.
+     */
+    public static function convert_to_webp( $tmp_path ) {
+        if ( ! function_exists( 'imagewebp' ) ) {
+            return $tmp_path;
+        }
+
+        $image = @imagecreatefromstring( file_get_contents( $tmp_path ) );
+        if ( ! $image ) {
+            return $tmp_path;
+        }
+
+        $webp_path = $tmp_path . '.webp';
+        $success   = @imagewebp( $image, $webp_path, 82 );
+        imagedestroy( $image );
+
+        if ( ! $success || ! file_exists( $webp_path ) ) {
+            return $tmp_path;
+        }
+
+        @unlink( $tmp_path );
+        return $webp_path;
+    }
+
+    /**
      * Download an image from URL and upload to WordPress media library.
      *
      * @param string $url           Image URL.
@@ -226,7 +254,11 @@ class ImageGenerator {
             return null;
         }
 
-        $filename = sanitize_file_name( sanitize_title( $post_title ) ) . '.png';
+        // Convert to WebP for smaller file sizes.
+        $tmp = self::convert_to_webp( $tmp );
+        $ext = ( substr( $tmp, -5 ) === '.webp' ) ? '.webp' : '.png';
+
+        $filename = sanitize_file_name( sanitize_title( $post_title ) ) . $ext;
 
         $file_array = array(
             'name'     => $filename,

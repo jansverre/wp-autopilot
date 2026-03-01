@@ -596,6 +596,19 @@ $author_ids = array_column( $post_authors, 'id' );
                         </td>
                     </tr>
                     <tr>
+                        <th><label for="wpa_fb_poster_aspect_ratio"><?php esc_html_e( 'Poster Aspect Ratio', 'wp-autopilot' ); ?></label></th>
+                        <td>
+                            <?php $fb_poster_ar = $settings['fb_poster_aspect_ratio'] ?? '4:5'; ?>
+                            <select id="wpa_fb_poster_aspect_ratio" name="wpa_fb_poster_aspect_ratio">
+                                <option value="4:5" <?php selected( $fb_poster_ar, '4:5' ); ?>><?php esc_html_e( '4:5 Portrait (Recommended)', 'wp-autopilot' ); ?></option>
+                                <option value="1:1" <?php selected( $fb_poster_ar, '1:1' ); ?>><?php esc_html_e( '1:1 Square', 'wp-autopilot' ); ?></option>
+                                <option value="5:4" <?php selected( $fb_poster_ar, '5:4' ); ?>><?php esc_html_e( '5:4 Landscape', 'wp-autopilot' ); ?></option>
+                                <option value="16:9" <?php selected( $fb_poster_ar, '16:9' ); ?>><?php esc_html_e( '16:9 Widescreen', 'wp-autopilot' ); ?></option>
+                            </select>
+                            <p class="description"><?php esc_html_e( '4:5 portrait takes up the most space in the Facebook feed.', 'wp-autopilot' ); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
                         <th><?php esc_html_e( 'Poster Authors', 'wp-autopilot' ); ?></th>
                         <td>
                             <?php
