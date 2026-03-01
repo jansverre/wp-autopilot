@@ -346,6 +346,11 @@ class FacebookSharer {
             $request_body['image_urls'] = $image_urls;
         }
 
+        Logger::info( __( 'Facebook poster: Generating with model: ', 'wp-autopilot' ) . $model, array(
+            'image_urls' => $image_urls,
+            'prompt'     => substr( $prompt, 0, 200 ),
+        ) );
+
         // Submit to fal.ai queue.
         $request_id = $this->submit_to_fal( $api_key, $model, $request_body );
         if ( ! $request_id ) {
