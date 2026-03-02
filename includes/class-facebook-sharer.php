@@ -631,6 +631,9 @@ class FacebookSharer {
         $access_token = Settings::get( 'fb_access_token' );
         $api_base     = 'https://graph.facebook.com/' . self::FB_API_VERSION;
 
+        // Force Facebook to scrape OG data (featured image) before posting.
+        $this->scrape_url( $link, $access_token );
+
         return wp_remote_post( "{$api_base}/{$page_id}/feed", array(
             'timeout' => 30,
             'body'    => array(
@@ -639,6 +642,29 @@ class FacebookSharer {
                 'access_token' => $access_token,
             ),
         ) );
+    }
+
+    /**
+     * Force Facebook to scrape a URL for OG metadata (image, title, description).
+     *
+     * @param string $url          URL to scrape.
+     * @param string $access_token Facebook access token.
+     */
+    private function scrape_url( $url, $access_token ) {
+        $api_base = 'https://graph.facebook.com/' . self::FB_API_VERSION;
+
+        $response = wp_remote_post( $api_base, array(
+            'timeout' => 15,
+            'body'    => array(
+                'id'           => $url,
+                'scrape'       => 'true',
+                'access_token' => $access_token,
+            ),
+        ) );
+
+        if ( is_wp_error( $response ) ) {
+            Logger::warning( __( 'Facebook scrape: Could not pre-scrape URL.', 'wp-autopilot' ) );
+        }
     }
 
     /**
