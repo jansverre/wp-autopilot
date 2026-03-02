@@ -297,10 +297,13 @@ class FacebookSharer {
             }
         }
 
-        // Site-logo.
+        // Site logo (theme_mod for classic themes, option for block themes).
         $custom_logo_id = get_theme_mod( 'custom_logo' );
+        if ( ! $custom_logo_id ) {
+            $custom_logo_id = get_option( 'site_logo' );
+        }
         if ( $custom_logo_id ) {
-            $logo_url = wp_get_attachment_url( $custom_logo_id );
+            $logo_url = wp_get_attachment_url( (int) $custom_logo_id );
             if ( $logo_url ) {
                 $image_urls[] = $logo_url;
                 $has_logo     = true;
@@ -312,6 +315,10 @@ class FacebookSharer {
             // Author + logo → edit model.
             $model  = self::POSTER_EDIT_MODEL;
             $prompt = $this->build_poster_prompt_author_logo( $title, $excerpt, $language );
+        } elseif ( $has_author_photo ) {
+            // Author only → edit model.
+            $model  = self::POSTER_EDIT_MODEL;
+            $prompt = $this->build_poster_prompt_author_only( $title, $excerpt, $language );
         } elseif ( $has_logo ) {
             // Logo only → edit model.
             $model  = self::POSTER_EDIT_MODEL;
@@ -383,6 +390,20 @@ class FacebookSharer {
             . "prominently in a setting that relates to the article's core topic.\n\n"
             . "The second reference image is the site's logo — incorporate it creatively into the "
             . "poster design (e.g., corner placement, watermark style, or as part of the header).\n\n"
+            . "Article title: \"{$title}\"\n"
+            . "Summary: \"{$excerpt}\"\n\n"
+            . "All text and headlines on the poster must be in {$language}.\n"
+            . "Design should be bold, modern, and attention-grabbing for social media.\n"
+            . "You have full creative freedom for layout, colors, and composition.";
+    }
+
+    /**
+     * Poster prompt with author reference photo only (without logo).
+     */
+    private function build_poster_prompt_author_only( $title, $excerpt, $language ) {
+        return "Create a professional, scroll-stopping Facebook sharing poster for this news article.\n\n"
+            . "The reference image is a photo of the journalist/author — feature this person "
+            . "prominently in a setting that relates to the article's core topic.\n\n"
             . "Article title: \"{$title}\"\n"
             . "Summary: \"{$excerpt}\"\n\n"
             . "All text and headlines on the poster must be in {$language}.\n"
